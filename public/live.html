@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title data-site-title="Live">Live | BGMI Cup Noida</title>
+<meta name="description" data-site-description="live_page_lede" content="Live match centre of the BGMI Cup Noida 2026 tournament.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@500;700&family=JetBrains+Mono:wght@400;700&family=Special+Elite&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/footer.css?v=1">
+<link rel="stylesheet" href="css/control.css?v=5">
+</head>
+<body>
+
+  <div class="crt" aria-hidden="true"></div>
+
+  <!-- ========== NAV ========== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="/">BGMI<em>//</em>CUP<b>.26</b></a>
+      <div class="nav-links" id="navLinks">
+        <a class="nav-link" href="/schedule">Schedule</a>
+        <a class="nav-link" href="/live">Live</a>
+        <a class="nav-link" href="/results">Results</a>
+        <a class="nav-link" href="about.html">About</a>
+        <a class="nav-link" href="/status">Check status</a>
+        <a class="btn-outline btn-sm nav-cta nav-link" href="bgmi-team-registration.html#register">Register team</a>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+  <div class="nav-overlay hidden" id="navOverlay"></div>
+
+  <!-- ========== LIVE ========== -->
+  <main class="section">
+    <div class="container">
+
+      <header class="bc-head">
+        <div>
+          <div class="bc-eyebrow">live &mdash; match centre</div>
+          <h1 class="bc-title">Live</h1>
+          <p class="bc-p" data-site="live_page_lede">Public, read-only board &mdash; no player names, no room
+            details, no private data. Updates itself.</p>
+        </div>
+        <div class="bc-actions">
+          <a class="bc-btn" href="/results">Full results &rarr;</a>
+        </div>
+      </header>
+
+      <div class="bc-row">
+        <section class="bc-card" style="flex:2 1 320px">
+          <h2 class="bc-h2">Current match</h2>
+          <div id="match"><p class="bc-p bc-dim">Loading&hellip;</p></div>
+        </section>
+        <section class="bc-card" style="flex:1 1 220px">
+          <h2 class="bc-h2">Squads alive</h2>
+          <div id="alive"><p class="bc-p bc-dim">&mdash;</p></div>
+        </section>
+      </div>
+
+      <div class="bc-row">
+        <section class="bc-card" style="flex:2 1 380px">
+          <h2 class="bc-h2">Overall points</h2>
+          <div style="overflow-x:auto">
+            <table class="bc-table">
+              <thead><tr><th>#</th><th>Team</th><th>P</th><th>K</th><th>Pos</th><th>Total</th></tr></thead>
+              <tbody id="pts"></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="bc-card" style="flex:1 1 240px">
+          <h2 class="bc-h2">Matches</h2>
+          <ul id="matches" class="bc-list"></ul>
+        </section>
+      </div>
+
+      <p id="conn" class="bc-p bc-dim" style="margin-top:12px"></p>
+
+    </div>
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer" style="position:relative;">
+    <span class="footer-wm" aria-hidden="true">BGMI CUP</span>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <p class="footer-title">BGMI <span>CUP</span></p>
+        <p class="footer-date">Noida // 14 Nov 2026</p>
+        <p class="footer-tagline">Four seats. One drop. Zero rage quits.</p>
+        <a class="btn-primary footer-cta" href="bgmi-team-registration.html#register">Register team</a>
+      </div>
+      <nav class="footer-col" aria-label="Tournament">
+        <h2 class="footer-heading">Tournament</h2>
+        <ul class="footer-links">
+          <li><a class="f-link" href="/schedule">Schedule</a></li>
+          <li><a class="f-link" href="/live">Live standings</a></li>
+          <li><a class="f-link" href="/results">Results</a></li>
+          <li><a class="f-link" href="about.html">About</a></li>
+          <li><a class="f-link" href="/status">Check status</a></li>
+        </ul>
+      </nav>
+      <nav class="footer-col" aria-label="Legal">
+        <h2 class="footer-heading">Legal</h2>
+        <ul class="footer-links">
+          <li><a class="f-link" href="privacy.html">Privacy note</a></li>
+          <li><a class="f-link" href="mailto:organizers@bgmicup.example">Contact organizers</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 BGMI Cup Noida. Independent community event, not affiliated with KRAFTON.</p>
+      <p>Made with <span class="footer-heart" role="img" aria-label="love">&#9829;</span> by FE_PSYCHO</p>
+    </div>
+  </footer>
+
+  <script src="js/nav.js?v=1"></script>
+  <script src="js/site-config.js?v=2"></script>
+  <script src="js/live.js?v=1"></script>
+</body>
+</html>

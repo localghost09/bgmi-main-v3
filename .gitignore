@@ -1,0 +1,52 @@
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+
+# OpenCode config backups (timestamped, contain no secrets but are local-only).
+opencode.json.bak-*
+
+# Local secrets — never commit (.env.example is the committed list of names).
+.env
+.env.*
+!.env.example
+
+# Live data & participant submissions — PII, never commit.
+# data/ holds the SQLite database and uploaded team logos; only .gitkeep
+# is tracked so the folder exists after a fresh clone.
+/data/*
+!/data/.gitkeep
+/backups/
+
+# Python bytecode
+__pycache__/
+*.pyc
+
+# OBS broadcast tooling (scripts/obs/) — isolated venv and local artifacts.
+/scripts/obs/.venv/
+/docs/obs/screenshots/
+
+# QA screenshots (the admin-queue one may capture team data).
+/qa-*.png
+/pw-*.png
+/playwright-*.png
+/qa-shots/
+
+# E2E verification screenshots (capture seeded/registration data).
+/tests/screenshots/
+
+# Browser-session artifacts — contain exported registration data (PII).
+/.playwright-mcp/
+
+# Local tool config — contains a literal MCP password (move to env to version it).
+/opencode.json
+
+# OS cruft
+.DS_Store
+Thumbs.db

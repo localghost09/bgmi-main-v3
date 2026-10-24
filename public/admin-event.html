@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event setup &mdash; BGMI Cup Admin</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230c0d10'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='16' font-weight='bold' fill='%23b6ff3e' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@500;700&family=JetBrains+Mono:wght@400;700&family=Special+Elite&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/admin.css?v=5">
+  <link rel="stylesheet" href="/css/status.css?v=3">
+  <link rel="stylesheet" href="/css/footer.css?v=1">
+  <link rel="stylesheet" href="/css/admin-flow.css?v=3">
+  <link rel="stylesheet" href="/css/admin-event.css?v=2">
+</head>
+<body>
+
+  <div class="crt" aria-hidden="true"></div>
+
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="/">BGMI<em>//</em>CUP<b>.26</b></a>
+      <div class="nav-links" id="navLinks">
+        <a class="nav-link" href="/admin">Control Room</a>
+        <a class="nav-link" href="/admin/event">Event setup</a>
+        <a class="nav-link" href="/admin/matches">Matches</a>
+        <a class="nav-link" href="/admin/control">Match desk</a>
+        <a class="nav-link" href="/admin/overlays">Overlays</a>
+        <a class="nav-link" href="/admin/caster">Caster</a>
+        <a class="nav-link" href="/live">Live</a>
+        <a class="nav-link" href="/results">Results</a>
+        <a class="btn-outline btn-sm nav-cta nav-link" id="logoutNavBtn" href="#">Log out</a>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+  <div class="nav-overlay hidden" id="navOverlay"></div>
+
+  <main class="pan ev" id="top">
+    <header class="adm-head ev-head">
+      <div>
+        <div class="adm-eyebrow">one source of truth &mdash; public site, registration and overlays</div>
+        <h1 class="adm-title">Event setup</h1>
+        <p class="adm-user">signed in as <b id="whoAmI">&hellip;</b></p>
+      </div>
+      <div class="adm-actions">
+        <a class="adm-btn" href="/" target="_blank" rel="noopener">&#8599; View public site</a>
+        <button type="button" class="adm-btn adm-btn--ghost" id="reloadBtn">Discard &amp; reload</button>
+        <button type="submit" form="siteForm" class="adm-btn adm-btn--go" id="saveTopBtn">Publish changes</button>
+      </div>
+    </header>
+
+    <p class="ev-lede">
+      Change the event without touching code. These values feed the public
+      pages, registration window, status ticket, footer and broadcast overlays.
+      Changes are live as soon as you publish.
+    </p>
+
+    <div class="ev-layout">
+      <nav class="ev-nav" aria-label="Event setup sections" id="sectionNav"></nav>
+
+      <div class="ev-main">
+        <div class="ev-preview" id="previewCard" aria-live="polite">
+          <div class="ev-preview-eyebrow" id="pvEyebrow">Event preview</div>
+          <h2 class="ev-preview-title" id="pvName">BGMI CUP NOIDA 2026</h2>
+          <p class="ev-preview-meta"><span id="pvDate">14 November 2026</span> &middot; <span id="pvTime">4:00 PM IST</span></p>
+          <p class="ev-preview-meta" id="pvVenue">Greater Noida, Uttar Pradesh, India</p>
+          <span class="ev-status" id="pvStatus">Registration open</span>
+          <p class="ev-preview-note" id="pvNote"></p>
+        </div>
+
+        <div class="form-error hidden" id="siteError" role="alert"></div>
+
+        <form id="siteForm" novalidate>
+          <div id="setupFields"></div>
+
+          <div class="ev-savebar" id="saveBar">
+            <div>
+              <b id="dirtyLabel">All changes published</b>
+              <span id="savedAt"></span>
+            </div>
+            <div class="ev-save-actions">
+              <a class="adm-btn adm-btn--ghost" href="/" target="_blank" rel="noopener">Preview</a>
+              <button type="submit" class="adm-btn adm-btn--go" id="saveBtn">Publish changes</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer" style="position:relative;">
+    <span class="footer-wm" aria-hidden="true">BGMI CUP</span>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <p class="footer-title">BGMI <span>CUP</span></p>
+        <p class="footer-date">Noida // 14 Nov 2026</p>
+        <p class="footer-tagline">Four seats. One drop. Zero rage quits.</p>
+        <a class="btn-primary footer-cta" href="/#register">Register team</a>
+      </div>
+      <nav class="footer-col" aria-label="Tournament">
+        <h2 class="footer-heading">Tournament</h2>
+        <ul class="footer-links">
+          <li><a class="f-link" href="/schedule">Schedule</a></li>
+          <li><a class="f-link" href="/live">Live standings</a></li>
+          <li><a class="f-link" href="/results">Results</a></li>
+          <li><a class="f-link" href="/about.html">About</a></li>
+        </ul>
+      </nav>
+      <nav class="footer-col" aria-label="Broadcast">
+        <h2 class="footer-heading">Broadcast</h2>
+        <ul class="footer-links">
+          <li><a class="f-link" href="/admin/matches">Matches</a></li>
+          <li><a class="f-link" href="/admin/control">Match desk</a></li>
+          <li><a class="f-link" href="/admin/caster">Caster</a></li>
+        </ul>
+      </nav>
+      <nav class="footer-col" aria-label="Legal">
+        <h2 class="footer-heading">Legal</h2>
+        <ul class="footer-links">
+          <li><a class="f-link" href="/privacy.html">Privacy note</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 BGMI Cup Noida. Independent community event, not affiliated with KRAFTON.</p>
+      <p>Made with <span class="footer-heart" role="img" aria-label="love">&#9829;</span> by FE_PSYCHO</p>
+    </div>
+  </footer>
+
+  <script src="/js/nav.js?v=1"></script>
+  <script src="/js/site-config.js?v=2"></script>
+  <script src="/js/admin-shell.js?v=1"></script>
+  <script src="/js/event-setup.js?v=3"></script>
+</body>
+</html>

@@ -1,0 +1,655 @@
+/* ============================================================================
+   BGMI CUP — KRAFTON INDIA ESPORTS / PMGC 2026 THEME SYSTEM
+   Ten overlay themes heavily inspired by KRAFTON India Esports & PMGC design.
+   Each theme is a scoped data-theme attribute on .broadcast.
+   Select themes via: /overlay?theme=<id>  or the admin theme picker.
+   ----------------------------------------------------------------------------
+   THEMES:
+     1. krafton-pm    — KRAFTON PMGC 2026 championship (gold/black/white)
+     2. neon-drop     — PMGC neon grid (cyan/magenta/black)
+     3. red-zone      — Erangel red-zone alert (crimson/charcoal)
+     4. miramar-dust  — Miramar desert sand (sand/rust/terracotta)
+     5. sanhok-jungle — Sanhok jungle (deep green/olive)
+     6. vikendi-ice   — Vikendi snow (ice blue/white/silver)
+     7. livid-pink    — Livik pop (hot pink/purple/neon)
+     8. blackout      — Stealth blackout (matte black/slate)
+     9. chrome-royal  — Royal chrome (royal blue/chrome silver)
+    10. victory-gold  — Chicken dinner victory (victory gold/white)
+   ============================================================================ */
+
+/* ---------------------------------------------------------------- base vars */
+:root {
+  /* default (krafton-pm) accent */
+  --amber: #ffb725;
+  --amber2: #ff6b1a;
+  --red: #f04438;
+  --ink: #090b0d;
+  --panel: rgba(10, 12, 15, 0.94);
+  --panel2: rgba(18, 21, 25, 0.92);
+  --line: rgba(255, 255, 255, 0.14);
+  --text: #f7f7f3;
+  --muted: #a8adb4;
+  --mono: "Rajdhani", Arial, sans-serif;
+  --display: "Barlow Condensed", Impact, sans-serif;
+
+  /* theme hooks — each theme overrides these */
+  --t-accent: var(--amber);
+  --t-accent2: var(--amber2);
+  --t-bg: #000000;
+  --t-panel: rgba(10, 12, 15, 0.94);
+  --t-panel2: rgba(18, 21, 25, 0.92);
+  --t-text: var(--text);
+  --t-muted: var(--muted);
+  --t-line: var(--line);
+  --t-glow: rgba(255, 183, 37, 0.25);
+  --t-border: rgba(255, 183, 37, 0.5);
+  --t-dim: #0a0d0a;
+  --t-font: var(--display);
+  --t-mono: var(--mono);
+}
+
+/* ---------------------------------------------------------------- theme hooks applied to root elements */
+.broadcast[data-theme] {
+  --amber: var(--t-accent);
+  --amber2: var(--t-accent2);
+}
+.broadcast[data-theme] .countdown-clock-wrap strong,
+.broadcast[data-theme] .stream-start-timer strong {
+  color: var(--t-accent) !important;
+}
+.broadcast[data-theme] .stream-start-timer strong.final-seconds,
+.broadcast[data-theme] .countdown-clock-wrap strong.final-seconds {
+  color: var(--t-accent2) !important;
+}
+
+/* ---------------------------------------------------------------- 1. KRAFTON PMGC — gold/black/white */
+.broadcast[data-theme="krafton-pm"] {
+  --t-accent: #d4af37;
+  --t-accent2: #b8860b;
+  --t-bg: #050505;
+  --t-panel: rgba(6, 6, 6, 0.96);
+  --t-panel2: rgba(12, 12, 12, 0.94);
+  --t-text: #f0f0f0;
+  --t-muted: #b9b9b9;
+  --t-line: rgba(212, 175, 55, 0.25);
+  --t-glow: rgba(212, 175, 55, 0.35);
+  --t-border: rgba(212, 175, 55, 0.6);
+  --t-dim: #080808;
+  --t-font: "Barlow Condensed", Impact, sans-serif;
+}
+.broadcast[data-theme="krafton-pm"] .broadcast:before {
+  background:
+    linear-gradient(117deg, transparent 0 70%, rgba(212,175,55,0.04) 70% 70.5%, transparent 70.5%),
+    linear-gradient(180deg, rgba(0,0,0,0.12), transparent 30%);
+}
+.broadcast[data-theme="krafton-pm"] .frame-corner {
+  border-color: rgba(212, 175, 55, 0.9);
+}
+
+/* ---------------------------------------------------------------- 2. NEON DROP — cyber grid */
+.broadcast[data-theme="neon-drop"] {
+  --t-accent: #00f3ff;
+  --t-accent2: #bc13fe;
+  --t-bg: #05050a;
+  --t-panel: rgba(8, 8, 14, 0.92);
+  --t-panel2: rgba(14, 14, 22, 0.9);
+  --t-text: #e6f7ff;
+  --t-muted: #8fb3d6;
+  --t-line: rgba(0, 243, 255, 0.2);
+  --t-glow: rgba(0, 243, 255, 0.3);
+  --t-border: rgba(0, 243, 255, 0.5);
+  --t-dim: #090a0f;
+  --t-font: "Barlow Condensed", "Orbitron", Impact, sans-serif;
+}
+.broadcast[data-theme="neon-drop"] .broadcast:before {
+  background:
+    linear-gradient(90deg, transparent 49.9%, rgba(0,243,255,0.06) 50%, transparent 50.1%),
+    linear-gradient(transparent 49.9%, rgba(0,243,255,0.06) 50%, transparent 50.1%),
+    repeating-linear-gradient(135deg, transparent 0 28px, rgba(0,243,255,0.08) 28px 30px);
+}
+.broadcast[data-theme="neon-drop"] .frame-corner {
+  border-color: rgba(0, 243, 255, 0.9);
+}
+.broadcast[data-theme="neon-drop"] .mini-live i { background: var(--t-accent); box-shadow: 0 0 14px var(--t-accent); }
+
+/* ---------------------------------------------------------------- 3. RED ZONE — crimson alert */
+.broadcast[data-theme="red-zone"] {
+  --t-accent: #e50914;
+  --t-accent2: #b20710;
+  --t-bg: #0a0000;
+  --t-panel: rgba(14, 2, 2, 0.95);
+  --t-panel2: rgba(22, 4, 4, 0.93);
+  --t-text: #f4e6e6;
+  --t-muted: #c99a9a;
+  --t-line: rgba(229, 9, 20, 0.25);
+  --t-glow: rgba(229, 9, 20, 0.35);
+  --t-border: rgba(229, 9, 20, 0.6);
+  --t-dim: #0d0000;
+  --t-font: "Barlow Condensed", Impact, sans-serif;
+}
+.broadcast[data-theme="red-zone"] .broadcast:before {
+  background:
+    linear-gradient(117deg, transparent 0 68%, rgba(229,9,20,0.05) 68% 68.5%, transparent 68.5%),
+    radial-gradient(ellipse at 80% 10%, rgba(229,9,20,0.15), transparent 35%);
+}
+.broadcast[data-theme="red-zone"] .frame-corner {
+  border-color: rgba(229, 9, 20, 0.9);
+}
+.broadcast[data-theme="red-zone"] .mini-live i { background: var(--t-accent); box-shadow: 0 0 14px var(--t-accent); }
+
+/* ---------------------------------------------------------------- 4. MIRAMAR DUST — desert */
+.broadcast[data-theme="miramar-dust"] {
+  --t-accent: #d97706;
+  --t-accent2: #b45309;
+  --t-bg: #1a1209;
+  --t-panel: rgba(24, 17, 9, 0.94);
+  --t-panel2: rgba(34, 24, 14, 0.92);
+  --t-text: #f3e3d4;
+  --t-muted: #cbb7a3;
+  --t-line: rgba(217, 119, 6, 0.25);
+  --t-glow: rgba(217, 119, 6, 0.3);
+  --t-border: rgba(217, 119, 6, 0.55);
+  --t-dim: #1c130a;
+  --t-font: "Barlow Condensed", Impact, sans-serif;
+}
+.broadcast[data-theme="miramar-dust"] .broadcast:before {
+  background:
+    linear-gradient(135deg, transparent 0 66%, rgba(217,119,6,0.04) 66% 66.5%, transparent 66.5%),
+    radial-gradient(ellipse at 70% 20%, rgba(217,119,6,0.12), transparent 30%);
+}
+.broadcast[data-theme="miramar-dust"] .frame-corner {
+  border-color: rgba(217, 119, 6, 0.9);
+}
+
+/* ---------------------------------------------------------------- 5. SANHOK JUNGLE — deep green */
+.broadcast[data-theme="sanhok-jungle"] {
+  --t-accent: #22c55e;
+  --t-accent2: #16a34a;
+  --t-bg: #051007;
+  --t-panel: rgba(6, 14, 8, 0.95);
+  --t-panel2: rgba(10, 22, 13, 0.93);
+  --t-text: #e9f5ec;
+  --t-muted: #a3c9ae;
+  --t-line: rgba(34, 197, 94, 0.2);
+  --t-glow: rgba(34, 197, 94, 0.3);
+  --t-border: rgba(34, 197, 94, 0.55);
+  --t-dim: #071208;
+  --t-font: "Barlow Condensed", Impact, sans-serif;
+}
+.broadcast[data-theme="sanhok-jungle"] .broadcast:before {
+  background:
+    linear-gradient(110deg, transparent 0 64%, rgba(34,197,94,0.04) 64% 64.5%, transparent 64.5%),
+    radial-gradient(ellipse at 75% 15%, rgba(34,197,94,0.1), transparent 30%);
+}
+.broadcast[data-theme="sanhok-jungle"] .frame-corner {
+  border-color: rgba(34, 197, 94, 0.9);
+}
+.broadcast[data-theme="sanhok-jungle"] .mini-live i { background: var(--t-accent); box-shadow: 0 0 14px var(--t-accent); }
+
+/* ---------------------------------------------------------------- 6. VIKENDI ICE — snow */
+.broadcast[data-theme="vikendi-ice"] {
+  --t-accent: #38bdf8;
+  --t-accent2: #0ea5e9;
+  --t-bg: #f0f9ff;
+  --t-panel: rgba(245, 250, 252, 0.97);
+  --t-panel2: rgba(232, 245, 249, 0.95);
+  --t-text: #0f172a;
+  --t-muted: #64748b;
+  --t-line: rgba(56, 189, 248, 0.18);
+  --t-glow: rgba(56, 189, 248, 0.25);
+  --t-border: rgba(56, 189, 248, 0.45);
+  --t-dim: #e2e8f0;
+  --t-font: "Barlow Condensed", Impact, sans-serif;
+}
+.broadcast[data-theme="vikendi-ice"] {
+  color: var(--t-text);
+}
+.broadcast[data-theme="vikendi-ice"] .broadcast {
+  background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%);
+}
+.broadcast[data-theme="vikendi-ice"] .broadcast:before {
+  background:
+    linear-gradient(117deg, transparent 0 70%, rgba(14,165,233,0.04) 70% 70.5%, transparent 70.5%),
+    linear-gradient(180deg, rgba(240,249,255,0.4), transparent 35%);
+}
+.broadcast[data-theme="vikendi-ice"] .frame-corner {
+  border-color: rgba(56, 189, 248, 0.9);
+}
+.broadcast[data-theme="vikendi-ice"] .mini-live i { background: var(--t-accent); box-shadow: 0 0 14px var(--t-accent); color: #0f172a; }
+.broadcast[data-theme="vikendi-ice"] .scoreboard-top,
+.broadcast[data-theme="vikendi-ice"] .row {
+  background: rgba(255,255,255,0.7) !important;
+}
+.broadcast[data-theme="vikendi-ice"] .title {
+  color: #475569 !important;
+}
+.broadcast[data-theme="vikendi-ice"] .row {
+  color: #0f172a !important;
+}
+
+/* ---------------------------------------------------------------- 7. LIVID PINK — hot pink pop */
+.broadcast[data-theme="livid-pink"] {
+  --t-accent: #ec4899;
+  --t-accent2: #be185d;
+  --t-bg: #0f001a;
+  --t-panel: rgba(20, 2, 24, 0.94);
+  --t-panel2: rgba(28, 4, 34, 0.92);
+  --t-text: #ffe7ff;
+  --t-muted: #d8a3c9;
+  --t-line: rgba(236, 72, 153, 0.2);
+  --t-glow: rgba(236, 72, 153, 0.3);
+  --t-border: rgba(236, 72, 153, 0.55);
+  --t-dim: #12001e;
+  --t-font: "Barlow Condensed", Impact, sans-serif;
+}
+.broadcast[data-theme="livid-pink"] .broadcast:before {
+  background:
+    linear-gradient(100deg, transparent 0 68%, rgba(236,72,153,0.05) 68% 68.5%, transparent 68.5%),
+    radial-gradient(ellipse at 85% 10%, rgba(236,72,153,0.16), transparent 35%);
+}
+.broadcast[data-theme="livid-pink"] .frame-corner {
+  border-color: rgba(236, 72, 153, 0.9);
+}
+.broadcast[data-theme="livid-pink"] .mini-live i { background: var(--t-accent); box-shadow: 0 0 14px var(--t-accent); }
+
+/* ---------------------------------------------------------------- 8. BLACKOUT — stealth */
+.broadcast[data-theme="blackout"] {
+  --t-accent: #64748b;
+  --t-accent2: #475569;
+  --t-bg: #020204;
+  --t-panel: rgba(3, 3, 5, 0.97);
+  --t-panel2: rgba(7, 7, 10, 0.95);
+  --t-text: #cbd5e1;
+  --t-muted: #94a3b8;
+  --t-line: rgba(100, 116, 139, 0.18);
+  --t-glow: rgba(100, 116, 139, 0.15);
+  --t-border: rgba(100, 116, 139, 0.35);
+  --t-dim: #050507;
+  --t-font: "Barlow Condensed", "JetBrains Mono", Impact, monospace;
+}
+.broadcast[data-theme="blackout"] .broadcast:before {
+  background:
+    linear-gradient(117deg, transparent 0 70%, rgba(100,116,139,0.04) 70% 70.5%, transparent 70.5%),
+    linear-gradient(180deg, rgba(0,0,0,0.15), transparent 30%);
+}
+.broadcast[data-theme="blackout"] .frame-corner {
+  border-color: rgba(100, 116, 139, 0.8);
+}
+
+/* ---------------------------------------------------------------- 9. CHROME ROYAL — royal blue */
+.broadcast[data-theme="chrome-royal"] {
+  --t-accent: #3b82f6;
+  --t-accent2: #1d4ed8;
+  --t-bg: #07102a;
+  --t-panel: rgba(9, 16, 42, 0.94);
+  --t-panel2: rgba(14, 24, 50, 0.92);
+  --t-text: #dbeafe;
+  --t-muted: #93c5fd;
+  --t-line: rgba(59, 130, 246, 0.2);
+  --t-glow: rgba(59, 130, 246, 0.3);
+  --t-border: rgba(59, 130, 246, 0.55);
+  --t-dim: #0a132d;
+  --t-font: "Barlow Condensed", Impact, sans-serif;
+}
+.broadcast[data-theme="chrome-royal"] .broadcast:before {
+  background:
+    linear-gradient(135deg, transparent 0 66%, rgba(59,130,246,0.04) 66% 66.5%, transparent 66.5%),
+    radial-gradient(ellipse at 80% 15%, rgba(59,130,246,0.12), transparent 30%);
+}
+.broadcast[data-theme="chrome-royal"] .frame-corner {
+  border-color: rgba(59, 130, 246, 0.9);
+}
+
+/* ---------------------------------------------------------------- 10. VICTORY GOLD — chicken dinner */
+.broadcast[data-theme="victory-gold"] {
+  --t-accent: #fbbf24;
+  --t-accent2: #f59e0b;
+  --t-bg: #180f00;
+  --t-panel: rgba(22, 13, 0, 0.96);
+  --t-panel2: rgba(32, 20, 0, 0.94);
+  --t-text: #fef3c7;
+  --t-muted: #d97706;
+  --t-line: rgba(251, 191, 36, 0.25);
+  --t-glow: rgba(251, 191, 36, 0.35);
+  --t-border: rgba(251, 191, 36, 0.6);
+  --t-dim: #1a1100;
+  --t-font: "Barlow Condensed", Impact, sans-serif;
+}
+.broadcast[data-theme="victory-gold"] .broadcast:before {
+  background:
+    linear-gradient(117deg, transparent 0 70%, rgba(251,191,36,0.05) 70% 70.5%, transparent 70.5%),
+    radial-gradient(ellipse at 80% 10%, rgba(251,191,36,0.16), transparent 35%);
+}
+.broadcast[data-theme="victory-gold"] .frame-corner {
+  border-color: rgba(251, 191, 36, 0.9);
+}
+
+/* ============================================================================
+   THEME-SPECIFIC PANEL OVERRIDES
+   Each theme restyles panels, buttons, scoreboards, countdowns etc.
+   ============================================================================ */
+
+/* ---- header / scoreboard accent borders per theme (already via --amber) ----
+   The existing CSS uses var(--amber) for borders, so setting --amber per theme
+   handles most borders. We add theme-specific refinements below. */
+
+/* krafton-pm: regal thin borders, gold */
+.broadcast[data-theme="krafton-pm"] .header,
+.broadcast[data-theme="krafton-pm"] .scoreboard,
+.broadcast[data-theme="krafton-pm"] .top-fragger {
+  border-color: var(--t-border) !important;
+}
+.broadcast[data-theme="krafton-pm"] .row.show {
+  box-shadow: 0 0 18px rgba(212, 175, 55, 0.12);
+}
+
+/* neon-drop: glowing cyan borders + scanlines */
+.broadcast[data-theme="neon-drop"] .header,
+.broadcast[data-theme="neon-drop"] .scoreboard,
+.broadcast[data-theme="neon-drop"] .top-fragger,
+.broadcast[data-theme="neon-drop"] .countdown-panel,
+.broadcast[data-theme="neon-drop"] .caster-panel,
+.broadcast[data-theme="neon-drop"] .mvp-panel,
+.broadcast[data-theme="neon-drop"] .map-feed-panel,
+.broadcast[data-theme="neon-drop"] .full-card {
+  border-color: var(--t-border) !important;
+  box-shadow: 0 0 20px rgba(0, 243, 255, 0.12), 0 12px 35px #0005;
+}
+.broadcast[data-theme="neon-drop"] .row {
+  border-left-color: rgba(0, 243, 255, 0.35);
+}
+.broadcast[data-theme="neon-drop"] .row.show {
+  box-shadow: 0 0 22px rgba(0, 243, 255, 0.18);
+}
+
+/* red-zone: pulsing crimson */
+.broadcast[data-theme="red-zone"] .header,
+.broadcast[data-theme="red-zone"] .scoreboard,
+.broadcast[data-theme="red-zone"] .top-fragger {
+  border-color: var(--t-border) !important;
+}
+.broadcast[data-theme="red-zone"] .row.show {
+  box-shadow: 0 0 24px rgba(229, 9, 20, 0.14);
+}
+
+/* miramar-dust: warm sand borders */
+.broadcast[data-theme="miramar-dust"] .header,
+.broadcast[data-theme="miramar-dust"] .scoreboard,
+.broadcast[data-theme="miramar-dust"] .top-fragger {
+  border-color: var(--t-border) !important;
+}
+.broadcast[data-theme="miramar-dust"] .row.show {
+  box-shadow: 0 0 20px rgba(217, 119, 6, 0.12);
+}
+
+/* sanhok-jungle: green borders */
+.broadcast[data-theme="sanhok-jungle"] .header,
+.broadcast[data-theme="sanhok-jungle"] .scoreboard,
+.broadcast[data-theme="sanhok-jungle"] .top-fragger {
+  border-color: var(--t-border) !important;
+}
+.broadcast[data-theme="sanhok-jungle"] .row.show {
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.14);
+}
+
+/* vikendi-ice: light borders, subtle */
+.broadcast[data-theme="vikendi-ice"] .header,
+.broadcast[data-theme="vikendi-ice"] .scoreboard,
+.broadcast[data-theme="vikendi-ice"] .top-fragger,
+.broadcast[data-theme="vikendi-ice"] .countdown-panel,
+.broadcast[data-theme="vikendi-ice"] .caster-panel,
+.broadcast[data-theme="vikendi-ice"] .mvp-panel,
+.broadcast[data-theme="vikendi-ice"] .map-feed-panel,
+.broadcast[data-theme="vikendi-ice"] .full-card {
+  border-color: rgba(56, 189, 248, 0.35) !important;
+  box-shadow: 0 0 18px rgba(15, 23, 42, 0.08);
+}
+
+/* livid-pink: hot pink borders */
+.broadcast[data-theme="livid-pink"] .header,
+.broadcast[data-theme="livid-pink"] .scoreboard,
+.broadcast[data-theme="livid-pink"] .top-fragger {
+  border-color: var(--t-border) !important;
+}
+.broadcast[data-theme="livid-pink"] .row.show {
+  box-shadow: 0 0 22px rgba(236, 72, 153, 0.14);
+}
+
+/* blackout: slate borders, dim */
+.broadcast[data-theme="blackout"] .header,
+.broadcast[data-theme="blackout"] .scoreboard,
+.broadcast[data-theme="blackout"] .top-fragger {
+  border-color: var(--t-border) !important;
+}
+.broadcast[data-theme="blackout"] .row.show {
+  box-shadow: 0 0 16px rgba(100, 116, 139, 0.08);
+}
+
+/* chrome-royal: royal blue borders */
+.broadcast[data-theme="chrome-royal"] .header,
+.broadcast[data-theme="chrome-royal"] .scoreboard,
+.broadcast[data-theme="chrome-royal"] .top-fragger {
+  border-color: var(--t-border) !important;
+}
+.broadcast[data-theme="chrome-royal"] .row.show {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.14);
+}
+
+/* victory-gold: gold borders */
+.broadcast[data-theme="victory-gold"] .header,
+.broadcast[data-theme="victory-gold"] .scoreboard,
+.broadcast[data-theme="victory-gold"] .top-fragger {
+  border-color: var(--t-border) !important;
+}
+.broadcast[data-theme="victory-gold"] .row.show {
+  box-shadow: 0 0 22px rgba(251, 191, 36, 0.14);
+}
+
+/* ============================================================================
+   THEME-SPECIFIC ANIMATIONS (lots of motion per requirement)
+   ============================================================================ */
+
+/* krafton-pm: regal sweep */
+@keyframes t-pm-sweep {
+  0% { transform: translateX(-110%); opacity: 0; }
+  40% { opacity: 0.9; }
+  100% { transform: translateX(110%); opacity: 0; }
+}
+.broadcast[data-theme="krafton-pm"] .stream-start-timer strong,
+.broadcast[data-theme="krafton-pm"] .countdown-clock-wrap strong {
+  position: relative;
+  overflow: hidden;
+}
+.broadcast[data-theme="krafton-pm"] .stream-start-timer strong::after,
+.broadcast[data-theme="krafton-pm"] .countdown-clock-wrap strong::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  transform: translateX(-110%);
+  animation: t-pm-sweep 2.2s infinite;
+}
+
+/* neon-drop: grid scan + pulse */
+@keyframes t-neon-scan {
+  0% { transform: translateY(-10%); opacity: 0; }
+  60% { opacity: 1; }
+  100% { transform: translateY(100%); opacity: 0; }
+}
+.broadcast[data-theme="neon-drop"] .broadcast::after {
+  content: ""; position: absolute; inset: 0; z-index: 60;
+  background: linear-gradient(to bottom, rgba(0,243,255,0) 50%, rgba(0,243,255,0.04) 50%, rgba(0,243,255,0) 51%);
+  background-size: 100% 4px;
+  animation: t-neon-scan 1.6s linear infinite;
+  pointer-events: none;
+}
+.broadcast[data-theme="neon-drop"] .countdown-clock-wrap strong {
+  text-shadow: 0 0 20px rgba(0,243,255,0.6), 0 0 40px rgba(0,243,255,0.3);
+  animation: t-neon-pulse 1.2s infinite alternate-inverse;
+}
+@keyframes t-neon-pulse {
+  0% { text-shadow: 0 0 16px rgba(0,243,255,0.5), 0 0 32px rgba(0,243,255,0.25); }
+  100% { text-shadow: 0 0 28px rgba(0,243,255,0.9), 0 0 56px rgba(0,243,255,0.45); }
+}
+
+/* red-zone: warning flash */
+@keyframes t-red-flash {
+  0%, 100% { box-shadow: 0 0 0 rgba(229,9,20,0); }
+  50% { box-shadow: 0 0 30px rgba(229,9,20,0.35); }
+}
+.broadcast[data-theme="red-zone"] .countdown-clock-wrap strong.final-seconds {
+  animation: t-red-flash 0.9s infinite alternate-inverse, urgent 0.45s infinite alternate;
+}
+.broadcast[data-theme="red-zone"] .stream-start-timer strong.final-seconds {
+  animation: t-red-flash 0.9s infinite alternate-inverse;
+}
+
+/* miramar-dust: heat shimmer */
+@keyframes t-miramar-shimmer {
+  0% { transform: translateX(-90%) skewX(-12deg); opacity: 0; }
+  40% { opacity: 0.7; }
+  100% { transform: translateX(110%) skewX(-12deg); opacity: 0; }
+}
+.broadcast[data-theme="miramar-dust"] .stream-start-timer strong::after,
+.broadcast[data-theme="miramar-dust"] .countdown-clock-wrap strong::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  transform: translateX(-90%) skewX(-12deg);
+  animation: t-miramar-shimmer 2.4s infinite;
+}
+
+/* sanhok-jungle: vine grow */
+@keyframes t-jungle-grow {
+  0% { transform: scale(0.92); opacity: 0; }
+  60% { opacity: 1; transform: scale(1.04); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.broadcast[data-theme="sanhok-jungle"] .stream-start-timer strong,
+.broadcast[data-theme="sanhok-jungle"] .countdown-clock-wrap strong {
+  animation: t-jungle-grow 0.7s cubic-bezier(0.2, 1.4, 0.6, 1) both;
+}
+
+/* vikendi-ice: frost bloom */
+@keyframes t-ice-bloom {
+  0% { box-shadow: 0 0 0 rgba(56,189,248,0); transform: scale(1); }
+  50% { box-shadow: 0 0 26px rgba(56,189,248,0.35); transform: scale(1.015); }
+  100% { box-shadow: 0 0 0 rgba(56,189,248,0); transform: scale(1); }
+}
+.broadcast[data-theme="vikendi-ice"] .countdown-clock-wrap strong {
+  animation: t-ice-bloom 2.5s infinite ease-in-out;
+}
+
+/* livid-pink: neon shake */
+@keyframes t-pink-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px) translateY(-2px); }
+  40% { transform: translateX(4px) translateY(2px); }
+  60% { transform: translateX(-2px) translateY(-4px); }
+  80% { transform: translateX(2px) translateY(4px); }
+}
+.broadcast[data-theme="livid-pink"] .stream-start-timer strong.final-seconds {
+  animation: t-pink-shake 0.55s infinite, urgent 0.4s infinite alternate;
+}
+.broadcast[data-theme="livid-pink"] .countdown-clock-wrap strong.final-seconds {
+  animation: t-pink-shake 0.55s infinite, urgent 0.4s infinite alternate;
+}
+
+/* blackout: radar sweep */
+@keyframes t-blackout-sweep {
+  0% { transform: rotate(0deg); opacity: 0.6; }
+  100% { transform: rotate(360deg); opacity: 0.6; }
+}
+.broadcast[data-theme="blackout"] .broadcast::after {
+  content: ""; position: absolute; inset: 0; z-index: 55;
+  background: radial-gradient(circle, rgba(100,116,139,0.06) 0%, rgba(100,116,139,0) 70%);
+  animation: t-blackout-sweep 4s linear infinite;
+  pointer-events: none;
+}
+
+/* chrome-royal: chrome reflect */
+@keyframes t-chrome-reflect {
+  0% { transform: translateX(-120%); }
+  60% { transform: translateX(120%); }
+  100% { transform: translateX(120%); }
+}
+.broadcast[data-theme="chrome-royal"] .stream-start-timer strong::after,
+.broadcast[data-theme="chrome-royal"] .countdown-clock-wrap strong::after {
+  content: ""; position: absolute; inset: 0; z-index: 2;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent);
+  transform: translateX(-120%);
+  animation: t-chrome-reflect 2s infinite;
+  pointer-events: none;
+}
+
+/* victory-gold: victory sparkle */
+@keyframes t-gold-sparkle {
+  0%, 100% { opacity: 0.4; transform: scale(1) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.15) rotate(18deg); }
+}
+.broadcast[data-theme="victory-gold"] .stream-start-timer strong,
+.broadcast[data-theme="victory-gold"] .countdown-clock-wrap strong {
+  animation: t-gold-sparkle 1.8s infinite alternate-inverse;
+}
+.broadcast[data-theme="victory-gold"] .winner-chicken-mark {
+  animation: t-gold-sparkle 1.4s infinite alternate-inverse;
+}
+
+/* ============================================================================
+   WINNER / CHICKEN DINNER panel per-theme styling
+   ============================================================================ */
+.broadcast[data-theme="krafton-pm"] .winner-panel,
+.broadcast[data-theme="krafton-pm"] .chicken-dinner-full {
+  border-color: var(--t-border) !important;
+}
+.broadcast[data-theme="victory-gold"] .winner-chicken-mark {
+  color: var(--t-accent);
+}
+.broadcast[data-theme="neon-drop"] .winner-chicken-mark {
+  color: var(--t-accent);
+  text-shadow: 0 0 16px var(--t-accent);
+}
+.broadcast[data-theme="blackout"] .winner-panel {
+  border-color: var(--t-border) !important;
+  background: var(--t-panel) !important;
+}
+
+/* ============================================================================
+   MAP FEED diagonal split styling per theme
+   ============================================================================ */
+.broadcast[data-theme="neon-drop"] .map-canvas > img {
+  filter: saturate(1.2) contrast(1.1);
+}
+.broadcast[data-theme="vikendi-ice"] .map-canvas > img {
+  filter: brightness(1.15) contrast(1.1);
+}
+
+/* ============================================================================
+   THEME TRANSITION (crossfade between themes)
+   ============================================================================ */
+.broadcast[data-theme] {
+  transition:
+    background 0.5s ease,
+    color 0.5s ease;
+}
+
+/* Reduced motion: kill theme animations */
+@media (prefers-reduced-motion: reduce) {
+  .broadcast[data-theme="neon-drop"] .broadcast::after,
+  .broadcast[data-theme="blackout"] .broadcast::after,
+  .broadcast[data-theme="krafton-pm"] .stream-start-timer strong::after,
+  .broadcast[data-theme="krafton-pm"] .countdown-clock-wrap strong::after,
+  .broadcast[data-theme="miramar-dust"] .stream-start-timer strong::after,
+  .broadcast[data-theme="miramar-dust"] .countdown-clock-wrap strong::after,
+  .broadcast[data-theme="chrome-royal"] .stream-start-timer strong::after,
+  .broadcast[data-theme="chrome-royal"] .countdown-clock-wrap strong::after,
+  .broadcast[data-theme="neon-drop"] .countdown-clock-wrap strong,
+  .broadcast[data-theme="red-zone"] .countdown-clock-wrap strong.final-seconds,
+  .broadcast[data-theme="livid-pink"] .countdown-clock-wrap strong.final-seconds,
+  .broadcast[data-theme="livid-pink"] .stream-start-timer strong.final-seconds,
+  .broadcast[data-theme="sanhok-jungle"] .stream-start-timer strong,
+  .broadcast[data-theme="sanhok-jungle"] .countdown-clock-wrap strong,
+  .broadcast[data-theme="vikendi-ice"] .countdown-clock-wrap strong,
+  .broadcast[data-theme="victory-gold"] .stream-start-timer strong,
+  .broadcast[data-theme="victory-gold"] .countdown-clock-wrap strong,
+  .broadcast[data-theme="victory-gold"] .winner-chicken-mark {
+    animation: none !important;
+  }
+}
