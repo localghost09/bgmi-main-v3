@@ -31,24 +31,20 @@
   };
 
   /* ------------------------------------------------------------- constants */
-  var THEMES = [
-    { id: 'krafton-gold', name: '01 · Krafton Gold', accent: '#e8c15c' },
-    { id: 'pmgc-neon', name: '02 · PMGC Neon', accent: '#25f4ff' },
-    { id: 'red-zone', name: '03 · Red Zone', accent: '#ff2f38' },
-    { id: 'miramar-sand', name: '04 · Miramar Sand', accent: '#f0a24a' },
-    { id: 'rondo-jade', name: '05 · Rondo Jade', accent: '#35e0a1' },
-    { id: 'vikendi-frost', name: '06 · Vikendi Frost', accent: '#8fd8ff' },
-    { id: 'livid-magenta', name: '07 · Livid Magenta', accent: '#ff3d8b' },
-    { id: 'blackout-hud', name: '08 · Blackout HUD', accent: '#c6ff3c' },
-    { id: 'royal-chrome', name: '09 · Royal Chrome', accent: '#cdd8ea' },
-    { id: 'sunset-victory', name: '10 · Sunset Victory', accent: '#ffc247' }
-  ];
+  var THEMES = window.BROADCAST_THEMES.map(function (t, i) {
+    return Object.assign({}, t, {name: String(i + 1).padStart(2, '0') + ' · ' + t.name});
+  });
+  function canonicalTheme(id) {
+    var t = window.BROADCAST_THEMES.find(function (t) { return t.id === id || t.legacy === id; });
+    return t ? t.id : id;
+  }
   var THEME_IDS = THEMES.map(function (t) { return t.id; });
 
   var SCENES = [
     { id: 'opening', label: '01 Stream', ms: 22000, word: 'WE GO LIVE' },
     { id: 'casters', label: '02 Casters', ms: 15000, word: 'CASTERS' },
-    { id: 'drop', label: '03 Match Drop', ms: 12000, word: 'DROP IN' },
+    { id: 'drop', label: '03 Match Drop', ms: 30000, word: 'DROP IN' },
+    { id: 'map-intro', label: 'Map intro', ms: 8000, word: 'DEPLOYMENT' },
     { id: 'live', label: '04 Live + Map', ms: 24000, word: 'MATCH LIVE' },
     { id: 'live-points', label: '05 Live Points', ms: 20000, word: 'POINTS' },
     { id: 'chicken-dinner', label: '06 Chicken Dinner', ms: 15000, word: 'CHICKEN DINNER' },
@@ -135,7 +131,7 @@
     scene: SCENE_IDS.indexOf(params.get('scene')) >= 0 ? params.get('scene')
       : pathScene || 'opening',
     theme: THEME_IDS.indexOf((params.get('theme') || '').toLowerCase()) >= 0
-      ? (params.get('theme') || '').toLowerCase() : 'krafton-gold',
+      ? (params.get('theme') || '').toLowerCase() : 'bmps-2024',
     auto: flag('auto', false),
     ui: flag('ui', true) && !flag('obs', false),
     useDemo: flag('demo', true),
@@ -217,7 +213,8 @@
       return {
         id: Number(t.id) || i + 1,
         name: String(t.teamName || t.name || 'SQUAD ' + (i + 1)),
-        tag: initials(t.teamName || t.name),
+        tag: String(t.teamTag || t.tag || '').trim() || initials(t.teamName || t.name),
+        broadcastTag: String(t.teamTag || t.tag || '').trim(),
         group: String(t.group || 'A'),
         logo: String(t.logo || ''),
         wins: Number(t.overallWins) || 0,
@@ -298,9 +295,11 @@
 
   /* ---------------------------------------------------------------- theme */
   function setTheme(id, opts) {
+    id = canonicalTheme(id);
     if (THEME_IDS.indexOf(id) < 0) return;
     state.theme = id;
     root.setAttribute('data-theme', id);
+    updateSourceGuide();
     var theme = THEMES.filter(function (t) { return t.id === id; })[0];
     document.documentElement.style.setProperty('--ui-accent', theme.accent);
     if ($('pgUiTheme')) $('pgUiTheme').value = id;
@@ -355,6 +354,7 @@
     }
     syncSceneButtons();
     onSceneEnter(id, same);
+    updateSourceGuide();
     if (state.auto) scheduleAuto();
   }
 
@@ -462,11 +462,9 @@
     if (remain === 0) {
       clearInterval(state.ticks.drop);
       root.classList.add('is-drop-live');
-      if (state.auto) {
-        window.setTimeout(function () {
-          if (state.scene === 'drop' && state.auto) setScene('live');
-        }, 1400);
-      }
+      window.setTimeout(function () {
+        if (state.scene === 'drop') setScene('map-intro');
+      }, 900);
     }
   }
 
@@ -589,6 +587,17 @@
   }
 
   /* live points board (livestream + table scene) */
+  function fillPlayerStatus(host, team) {
+    host.replaceChildren();
+    for (var p = 0; p < 4; p += 1) {
+      var player = (team.players || [])[p];
+      var status = player ? player.status : (p < (team.alive == null ? 4 : team.alive) ? 'alive' : 'out');
+      var pip = el('i', status === 'knocked' ? 'knocked' : status === 'alive' ? 'alive' : 'out');
+      pip.title = (player && player.name ? player.name + ': ' : '') + status;
+      host.appendChild(pip);
+    }
+  }
+
   function renderLivePoints() {
     var host = $('livePtsRows');
     if (!host) return;
@@ -603,15 +612,17 @@
       row.classList.toggle('is-first', i === 0);
       if (i < 8) row.classList.add('is-top');
       row.appendChild(el('span', 'rank', pad(i + 1)));
-      row.appendChild(teamCell(team, 'GROUP ' + team.group));
-      row.appendChild(el('span', 'num', team.matchKills));
+      var tag = team.broadcastTag || team.tag || team.name;
+      // Registered tags take priority; never overwrite the full team name.
+      var compact = Object.assign({}, team, {name: Array.from(String(tag).toUpperCase()).slice(0, 6).join('')});
+      var label = teamCell(compact, '');
+      label.title = team.name;
+      row.appendChild(label);
+      row.appendChild(el('span', 'num matches', team.matches || 0));
+      row.appendChild(el('span', 'num fin', team.matchKills));
       row.appendChild(el('span', 'num pts', team.matchTotal));
       var alive = el('span', 'pg-alive');
-      for (var p = 0; p < 4; p += 1) {
-        var pip = el('i');
-        pip.className = p < (team.alive == null ? 4 : team.alive) ? 'on' : 'dead';
-        alive.appendChild(pip);
-      }
+      fillPlayerStatus(alive, team);
       row.appendChild(alive);
       host.appendChild(row);
       row.style.order = String(i);
@@ -635,29 +646,34 @@
       var row = host.querySelector('[data-id="' + team.id + '"]');
       if (!row) return;
       var rank = row.querySelector('.rank');
-      var fin = row.querySelector('.num');
+      var fin = row.querySelector('.num.fin');
+      var matches = row.querySelector('.num.matches');
+      if (matches) matches.textContent = team.matches || 0;
       var pts = row.querySelector('.num.pts');
       if (rank) rank.textContent = pad(i + 1);
       if (fin) fin.textContent = team.matchKills;
       if (pts) pts.textContent = team.matchTotal;
       row.classList.toggle('is-first', i === 0);
+      fillPlayerStatus(row.querySelector('.pg-alive'), team);
       row.style.order = String(i);
     });
   }
 
   /* match points standings (6 columns, 16 rows) */
   function renderMatchStandings() {
-    var host = $('msRows');
-    if (!host) return;
-    host.replaceChildren();
+    var left = $('msLeft');
+    var right = $('msRight');
+    if (!left || !right) return;
+    left.replaceChildren();
+    right.replaceChildren();
     var teams = state.data.teams.slice().sort(function (a, b) {
       return (b.matchTotal || 0) - (a.matchTotal || 0) ||
         (b.matchKills || 0) - (a.matchKills || 0) ||
         (a.matchPlace || 99) - (b.matchPlace || 99);
     });
-    teams.forEach(function (team, i) {
+    teams.slice(0, 16).forEach(function (team, i) {
       var row = el('div', 'pg-row');
-      row.style.setProperty('--i', i);
+      row.style.setProperty('--i', i % 8);
       row.classList.toggle('is-first', i === 0);
       if (i < 8) row.classList.add('is-top');
       row.appendChild(el('span', 'rank', pad(i + 1)));
@@ -666,7 +682,7 @@
       row.appendChild(el('span', 'num', team.matchKills));
       row.appendChild(el('span', 'num', team.matchPlacePts));
       row.appendChild(el('span', 'num pts', team.matchTotal));
-      host.appendChild(row);
+      (i < 8 ? left : right).appendChild(row);
     });
     var p = state.data;
     if ($('msKicker')) $('msKicker').textContent = 'MATCH ' + pad(p.match) + ' · ' + String(p.map).toUpperCase();
@@ -875,8 +891,20 @@
 
   function renderHud() {
     var d = state.data;
+    var selectedMap = String(params.get('battleground') || '').toLowerCase();
+    if (['erangel', 'miramar', 'rondo'].indexOf(selectedMap) !== -1) d.map = selectedMap;
+    if (params.get('event')) d.event = params.get('event').slice(0, 80);
     var set = function (id, text) { var n = $(id); if (n) n.textContent = text; };
+    var leader = d.teams.slice().sort(function (a, b) { return b.total - a.total || b.fin - a.fin; })[0];
+    if (leader) {
+      set('leaderSpotName', leader.name);
+      set('leaderSpotPoints', leader.total || 0);
+      setLogo($('leaderSpotLogo'), leader.logo, leader.name, leader.tag);
+    }
     set('bugEvent', d.event);
+    set('diagonalSponsor', (params.get('sponsor') || d.sponsor || 'PARTNER SLOT').slice(0, 60));
+    set('dropCaster1', params.get('caster1') || 'CASTER 01 · LIVE');
+    set('dropCaster2', params.get('caster2') || 'CASTER 02 · LIVE');
     set('bugStage', d.stage);
     set('bugMatch', pad(d.match));
     set('bugMap', String(d.map).toUpperCase());
@@ -915,6 +943,10 @@
     set('bugMark', initials(d.event));
 
     var art = MAP_ART[String(d.map).toLowerCase()] || MAP_ART.erangel;
+    if (state.scene === 'map-intro') {
+      $('introMapName').textContent = String(d.map).toUpperCase();
+      $('introMapImg').src = art;
+    }
     var mapOverride = params.get('map');
     if (mapOverride) art = mapOverride;
     ['mapImg', 'mapImg2', 'dropMapImg'].forEach(function (id) {
@@ -957,7 +989,23 @@
   state.shrink = '04:12';
   state.matchClock = '12:48';
 
+  var introMusic = new Audio('/assets/audio/deployment-original.wav');
+  introMusic.volume = 0.4;
+  var introExit;
   function onSceneEnter(id, replay) {
+    clearTimeout(introExit);
+    introMusic.pause();
+    introMusic.currentTime = 0;
+    document.body.classList.toggle('pg-capture', ['casters', 'drop', 'live', 'live-points'].indexOf(id) !== -1);
+    if (id === 'map-intro') {
+      var mapKey = String(state.data.map || 'erangel').toLowerCase();
+      $('introMapName').textContent = mapKey.toUpperCase();
+      $('introMapImg').src = MAP_ART[mapKey] || MAP_ART.erangel;
+      $('introAudioBtn').hidden = flag('audio', true);
+      if (flag('audio', true)) introMusic.play().catch(function () { $('introAudioBtn').hidden = false; });
+      introExit = setTimeout(function () { if (state.scene === 'map-intro') setScene('live'); }, 8000);
+    }
+
     clearInterval(state.ticks.opening);
     clearInterval(state.ticks.drop);
     clearInterval(state.ticks.live);
@@ -975,10 +1023,10 @@
     if (id === 'live' || id === 'live-points') {
       state.alive = state.data.teams.reduce(function (sum, t) {
         return sum + (t.alive == null ? 4 : t.alive);
-      }, 0) || 64;
+      }, 0);
       state.aliveTeams = state.data.teams.filter(function (t) {
-        return (t.alive == null ? 4 : t.alive) > 0;
-      }).length || 16;
+        return (t.alive == null ? 4 : t.alive) > 0 || (t.players || []).some(function (p) { return p.status === 'knocked'; });
+      }).length;
       renderHud();
       renderKillFeed(true);
       clearInterval(state.ticks.live);
@@ -1000,6 +1048,8 @@
     if (id === 'map-rotation') renderMaps();
   }
 
+  $('introAudioBtn').addEventListener('click', function () { introMusic.play().then(function () { $('introAudioBtn').hidden = true; }).catch(function () {}); });
+
   function bumpClock(value) {
     var parts = String(value).split(':').map(Number);
     var total = (parts[0] || 0) * 60 + (parts[1] || 0) + 1;
@@ -1007,6 +1057,7 @@
   }
 
   function simulateMatch() {
+    if (!state.data.demo || !state.useDemo) return;
     if (state.scene !== 'live' && state.scene !== 'live-points') return;
     if (state.alive > 8) {
       var drop = Math.random() > 0.55 ? 2 : 1;
@@ -1054,6 +1105,8 @@
   function applyLiveState(payload) {
     if (!state.useDemo && (!payload || !payload.teams || payload.teams.length < 4)) return;
     state.data = fromLive(payload, demoData);
+    state.alive = state.data.teams.reduce(function (sum, t) { return sum + (t.players || []).filter(function (p) { return p.status === 'alive' || p.status === 'knocked'; }).length; }, 0);
+    state.aliveTeams = state.data.teams.filter(function (t) { return (t.players || []).some(function (p) { return p.status === 'alive' || p.status === 'knocked'; }); }).length;
     renderAll();
     if (state.scene === 'live-points') renderLivePoints();
   }
@@ -1139,6 +1192,7 @@
 
   function scheduleAuto() {
     clearTimeout(state.sceneTimer);
+    if (['opening', 'drop', 'map-intro'].indexOf(state.scene) !== -1) return;
     var scene = SCENES.filter(function (s) { return s.id === state.scene; })[0] || SCENES[0];
     state.sceneStart = Date.now();
     state.sceneEnd = Date.now() + scene.ms;
@@ -1224,9 +1278,31 @@
         var btn = $('pgUiFull');
         if (btn) btn.click();
       } else if (/^[0-9]$/.test(event.key)) {
+        var shortcuts = ['opening', 'casters', 'drop', 'live', 'live-points', 'chicken-dinner', 'winner-stats', 'match-standings', 'overall', 'map-rotation'];
         var index = event.key === '0' ? 9 : Number(event.key) - 1;
-        if (SCENE_IDS[index]) { stopAuto(); setScene(SCENE_IDS[index]); }
+        if (shortcuts[index]) { stopAuto(); setScene(shortcuts[index]); }
       }
+    });
+  }
+
+  function updateSourceGuide() {
+    var host = $('sourceGuide');
+    if (!host || !params.has('guides') || params.get('obs') === '1') return;
+    host.hidden = false;
+    requestAnimationFrame(function () {
+      var active = activeSceneEl();
+      if (!active) return;
+      var canvas = root.getBoundingClientRect();
+      var scale = canvas.width / 1920;
+      var rects = Array.from(active.querySelectorAll('.pg-cam')).map(function (cam, i) {
+        var r = cam.getBoundingClientRect();
+        return 'CAM ' + (i + 1) + ': x ' + Math.round((r.x - canvas.x) / scale) +
+          ', y ' + Math.round((r.y - canvas.y) / scale) + ', ' +
+          Math.round(r.width / scale) + ' × ' + Math.round(r.height / scale);
+      });
+      host.textContent = rects.length ? rects.join(' | ') : state.scene === 'live'
+        ? 'RECTANGLES: MAP x 1240, y 80, 640 × 440 | GAME x 40, y 428, 1088 × 612. Fit OBS captures below these frames; no diagonal masks.'
+        : 'GAMEPLAY: full 1920×1080 capture below this browser source. Scoreboard on the right.';
     });
   }
 
@@ -1234,7 +1310,8 @@
   function boot() {
     var stored = null;
     try { stored = localStorage.getItem('pmgc.theme'); } catch (e) { /* ignore */ }
-    var urlTheme = (params.get('theme') || '').toLowerCase();
+    stored = canonicalTheme(stored);
+    var urlTheme = canonicalTheme((params.get('theme') || '').toLowerCase());
     var theme = THEME_IDS.indexOf(urlTheme) >= 0 ? urlTheme
       : THEME_IDS.indexOf(stored) >= 0 ? stored : state.theme;
     setTheme(theme, { persist: false });
@@ -1255,6 +1332,7 @@
       nodes[i].classList.toggle('is-active', nodes[i].getAttribute('data-scene') === startScene);
     }
     onSceneEnter(startScene, false);
+    updateSourceGuide();
     syncSceneButtons();
 
     var preview = flag('preview', true) && !flag('obs', false);

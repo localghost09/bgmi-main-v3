@@ -218,22 +218,14 @@
    keep them in step when a theme or scene is added. */
 (function () {
   'use strict';
-  var PMGC_THEMES = [
-    ['krafton-gold', '01 · Krafton Gold'],
-    ['pmgc-neon', '02 · PMGC Neon'],
-    ['red-zone', '03 · Red Zone'],
-    ['miramar-sand', '04 · Miramar Sand'],
-    ['rondo-jade', '05 · Rondo Jade'],
-    ['vikendi-frost', '06 · Vikendi Frost'],
-    ['livid-magenta', '07 · Livid Magenta'],
-    ['blackout-hud', '08 · Blackout HUD'],
-    ['royal-chrome', '09 · Royal Chrome'],
-    ['sunset-victory', '10 · Sunset Victory']
-  ];
+  var PMGC_THEMES = window.BROADCAST_THEMES.map(function (t, i) {
+    return [t.id, String(i + 1).padStart(2, '0') + ' · ' + t.name];
+  });
   var PMGC_SCENES = [
     ['opening', '01 · Stream starting'],
     ['casters', '02 · Casters'],
     ['drop', '03 · Match drop (30s)'],
+    ['map-intro', 'Map deployment intro'],
     ['live', '04 · Live + map feed'],
     ['live-points', '05 · Live points'],
     ['chicken-dinner', '06 · Chicken dinner'],
@@ -244,16 +236,20 @@
   ];
 
   function pmgcUrl() {
-    var theme = document.getElementById('pmgcTheme').value || 'krafton-gold';
+    var theme = document.getElementById('pmgcTheme').value || 'bmps-2024';
     var scene = document.getElementById('pmgcScene').value || 'opening';
     return location.origin + '/pmgc/' + scene +
-      '?theme=' + encodeURIComponent(theme) + '&ui=0';
+      '?theme=' + encodeURIComponent(theme) + '&obs=1' +
+      (document.getElementById('pmgcMap').value ? '&battleground=' + document.getElementById('pmgcMap').value : '') +
+      '&sponsor=' + encodeURIComponent(document.getElementById('pmgcSponsor').value) +
+      (document.getElementById('pmgcAudio').checked ? '&audio=1' : '&audio=0');
   }
 
   function syncPmgc(changed) {
     var url = pmgcUrl();
     document.getElementById('pmgcUrl').value = url;
-    document.getElementById('pmgcOpenBtn').href = url + '&ui=1';
+    document.getElementById('pmgcOpenBtn').href = url.replace('&obs=1', '&ui=1');
+    document.getElementById('pmgcGuides').href = url.replace('&obs=1', '&ui=1&guides=1');
     if (changed) {
       var frame = document.getElementById('pmgcPreviewFrame');
       if (frame) frame.src = url + '&preview=1';
@@ -283,6 +279,7 @@
     sceneSel.innerHTML = PMGC_SCENES.map(function (row) {
       return '<option value="' + row[0] + '">' + row[1] + '</option>';
     }).join('');
+    ['pmgcMap', 'pmgcSponsor', 'pmgcAudio'].forEach(function (id) { document.getElementById(id).addEventListener('change', function () { syncPmgc(true); }); });
     themeSel.addEventListener('change', function () { syncPmgc(true); });
     sceneSel.addEventListener('change', function () { syncPmgc(true); });
     document.getElementById('pmgcCopyBtn').addEventListener('click', function () {

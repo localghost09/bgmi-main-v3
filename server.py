@@ -56,6 +56,9 @@ RATE_LIMIT = int(os.environ.get("BGMI_RATE_LIMIT", "30"))
 RATE_WINDOW = int(os.environ.get("BGMI_RATE_WINDOW", "3600"))
 STATUS_RATE_LIMIT = int(os.environ.get("BGMI_STATUS_RATE_LIMIT", "5"))
 STATUS_RATE_WINDOW = int(os.environ.get("BGMI_STATUS_RATE_WINDOW", "60"))
+# Explicit temporary preview-only operator switch. Disabled by default.
+ADMIN_LOGIN_BYPASS = os.environ.get("BGMI_ADMIN_LOGIN_BYPASS", "") == "1"
+BYPASS_CSRF = secrets.token_urlsafe(32)
 SESSION_TTL = int(os.environ.get("BGMI_SESSION_TTL", "1209600"))  # absolute cap
 # Idle expiry: a session unused for this many seconds is revoked even if the
 # absolute TTL has not elapsed.  Configurable so ops can tighten it for events.
@@ -81,6 +84,7 @@ CONTENT_TYPES = {
     ".css": "text/css; charset=utf-8",
     ".js": "text/javascript; charset=utf-8",
     ".json": "application/json; charset=utf-8",
+    ".wav": "audio/wav",
     ".png": "image/png",
     ".jpg": "image/jpeg",
     ".jpeg": "image/jpeg",
@@ -1321,6 +1325,8 @@ class Handler(BaseHTTPRequestHandler):
 
     def admin_session(self):
         """Return (admin_row, csrf) when a valid session cookie is present."""
+        if ADMIN_LOGIN_BYPASS:
+            return ({"id": 0, "username": "preview-admin"}, BYPASS_CSRF)
         return session_lookup(self.session_raw())
 
     def _same_origin(self):
@@ -3477,6 +3483,9 @@ class Handler(BaseHTTPRequestHandler):
 # ---------------------------------------------------------------------------
 
 def main():
+    if ADMIN_LOGIN_BYPASS:
+        print("WARNING: ADMIN LOGIN BYPASSED. Anyone with this server URL has admin access. "
+              "Unset BGMI_ADMIN_LOGIN_BYPASS and restart to restore authentication.", flush=True)
     init_db()
     # drain any jobs a previous run left behind before serving traffic
     try:

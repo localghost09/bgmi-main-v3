@@ -1,0 +1,5 @@
+Deployment — original procedural instrumental sting, created for this project.
+No samples, recordings or third-party compositions were used.
+Dedicated to the public domain under CC0 1.0 Universal:
+https://creativecommons.org/publicdomain/zero/1.0/
+Source recipe: scripts/generate_deployment_audio.py

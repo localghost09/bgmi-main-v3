@@ -33,3 +33,12 @@
   addresses; exports are recorded in the audit log.
 - **Integrity** — multi-statement admin writes run in `BEGIN IMMEDIATE`
   transactions; rejected registrations can never leave orphan logo files.
+
+### Temporary admin login bypass
+
+`BGMI_ADMIN_LOGIN_BYPASS=1` explicitly disables the session requirement for
+admin pages and APIs, using the `preview-admin` identity. This is OFF by
+default. CSRF and same-origin checks still apply to writes. Anyone able to
+reach the server has admin access while enabled; use only for a temporary
+preview, never a public deployment. Unset the variable and restart to restore
+normal cookie authentication. No database credentials are changed.

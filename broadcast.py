@@ -1542,7 +1542,8 @@ def legacy_state(conn):
         row = mrows.get(tid)
         teams.append({
             "id": lmap.get(tid, 0), "name": pub["teamName"],
-            "teamName": pub["teamName"], "group": pub["group"] or "A",
+            "teamName": pub["teamName"], "teamTag": pub["teamTag"],
+            "group": pub["group"] or "A",
             "logo": pub["logo"], "registered": True,
             "kills": int(row["kills"]) if row else 0,
             "placement": int(row["placement"] or 0) if row else 0,

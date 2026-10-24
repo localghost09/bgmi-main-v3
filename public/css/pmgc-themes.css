@@ -1,811 +1,106 @@
-/* ============================================================================
-   PMGC 2026 — THEME PACK
-   Ten broadcast identities for the /pmgc stage, written from scratch for the
-   BGMI Cup platform. The colour language, angular panel shapes, type treatment
-   and motion are an original interpretation of modern battle-royale esports
-   broadcast design (KRAFTON India Esports / PMGC style): black-and-gold
-   championship grades, high-contrast accents, slashed panels and heavy
-   condensed typography.
-
-   Every theme is a token block on .pmgc[data-theme="<id>"]. Components in
-   pmgc-stage.css only read these tokens, so a new theme is a copy of one
-   block plus a motif rule. Nothing here references the legacy overlay CSS.
-
-   THEMES
-     01 krafton-gold   championship black + antique gold, laurels, dust
-     02 pmgc-neon      cyan / magenta circuit, scan grid, chromatic flicker
-     03 red-zone       crimson alert, hazard stripes, siren vignette
-     04 miramar-sand   desert ochre, contour survey lines, heat shimmer
-     05 rondo-jade     jade + ink, brush strokes, lantern glow
-     06 vikendi-frost  glacier blue, frosted glass, snowfall crystals
-     07 livid-magenta  hot magenta pop, brutalist offset tiles, blobs
-     08 blackout-hud   matte black HUD, hairline rules, lime telemetry
-     09 royal-chrome   navy + chrome, polished metal sheen, crest lines
-     10 sunset-victory warm sunset gradient, sunburst, celebration confetti
-   ============================================================================ */
-
+/* Event-inspired palettes. Research/provenance: docs/broadcast-references.md.
+   Geometry lives in pmgc-layouts.css, OBS alpha rules in pmgc-obs.css. */
 .pmgc {
-  /* ---------- defaults (krafton-gold) ---------- */
-  --p-accent: #e8c15c;
-  --p-accent-2: #b8872f;
-  --p-accent-3: #fff3c9;
-  --p-bg: #07080a;
-  --p-bg-2: #0d0f12;
-  --p-panel: rgba(9, 10, 12, 0.9);
-  --p-panel-2: rgba(20, 22, 26, 0.86);
-  --p-panel-solid: #0c0e11;
-  --p-text: #f5f2e9;
-  --p-muted: #a9a396;
-  --p-line: rgba(232, 193, 92, 0.28);
-  --p-line-soft: rgba(255, 255, 255, 0.09);
-  --p-glow: rgba(232, 193, 92, 0.34);
-  --p-shadow: rgba(0, 0, 0, 0.62);
-  --p-positive: #6ee7a8;
-  --p-danger: #ff4d4d;
-  --p-cut: 16px;
-  --p-radius: 0px;
-  --p-skew: -12deg;
-  --p-track: 0.06em;
-  --p-display: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
-  --p-body: "Rajdhani", Arial, sans-serif;
-  --p-motif-opacity: 0.5;
-  /* pre-mixed accent washes: plain rgba so the deck renders identically in
-     older OBS/CEF builds that do not support color-mix() */
-  --p-accent-12: rgba(232, 193, 92, 0.12);
-  --p-accent-20: rgba(232, 193, 92, 0.2);
-  --p-accent-30: rgba(232, 193, 92, 0.3);
-  --p-panel-clip: polygon(
-    var(--p-cut) 0,
-    100% 0,
-    100% calc(100% - var(--p-cut)),
-    calc(100% - var(--p-cut)) 100%,
-    0 100%,
-    0 var(--p-cut)
-  );
-  --p-title-transform: uppercase;
-  --p-title-style: normal;
-  --p-title-weight: 800;
-  --p-radius-sm: 0px;
+ --p-display: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
+ --p-body: "Rajdhani", Arial, sans-serif;
+ --p-positive: #fff; --p-danger: #ff303e; --p-cut: 14px;
+ --p-radius: 0px; --p-radius-sm: 0px; --p-skew: -12deg; --p-track: .08em;
+ --p-title-transform: uppercase; --p-title-style: normal; --p-title-weight: 800;
+ --p-shadow: rgba(0,0,0,.6); --p-line-soft: rgba(255,255,255,.12);
+ --p-panel-clip: polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px);
+ --p-motif-opacity: .45;
+}
+.pmgc[data-theme="bmps-2024"] {
+ --p-accent: #14db87; --p-accent-2: #14db87; --p-accent-3: #fff;
+ --p-bg: #061510; --p-bg-2: #0b251c;
+ --p-panel: #0b251c; --p-panel-2: #0b251c; --p-panel-solid: #0b251c;
+ --p-text: #f6f7fb; --p-muted: #b9c7d6;
+ --p-line: rgba(20,219,135,.45); --p-glow: rgba(20,219,135,.25);
+ --p-accent-12: rgba(20,219,135,.12); --p-accent-20: rgba(20,219,135,.20); --p-accent-30: rgba(20,219,135,.30);
+}
+.pmgc[data-theme="bgms-2024"] {
+ --p-accent: #ffc153; --p-accent-2: #ffc153; --p-accent-3: #fff;
+ --p-bg: #180e0b; --p-bg-2: #21160e;
+ --p-panel: #21160e; --p-panel-2: #21160e; --p-panel-solid: #21160e;
+ --p-text: #f6f7fb; --p-muted: #b9c7d6;
+ --p-line: rgba(255,193,83,.45); --p-glow: rgba(255,193,83,.25);
+ --p-accent-12: rgba(255,193,83,.12); --p-accent-20: rgba(255,193,83,.20); --p-accent-30: rgba(255,193,83,.30);
+}
+.pmgc[data-theme="bgis-2025"] {
+ --p-accent: #ffcf19; --p-accent-2: #ffcf19; --p-accent-3: #fff;
+ --p-bg: #041b34; --p-bg-2: #07345e;
+ --p-panel: #07345e; --p-panel-2: #07345e; --p-panel-solid: #07345e;
+ --p-text: #f6f7fb; --p-muted: #b9c7d6;
+ --p-line: rgba(255,207,25,.45); --p-glow: rgba(255,207,25,.25);
+ --p-accent-12: rgba(255,207,25,.12); --p-accent-20: rgba(255,207,25,.20); --p-accent-30: rgba(255,207,25,.30);
+}
+.pmgc[data-theme="bgis-2026"] {
+ --p-accent: #e9dc31; --p-accent-2: #e9dc31; --p-accent-3: #fff;
+ --p-bg: #0b1027; --p-bg-2: #171c32;
+ --p-panel: #171c32; --p-panel-2: #171c32; --p-panel-solid: #171c32;
+ --p-text: #f6f7fb; --p-muted: #b9c7d6;
+ --p-line: rgba(233,220,49,.45); --p-glow: rgba(233,220,49,.25);
+ --p-accent-12: rgba(233,220,49,.12); --p-accent-20: rgba(233,220,49,.20); --p-accent-30: rgba(233,220,49,.30);
+}
+.pmgc[data-theme="bmsd-2025"] {
+ --p-accent: #12d8c4; --p-accent-2: #12d8c4; --p-accent-3: #fff;
+ --p-bg: #efeee7; --p-bg-2: #10134a;
+ --p-panel: #10134a; --p-panel-2: #10134a; --p-panel-solid: #10134a;
+ --p-text: #f6f7fb; --p-muted: #b9c7d6;
+ --p-line: rgba(18,216,196,.45); --p-glow: rgba(18,216,196,.25);
+ --p-accent-12: rgba(18,216,196,.12); --p-accent-20: rgba(18,216,196,.20); --p-accent-30: rgba(18,216,196,.30);
+}
+.pmgc[data-theme="bmsd-2026"] {
+ --p-accent: #b8e54b; --p-accent-2: #b8e54b; --p-accent-3: #fff;
+ --p-bg: #071723; --p-bg-2: #152839;
+ --p-panel: #152839; --p-panel-2: #152839; --p-panel-solid: #152839;
+ --p-text: #f6f7fb; --p-muted: #b9c7d6;
+ --p-line: rgba(184,229,75,.45); --p-glow: rgba(184,229,75,.25);
+ --p-accent-12: rgba(184,229,75,.12); --p-accent-20: rgba(184,229,75,.20); --p-accent-30: rgba(184,229,75,.30);
+}
+.pmgc[data-theme="bmic-2025"] {
+ --p-accent: #5e9dff; --p-accent-2: #5e9dff; --p-accent-3: #fff;
+ --p-bg: #08172d; --p-bg-2: #112742;
+ --p-panel: #112742; --p-panel-2: #112742; --p-panel-solid: #112742;
+ --p-text: #f6f7fb; --p-muted: #b9c7d6;
+ --p-line: rgba(94,157,255,.45); --p-glow: rgba(94,157,255,.25);
+ --p-accent-12: rgba(94,157,255,.12); --p-accent-20: rgba(94,157,255,.20); --p-accent-30: rgba(94,157,255,.30);
+}
+.pmgc[data-theme="pmgc-2025"] {
+ --p-accent: #f1ce65; --p-accent-2: #f1ce65; --p-accent-3: #fff;
+ --p-bg: #e9edf6; --p-bg-2: #303c99;
+ --p-panel: #303c99; --p-panel-2: #303c99; --p-panel-solid: #303c99;
+ --p-text: #f6f7fb; --p-muted: #b9c7d6;
+ --p-line: rgba(241,206,101,.45); --p-glow: rgba(241,206,101,.25);
+ --p-accent-12: rgba(241,206,101,.12); --p-accent-20: rgba(241,206,101,.20); --p-accent-30: rgba(241,206,101,.30);
+}
+.pmgc[data-theme="ewc-2025"] {
+ --p-accent: #a5e9ff; --p-accent-2: #a5e9ff; --p-accent-3: #fff;
+ --p-bg: #0c0730; --p-bg-2: #24145b;
+ --p-panel: #24145b; --p-panel-2: #24145b; --p-panel-solid: #24145b;
+ --p-text: #f6f7fb; --p-muted: #b9c7d6;
+ --p-line: rgba(165,233,255,.45); --p-glow: rgba(165,233,255,.25);
+ --p-accent-12: rgba(165,233,255,.12); --p-accent-20: rgba(165,233,255,.20); --p-accent-30: rgba(165,233,255,.30);
+}
+.pmgc[data-theme="ewc-2026"] {
+ --p-accent: #eac775; --p-accent-2: #eac775; --p-accent-3: #fff;
+ --p-bg: #171109; --p-bg-2: #21190f;
+ --p-panel: #21190f; --p-panel-2: #21190f; --p-panel-solid: #21190f;
+ --p-text: #f6f7fb; --p-muted: #b9c7d6;
+ --p-line: rgba(234,199,117,.45); --p-glow: rgba(234,199,117,.25);
+ --p-accent-12: rgba(234,199,117,.12); --p-accent-20: rgba(234,199,117,.20); --p-accent-30: rgba(234,199,117,.30);
 }
 
-/* ---------------------------------------------------------------------------
-   01 · KRAFTON GOLD — the flagship championship grade
-   --------------------------------------------------------------------------- */
-.pmgc[data-theme="krafton-gold"] {
-  --p-accent: #e8c15c;
-  --p-accent-2: #a9772a;
-  --p-accent-3: #fff4cd;
-  --p-bg: #050505;
-  --p-bg-2: #0b0b0b;
-  --p-panel: rgba(8, 8, 8, 0.92);
-  --p-panel-2: rgba(19, 18, 15, 0.9);
-  --p-panel-solid: #0a0a0a;
-  --p-text: #f6f2e6;
-  --p-muted: #a9a08d;
-  --p-line: rgba(232, 193, 92, 0.3);
-  --p-glow: rgba(232, 193, 92, 0.4);
-  --p-cut: 18px;
-  --p-track: 0.09em;
-  --p-motif-opacity: 0.55;
-}
-.pmgc[data-theme="krafton-gold"] .pg-motif {
-  background-image:
-    repeating-linear-gradient(
-      90deg,
-      rgba(232, 193, 92, 0.055) 0 1px,
-      transparent 1px 92px
-    ),
-    radial-gradient(
-      ellipse 55% 80% at 50% 118%,
-      rgba(232, 193, 92, 0.16),
-      transparent 70%
-    );
-}
-.pmgc[data-theme="krafton-gold"] .pg-motif::after {
-  background: linear-gradient(
-    115deg,
-    transparent 0 46%,
-    rgba(232, 193, 92, 0.1) 46% 46.4%,
-    transparent 46.4% 62%,
-    rgba(255, 255, 255, 0.04) 62% 62.2%,
-    transparent 62.2%
-  );
-}
-
-/* ---------------------------------------------------------------------------
-   02 · PMGC NEON — circuit board cyan / magenta
-   --------------------------------------------------------------------------- */
-.pmgc[data-theme="pmgc-neon"] {
-  --p-accent: #25f4ff;
-  --p-accent-2: #ff2fb9;
-  --p-accent-3: #cdfbff;
-  --p-bg: #03040a;
-  --p-bg-2: #07091a;
-  --p-panel: rgba(6, 9, 22, 0.86);
-  --p-panel-2: rgba(12, 17, 38, 0.84);
-  --p-panel-solid: #060818;
-  --p-text: #eaf9ff;
-  --p-muted: #8fa9c9;
-  --p-line: rgba(37, 244, 255, 0.34);
-  --p-line-soft: rgba(37, 244, 255, 0.14);
-  --p-glow: rgba(37, 244, 255, 0.5);
-  --p-positive: #4dffb8;
-  --p-cut: 26px;
-  --p-track: 0.12em;
-  --p-motif-opacity: 0.85;
-  --p-panel-clip: polygon(
-    0 0,
-    calc(100% - 26px) 0,
-    100% 26px,
-    100% 100%,
-    26px 100%,
-    0 calc(100% - 26px)
-  );
-}
-.pmgc[data-theme="pmgc-neon"] .pg-motif {
-  background-image:
-    linear-gradient(
-      rgba(37, 244, 255, 0.11) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      rgba(255, 47, 185, 0.08) 1px,
-      transparent 1px
-    ),
-    radial-gradient(
-      circle at 82% 8%,
-      rgba(37, 244, 255, 0.2),
-      transparent 45%
-    ),
-    radial-gradient(
-      circle at 8% 92%,
-      rgba(255, 47, 185, 0.18),
-      transparent 42%
-    );
-  background-size: 64px 64px, 64px 64px, 100% 100%, 100% 100%;
-  animation: pgNeonGrid 9s linear infinite;
-}
-.pmgc[data-theme="pmgc-neon"] .pg-motif::after {
-  background:
-    repeating-linear-gradient(
-      0deg,
-      rgba(255, 255, 255, 0.045) 0 1px,
-      transparent 1px 3px
-    ),
-    linear-gradient(
-      110deg,
-      transparent 0 48%,
-      rgba(37, 244, 255, 0.35) 48% 48.2%,
-      transparent 48.2%
-    );
-  animation: pgNeonFlicker 7s steps(1) infinite;
-}
-
-/* ---------------------------------------------------------------------------
-   03 · RED ZONE — Erangel alert
-   --------------------------------------------------------------------------- */
-.pmgc[data-theme="red-zone"] {
-  --p-accent: #ff2f38;
-  --p-accent-2: #ff7a18;
-  --p-accent-3: #ffd9d6;
-  --p-bg: #070203;
-  --p-bg-2: #140407;
-  --p-panel: rgba(14, 4, 5, 0.9);
-  --p-panel-2: rgba(32, 7, 9, 0.88);
-  --p-panel-solid: #120405;
-  --p-text: #fff1ef;
-  --p-muted: #c69a96;
-  --p-line: rgba(255, 47, 56, 0.34);
-  --p-line-soft: rgba(255, 255, 255, 0.1);
-  --p-glow: rgba(255, 47, 56, 0.5);
-  --p-danger: #ff2f38;
-  --p-cut: 0px;
-  --p-radius: 0px;
-  --p-track: 0.1em;
-  --p-motif-opacity: 0.9;
-  --p-panel-clip: none;
-}
-.pmgc[data-theme="red-zone"] .pg-motif {
-  background-image:
-    repeating-linear-gradient(
-      135deg,
-      rgba(255, 47, 56, 0.1) 0 18px,
-      transparent 18px 42px
-    ),
-    radial-gradient(
-      ellipse 70% 60% at 50% 50%,
-      transparent 40%,
-      rgba(255, 47, 56, 0.16) 100%
-    );
-  animation: pgHazardDrift 16s linear infinite;
-}
-.pmgc[data-theme="red-zone"] .pg-motif::after {
-  background: radial-gradient(
-    ellipse 80% 70% at 50% 50%,
-    transparent 45%,
-    rgba(255, 20, 30, 0.32) 100%
-  );
-  animation: pgAlarm 2.4s ease-in-out infinite;
-}
-.pmgc[data-theme="red-zone"]::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 70;
-  box-shadow: inset 0 0 0 6px rgba(255, 47, 56, 0.35);
-  animation: pgAlarmFrame 2.4s ease-in-out infinite;
-}
-
-/* ---------------------------------------------------------------------------
-   04 · MIRAMAR SAND — desert survey
-   --------------------------------------------------------------------------- */
-.pmgc[data-theme="miramar-sand"] {
-  --p-accent: #f0a24a;
-  --p-accent-2: #c96a2c;
-  --p-accent-3: #ffe6bd;
-  --p-bg: #0d0906;
-  --p-bg-2: #1a120a;
-  --p-panel: rgba(20, 14, 9, 0.9);
-  --p-panel-2: rgba(38, 27, 17, 0.86);
-  --p-panel-solid: #171009;
-  --p-text: #fdf3e2;
-  --p-muted: #c3a887;
-  --p-line: rgba(240, 162, 74, 0.3);
-  --p-glow: rgba(240, 162, 74, 0.36);
-  --p-cut: 10px;
-  --p-radius: 12px;
-  --p-track: 0.07em;
-  --p-motif-opacity: 0.6;
-}
-.pmgc[data-theme="miramar-sand"] .pg-motif {
-  background-image:
-    repeating-radial-gradient(
-      ellipse 90% 60% at 18% 82%,
-      rgba(240, 162, 74, 0.12) 0 1px,
-      transparent 1px 26px
-    ),
-    repeating-radial-gradient(
-      ellipse 70% 55% at 88% 12%,
-      rgba(255, 230, 189, 0.07) 0 1px,
-      transparent 1px 34px
-    ),
-    radial-gradient(
-      ellipse 70% 50% at 50% 100%,
-      rgba(201, 106, 44, 0.2),
-      transparent 70%
-    );
-  animation: pgSandDrift 22s ease-in-out infinite;
-}
-.pmgc[data-theme="miramar-sand"] .pg-motif::after {
-  background: linear-gradient(
-    92deg,
-    transparent 0 30%,
-    rgba(255, 230, 189, 0.06) 30% 30.6%,
-    transparent 30.6% 70%,
-    rgba(240, 162, 74, 0.08) 70% 70.4%,
-    transparent 70.4%
-  );
-  animation: pgHeat 4.8s ease-in-out infinite;
-}
-
-/* ---------------------------------------------------------------------------
-   05 · RONDO JADE — Eastern ink
-   --------------------------------------------------------------------------- */
-.pmgc[data-theme="rondo-jade"] {
-  --p-accent: #35e0a1;
-  --p-accent-2: #0e9c8a;
-  --p-accent-3: #dcfff2;
-  --p-bg: #04100d;
-  --p-bg-2: #08201b;
-  --p-panel: rgba(6, 20, 18, 0.88);
-  --p-panel-2: rgba(11, 34, 30, 0.86);
-  --p-panel-solid: #061915;
-  --p-text: #e8fff7;
-  --p-muted: #8dbaad;
-  --p-line: rgba(53, 224, 161, 0.28);
-  --p-glow: rgba(53, 224, 161, 0.38);
-  --p-cut: 8px;
-  --p-radius: 18px;
-  --p-track: 0.07em;
-  --p-motif-opacity: 0.6;
-  --p-panel-clip: none;
-}
-.pmgc[data-theme="rondo-jade"] .pg-motif {
-  background-image:
-    radial-gradient(
-      ellipse 40% 60% at 8% 30%,
-      rgba(53, 224, 161, 0.16),
-      transparent 70%
-    ),
-    radial-gradient(
-      ellipse 50% 40% at 92% 78%,
-      rgba(14, 156, 138, 0.22),
-      transparent 70%
-    ),
-    repeating-linear-gradient(
-      78deg,
-      transparent 0 54px,
-      rgba(53, 224, 161, 0.05) 54px 56px
-    );
-  animation: pgJadeBreathe 12s ease-in-out infinite;
-}
-.pmgc[data-theme="rondo-jade"] .pg-motif::after {
-  background: radial-gradient(
-      circle at 82% 22%,
-      rgba(255, 219, 130, 0.22),
-      transparent 12%
-    ),
-    radial-gradient(
-      circle at 88% 34%,
-      rgba(255, 219, 130, 0.12),
-      transparent 10%
-    );
-  animation: pgLantern 5s ease-in-out infinite;
-}
-
-/* ---------------------------------------------------------------------------
-   06 · VIKENDI FROST — glacier glass
-   --------------------------------------------------------------------------- */
-.pmgc[data-theme="vikendi-frost"] {
-  --p-accent: #8fd8ff;
-  --p-accent-2: #4a7dff;
-  --p-accent-3: #ffffff;
-  --p-bg: #050b16;
-  --p-bg-2: #0b1a2e;
-  --p-panel: rgba(10, 22, 38, 0.72);
-  --p-panel-2: rgba(18, 36, 58, 0.66);
-  --p-panel-solid: #0a1626;
-  --p-text: #f0fbff;
-  --p-muted: #9fc2d8;
-  --p-line: rgba(143, 216, 255, 0.32);
-  --p-line-soft: rgba(255, 255, 255, 0.18);
-  --p-glow: rgba(143, 216, 255, 0.42);
-  --p-cut: 14px;
-  --p-radius: 8px;
-  --p-track: 0.1em;
-  --p-motif-opacity: 0.7;
-}
-.pmgc[data-theme="vikendi-frost"] .pg-motif {
-  background-image:
-    radial-gradient(
-      circle at 20% 16%,
-      rgba(143, 216, 255, 0.22),
-      transparent 40%
-    ),
-    radial-gradient(
-      circle at 84% 74%,
-      rgba(74, 125, 255, 0.24),
-      transparent 46%
-    ),
-    conic-gradient(
-      from 210deg at 62% 40%,
-      rgba(255, 255, 255, 0.07) 0 8deg,
-      transparent 8deg 22deg,
-      rgba(143, 216, 255, 0.06) 22deg 24deg,
-      transparent 24deg
-    );
-  animation: pgFrostShift 20s ease-in-out infinite;
-}
-.pmgc[data-theme="vikendi-frost"] .pg-motif::after {
-  background-image:
-    radial-gradient(
-      circle,
-      rgba(255, 255, 255, 0.85) 0 1.6px,
-      transparent 1.8px
-    ),
-    radial-gradient(
-      circle,
-      rgba(255, 255, 255, 0.5) 0 1.2px,
-      transparent 1.4px
-    );
-  background-size: 220px 220px, 130px 130px;
-  background-position: 0 0, 60px 80px;
-  animation: pgSnow 26s linear infinite;
-}
-
-/* ---------------------------------------------------------------------------
-   07 · LIVID MAGENTA — pop brutalist
-   --------------------------------------------------------------------------- */
-.pmgc[data-theme="livid-magenta"] {
-  --p-accent: #ff3d8b;
-  --p-accent-2: #a24bff;
-  --p-accent-3: #fff0f7;
-  --p-bg: #0a030d;
-  --p-bg-2: #170627;
-  --p-panel: rgba(18, 6, 26, 0.9);
-  --p-panel-2: rgba(36, 12, 52, 0.86);
-  --p-panel-solid: #140620;
-  --p-text: #fff4fb;
-  --p-muted: #c9a2cd;
-  --p-line: rgba(255, 61, 139, 0.34);
-  --p-glow: rgba(255, 61, 139, 0.46);
-  --p-cut: 22px;
-  --p-radius: 22px;
-  --p-track: 0.04em;
-  --p-motif-opacity: 0.8;
-  --p-panel-clip: none;
-}
-.pmgc[data-theme="livid-magenta"] .pg-motif {
-  background-image:
-    radial-gradient(
-      circle at 12% 20%,
-      rgba(255, 61, 139, 0.3),
-      transparent 46%
-    ),
-    radial-gradient(
-      circle at 88% 30%,
-      rgba(162, 75, 255, 0.3),
-      transparent 48%
-    ),
-    radial-gradient(
-      circle at 50% 100%,
-      rgba(255, 61, 139, 0.18),
-      transparent 60%
-    );
-  animation: pgBlob 14s ease-in-out infinite;
-}
-.pmgc[data-theme="livid-magenta"] .pg-motif::after {
-  background: repeating-linear-gradient(
-    45deg,
-    rgba(255, 255, 255, 0.05) 0 2px,
-    transparent 2px 26px
-  );
-}
-
-/* ---------------------------------------------------------------------------
-   08 · BLACKOUT HUD — stealth telemetry
-   --------------------------------------------------------------------------- */
-.pmgc[data-theme="blackout-hud"] {
-  --p-accent: #c6ff3c;
-  --p-accent-2: #78913a;
-  --p-accent-3: #f0ffd0;
-  --p-bg: #050606;
-  --p-bg-2: #0b0d0d;
-  --p-panel: rgba(7, 9, 9, 0.94);
-  --p-panel-2: rgba(15, 18, 18, 0.92);
-  --p-panel-solid: #070909;
-  --p-text: #edf2ea;
-  --p-muted: #8d968a;
-  --p-line: rgba(198, 255, 60, 0.22);
-  --p-line-soft: rgba(255, 255, 255, 0.08);
-  --p-glow: rgba(198, 255, 60, 0.3);
-  --p-cut: 0px;
-  --p-radius: 0px;
-  --p-track: 0.18em;
-  --p-motif-opacity: 0.45;
-  --p-panel-clip: none;
-  --p-title-weight: 700;
-}
-.pmgc[data-theme="blackout-hud"] .pg-motif {
-  background-image:
-    linear-gradient(
-      rgba(198, 255, 60, 0.06) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      rgba(198, 255, 60, 0.045) 1px,
-      transparent 1px
-    );
-  background-size: 120px 120px, 120px 120px;
-}
-.pmgc[data-theme="blackout-hud"] .pg-motif::after {
-  background: linear-gradient(
-    90deg,
-    transparent 0 60%,
-    rgba(198, 255, 60, 0.16) 60% 60.3%,
-    transparent 60.3%
-  );
-  animation: pgHudSweep 7s ease-in-out infinite;
-}
-.pmgc[data-theme="blackout-hud"] .pg-panel::before {
-  box-shadow: inset 0 0 0 1px rgba(198, 255, 60, 0.12);
-}
-
-/* ---------------------------------------------------------------------------
-   09 · ROYAL CHROME — navy + polished metal
-   --------------------------------------------------------------------------- */
-.pmgc[data-theme="royal-chrome"] {
-  --p-accent: #cdd8ea;
-  --p-accent-2: #3f6bd8;
-  --p-accent-3: #ffffff;
-  --p-bg: #04060f;
-  --p-bg-2: #0a1230;
-  --p-panel: rgba(7, 11, 26, 0.9);
-  --p-panel-2: rgba(15, 22, 48, 0.86);
-  --p-panel-solid: #070b1a;
-  --p-text: #f2f6ff;
-  --p-muted: #9aa9c8;
-  --p-line: rgba(205, 216, 234, 0.3);
-  --p-glow: rgba(63, 107, 216, 0.44);
-  --p-cut: 12px;
-  --p-track: 0.13em;
-  --p-motif-opacity: 0.6;
-}
-.pmgc[data-theme="royal-chrome"] .pg-motif {
-  background-image:
-    linear-gradient(
-      160deg,
-      rgba(63, 107, 216, 0.24),
-      transparent 40%
-    ),
-    linear-gradient(
-      -20deg,
-      rgba(205, 216, 234, 0.09),
-      transparent 45%
-    ),
-    repeating-linear-gradient(
-      115deg,
-      transparent 0 40px,
-      rgba(255, 255, 255, 0.05) 40px 41px
-    );
-}
-.pmgc[data-theme="royal-chrome"] .pg-motif::after {
-  background: linear-gradient(
-    115deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.16) 46%,
-    rgba(205, 216, 234, 0.05) 52%,
-    transparent 64%
-  );
-  background-size: 260% 100%;
-  animation: pgChrome 9s ease-in-out infinite;
-}
-
-/* ---------------------------------------------------------------------------
-   10 · SUNSET VICTORY — celebration grade
-   --------------------------------------------------------------------------- */
-.pmgc[data-theme="sunset-victory"] {
-  --p-accent: #ffc247;
-  --p-accent-2: #ff5d7a;
-  --p-accent-3: #fff1cf;
-  --p-bg: #12040c;
-  --p-bg-2: #2a0a1e;
-  --p-panel: rgba(28, 7, 18, 0.88);
-  --p-panel-2: rgba(52, 14, 32, 0.84);
-  --p-panel-solid: #1e0714;
-  --p-text: #fff4ec;
-  --p-muted: #e0b3b8;
-  --p-line: rgba(255, 194, 71, 0.34);
-  --p-glow: rgba(255, 93, 122, 0.44);
-  --p-cut: 20px;
-  --p-radius: 20px;
-  --p-track: 0.05em;
-  --p-motif-opacity: 0.8;
-  --p-panel-clip: none;
-  --p-title-weight: 900;
-}
-.pmgc[data-theme="sunset-victory"] .pg-motif {
-  background-image: radial-gradient(
-      circle at 74% 26%,
-      rgba(255, 194, 71, 0.4),
-      transparent 32%
-    ),
-    radial-gradient(
-      circle at 24% 74%,
-      rgba(255, 93, 122, 0.34),
-      transparent 40%
-    ),
-    conic-gradient(
-      from 0deg at 74% 26%,
-      rgba(255, 194, 71, 0.13) 0 4deg,
-      transparent 4deg 14deg,
-      rgba(255, 93, 122, 0.11) 14deg 18deg,
-      transparent 18deg
-    );
-  animation: pgSunBreathe 10s ease-in-out infinite;
-}
-.pmgc[data-theme="sunset-victory"] .pg-motif::after {
-  background: radial-gradient(
-    circle at 74% 26%,
-    transparent 22%,
-    rgba(255, 194, 71, 0.1) 23%,
-    transparent 24%
-  );
-  animation: pgSunRays 40s linear infinite;
-}
-
-/* ============================================================================
-   MOTION KEYFRAMES (theme motif layer)
-   ============================================================================ */
-@keyframes pgNeonGrid {
-  0% { background-position: 0 0, 0 0, 0 0, 0 0; }
-  100% { background-position: 0 64px, 64px 0, 0 0, 0 0; }
-}
-@keyframes pgNeonFlicker {
-  0%, 92%, 100% { opacity: 1; }
-  93% { opacity: 0.55; }
-  94% { opacity: 1; }
-  96% { opacity: 0.7; }
-  97% { opacity: 1; }
-}
-@keyframes pgHazardDrift {
-  0% { background-position: 0 0, 0 0; }
-  100% { background-position: 240px 0, 0 0; }
-}
-@keyframes pgAlarm {
-  0%, 100% { opacity: 0.45; }
-  50% { opacity: 1; }
-}
-@keyframes pgAlarmFrame {
-  0%, 100% { box-shadow: inset 0 0 0 5px rgba(255, 47, 56, 0.22); }
-  50% { box-shadow: inset 0 0 0 9px rgba(255, 47, 56, 0.5); }
-}
-@keyframes pgSandDrift {
-  0%, 100% { background-position: 0 0, 0 0, 0 0; }
-  50% { background-position: 18px -12px, -22px 16px, 0 0; }
-}
-@keyframes pgHeat {
-  0%, 100% { opacity: 0.5; transform: translateY(0); }
-  50% { opacity: 1; transform: translateY(-6px); }
-}
-@keyframes pgJadeBreathe {
-  0%, 100% { opacity: 0.75; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.03); }
-}
-@keyframes pgLantern {
-  0%, 100% { opacity: 0.55; }
-  45% { opacity: 1; }
-  55% { opacity: 0.7; }
-}
-@keyframes pgFrostShift {
-  0%, 100% { background-position: 0 0, 0 0, 62% 40%; }
-  50% { background-position: 26px 18px, -18px -12px, 62% 40%; }
-}
-@keyframes pgSnow {
-  0% { background-position: 0 0, 60px 80px; }
-  100% { background-position: 0 220px, 190px 210px; }
-}
-@keyframes pgBlob {
-  0%, 100% { background-position: 0 0, 0 0, 0 0; transform: scale(1); }
-  50% { background-position: 30px -20px, -26px 22px, 0 0; transform: scale(1.04); }
-}
-@keyframes pgHudSweep {
-  0%, 100% { opacity: 0.3; transform: translateX(-18%); }
-  50% { opacity: 1; transform: translateX(18%); }
-}
-@keyframes pgChrome {
-  0%, 100% { background-position: 160% 0; }
-  50% { background-position: -60% 0; }
-}
-@keyframes pgSunBreathe {
-  0%, 100% { opacity: 0.8; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.05); }
-}
-@keyframes pgSunRays {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* ============================================================================
-   THEME-SPECIFIC COMPONENT TREATMENTS
-   Small, deliberate overrides so the ten themes read as ten identities, not
-   ten swatches. Component classes are defined in pmgc-stage.css.
-   ============================================================================ */
-
-/* --- typography personality --- */
-.pmgc[data-theme="blackout-hud"] .pg-title,
-.pmgc[data-theme="blackout-hud"] .pg-big {
-  letter-spacing: 0.02em;
-  font-weight: 700;
-}
-.pmgc[data-theme="royal-chrome"] .pg-title,
-.pmgc[data-theme="royal-chrome"] .pg-big {
-  background: linear-gradient(180deg, #ffffff 8%, #cdd8ea 42%, #7f8ba4 60%, #ffffff 92%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.pmgc[data-theme="pmgc-neon"] .pg-big {
-  text-shadow: 0 0 26px rgba(37, 244, 255, 0.55), 4px 0 0 rgba(255, 47, 185, 0.32);
-}
-.pmgc[data-theme="red-zone"] .pg-big {
-  text-shadow: 0 0 34px rgba(255, 47, 56, 0.45);
-}
-.pmgc[data-theme="sunset-victory"] .pg-big {
-  background: linear-gradient(180deg, #fff6df 0%, #ffc247 58%, #ff5d7a 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.pmgc[data-theme="miramar-sand"] .pg-panel {
-  border-image: linear-gradient(180deg, rgba(240, 162, 74, 0.65), rgba(255, 230, 189, 0.12)) 1;
-}
-.pmgc[data-theme="rondo-jade"] .pg-panel {
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.6), inset 0 0 60px rgba(53, 224, 161, 0.06);
-}
-.pmgc[data-theme="vikendi-frost"] .pg-panel {
-  backdrop-filter: blur(16px) saturate(1.25);
-}
-.pmgc[data-theme="livid-magenta"] .pg-panel {
-  box-shadow: 10px 12px 0 rgba(162, 75, 255, 0.28), 0 24px 70px rgba(0, 0, 0, 0.55);
-}
-.pmgc[data-theme="livid-magenta"] .pg-title,
-.pmgc[data-theme="livid-magenta"] .pg-big {
-  text-shadow: 5px 5px 0 rgba(162, 75, 255, 0.45);
-}
-.pmgc[data-theme="krafton-gold"] .pg-panel,
-.pmgc[data-theme="victory"] .pg-panel {
-  box-shadow: 0 26px 80px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 244, 205, 0.12);
-}
-.pmgc[data-theme="blackout-hud"] .pg-chip,
-.pmgc[data-theme="blackout-hud"] .pg-tag {
-  border-color: rgba(198, 255, 60, 0.3);
-}
-.pmgc[data-theme="red-zone"] .pg-slash {
-  background: repeating-linear-gradient(
-    105deg,
-    var(--p-accent) 0 14px,
-    #150405 14px 28px
-  );
-}
-.pmgc[data-theme="pmgc-neon"] .pg-slash {
-  box-shadow: 0 0 22px var(--p-accent), 0 0 60px rgba(255, 47, 185, 0.4);
-}
-
-/* Motion would be noise here — respect the OS setting. */
-@media (prefers-reduced-motion: reduce) {
-  .pg-motif,
-  .pg-motif::after,
-  .pmgc::after {
-    animation: none !important;
-  }
-}
-
-/* ============================================================================
-   ACCENT WASH TOKENS
-   One rgba triple per theme, used by pmgc-stage.css for tinted panels, row
-   highlights and celebration glows without relying on color-mix().
-   ============================================================================ */
-.pmgc[data-theme="krafton-gold"] {
-  --p-accent-12: rgba(232, 193, 92, 0.12);
-  --p-accent-20: rgba(232, 193, 92, 0.2);
-  --p-accent-30: rgba(232, 193, 92, 0.3);
-}
-.pmgc[data-theme="pmgc-neon"] {
-  --p-accent-12: rgba(37, 244, 255, 0.12);
-  --p-accent-20: rgba(37, 244, 255, 0.2);
-  --p-accent-30: rgba(37, 244, 255, 0.3);
-}
-.pmgc[data-theme="red-zone"] {
-  --p-accent-12: rgba(255, 47, 56, 0.12);
-  --p-accent-20: rgba(255, 47, 56, 0.2);
-  --p-accent-30: rgba(255, 47, 56, 0.3);
-}
-.pmgc[data-theme="miramar-sand"] {
-  --p-accent-12: rgba(240, 162, 74, 0.12);
-  --p-accent-20: rgba(240, 162, 74, 0.2);
-  --p-accent-30: rgba(240, 162, 74, 0.3);
-}
-.pmgc[data-theme="rondo-jade"] {
-  --p-accent-12: rgba(53, 224, 161, 0.12);
-  --p-accent-20: rgba(53, 224, 161, 0.2);
-  --p-accent-30: rgba(53, 224, 161, 0.3);
-}
-.pmgc[data-theme="vikendi-frost"] {
-  --p-accent-12: rgba(143, 216, 255, 0.12);
-  --p-accent-20: rgba(143, 216, 255, 0.2);
-  --p-accent-30: rgba(143, 216, 255, 0.3);
-}
-.pmgc[data-theme="livid-magenta"] {
-  --p-accent-12: rgba(255, 61, 139, 0.12);
-  --p-accent-20: rgba(255, 61, 139, 0.2);
-  --p-accent-30: rgba(255, 61, 139, 0.3);
-}
-.pmgc[data-theme="blackout-hud"] {
-  --p-accent-12: rgba(198, 255, 60, 0.12);
-  --p-accent-20: rgba(198, 255, 60, 0.2);
-  --p-accent-30: rgba(198, 255, 60, 0.3);
-}
-.pmgc[data-theme="royal-chrome"] {
-  --p-accent-12: rgba(205, 216, 234, 0.12);
-  --p-accent-20: rgba(205, 216, 234, 0.2);
-  --p-accent-30: rgba(205, 216, 234, 0.3);
-}
-.pmgc[data-theme="sunset-victory"] {
-  --p-accent-12: rgba(255, 194, 71, 0.12);
-  --p-accent-20: rgba(255, 194, 71, 0.2);
-  --p-accent-30: rgba(255, 194, 71, 0.3);
-}
+.pg-motif { background: repeating-linear-gradient(115deg, transparent 0 115px, var(--p-accent-12) 115px 117px); }
+.pmgc[data-theme="bmps-2024"] .pg-motif { background: repeating-linear-gradient(90deg,transparent 0 160px,var(--p-accent-12) 160px 164px); }
+.pmgc[data-theme="bgms-2024"] .pg-motif { background: repeating-conic-gradient(from 45deg at 50% 70%,transparent 0 24deg,var(--p-accent-12) 24deg 25deg); }
+.pmgc[data-theme="bgis-2025"] .pg-motif { background: repeating-linear-gradient(135deg,transparent 0 250px,var(--p-accent-20) 250px 300px); }
+.pmgc[data-theme="bgis-2026"] .pg-motif { background: repeating-linear-gradient(0deg,transparent 0 120px,var(--p-accent-12) 120px 122px); }
+.pmgc[data-theme="bmsd-2025"] .pg-bg-art, .pmgc[data-theme="pmgc-2025"] .pg-bg-art { display: none; }
+.pmgc[data-theme="bmsd-2025"] .pg-bg-vigne, .pmgc[data-theme="pmgc-2025"] .pg-bg-vigne { opacity: .12; }
+.pmgc[data-theme="bmsd-2025"] .pg-motif { background: repeating-linear-gradient(-8deg,transparent 0 260px,#11134a22 260px 340px); }
+.pmgc[data-theme="bmsd-2026"] .pg-motif { background: repeating-linear-gradient(0deg,transparent 0 60px,#ae6cff26 60px 62px),repeating-linear-gradient(90deg,transparent 0 60px,#ae6cff26 60px 62px); }
+.pmgc[data-theme="bmic-2025"] .pg-motif { background: repeating-linear-gradient(90deg,transparent 0 150px,#f04c4222 150px 220px); }
+.pmgc[data-theme="pmgc-2025"] .pg-motif { background: repeating-conic-gradient(from 20deg at 90% 50%,transparent 0 25deg,#d6b34344 25deg 26deg); }
+.pmgc[data-theme="ewc-2025"] .pg-motif { background: repeating-linear-gradient(0deg,transparent 0 16px,#a56cff22 16px 18px); }
+.pmgc[data-theme="ewc-2026"] .pg-motif { background: radial-gradient(ellipse at 85% 25%,#eac77555,transparent 60%); }

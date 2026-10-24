@@ -17,11 +17,12 @@ WHAT IS LOADED RIGHT NOW
      python scripts/seed_demo.py
 
 WHERE TO CHECK EACH REQUIREMENT
-  /pmgc                              gallery: the 10 themes, the 10 scenes
+  /pmgc                              gallery: 10 event layouts, 11 scenes
   /pmgc/opening                      stream-start countdown (ring + clock)
   /pmgc/casters                      two caster cards + hype line
   /pmgc/drop                         30s match-start clock + caster hype
-  /pmgc/live                         live feed + DIAGONAL map feed + live points rail
+  /pmgc/map-intro                    8s map deployment bumper + original CC0 music
+  /pmgc/live                         transparent DIAGONAL OBS feeds; NO points table
   /pmgc/live-points                  live feed + live points standings
   /pmgc/chicken-dinner               winner winner chicken dinner celebration
   /pmgc/winner-stats                 chicken dinner squad stats
@@ -44,3 +45,12 @@ IF SIGN-IN "DOES NOTHING"
   path. A password that is accepted but not remembered now says so on the
   form instead of looping back silently. Add a host to BGMI_PREVIEW_HOSTS
   (comma separated) if you run the preview somewhere else.
+
+TEMPORARY PREVIEW ACCESS
+  The running preview was explicitly started with BGMI_ADMIN_LOGIN_BYPASS=1
+  at the operator request. No password/cookie is required there. Never use
+  this setting on a public deployment; unset it and restart to restore login.
+
+OBS SETUP
+  /broadcast-setup.html has source placement, diagonal masks and music setup.
+  Producer /admin/overlays includes the ten named event-inspired layouts.

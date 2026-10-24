@@ -129,12 +129,12 @@
       <div id="programSceneBtns" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;"></div>
     </section>
 
-    <!-- PMGC broadcast stage: ten themes x ten scenes -->
+    <!-- PMGC broadcast stage: ten event layouts x eleven scenes -->
     <section class="bc-card" style="margin-top:18px;" id="pmgcCard">
-      <h2 class="bc-h2">PMGC stage <span class="bc-dim">&mdash; 10 themes &middot; 10 scenes</span></h2>
+      <h2 class="bc-h2">PMGC stage <span class="bc-dim">&mdash; 10 event layouts &middot; 11 scenes</span></h2>
       <p class="bc-p">
-        The championship rundown: stream-start countdown, caster intro, 30-second match drop,
-        the diagonal live game feed with its tactical map, live points, winner-winner-chicken-dinner,
+        The championship rundown: stream-start countdown, caster intro, 30-second match drop, animated map intro with original CC0 music,
+        the staggered rectangular gameplay and tactical-map frames, live points, winner-winner-chicken-dinner,
         winner stats, match points, overall standings and the Erangel &middot; Miramar &middot; Rondo
         map rotation. Pick a theme, then copy the scene URL into OBS (1920&times;1080 browser source).
         <a href="/pmgc" target="_blank" rel="noopener" style="color:var(--acid);">Open the theme gallery &rarr;</a>
@@ -161,6 +161,16 @@
           <b>space</b> auto-show, <b>R</b> replay, <b>F</b> fullscreen, <b>H</b> hide UI.
         </span>
       </div>
+      <div class="bc-form-row" style="margin-top:12px; gap:16px; align-items:end;">
+        <label class="bc-label">Map intro <select id="pmgcMap" class="bc-select"><option value="">Use live match map</option><option value="erangel">Erangel</option><option value="miramar">Miramar</option><option value="rondo">Rondo</option></select></label>
+        <label class="bc-label">Sponsor text <input id="pmgcSponsor" class="bc-input" maxlength="60" placeholder="Your sponsor / partner"></label>
+        <label class="bc-label"><input id="pmgcAudio" type="checkbox" checked> Original CC0 intro music</label>
+        <a class="bc-btn" id="pmgcGuides" href="/pmgc/casters?guides=1" target="_blank" rel="noopener">OBS source guide</a>
+      </div>
+      <p class="bc-p">Place OBS captures below the browser overlay. Live + map uses two rectangular frames: map top-right (x 1240, y 80, 640×440), gameplay bottom-left (x 40, y 428, 1088×612). No diagonal masks required.
+        <a href="/broadcast-setup.html" target="_blank" rel="noopener">Setup instructions</a>.
+        Theme layouts are event-inspired adaptations, not official broadcast packages.
+      </p>
       <div class="bc-preview" id="pmgcPreviewBox" style="margin-top:12px;">
         <iframe id="pmgcPreviewFrame" title="PMGC stage preview" scrolling="no"></iframe>
       </div>
@@ -216,7 +226,8 @@
   <script src="/js/nav.js?v=1"></script>
   <script src="/js/site-config.js?v=2"></script>
   <script src="/js/admin-shell.js?v=1"></script>
-  <script src="/js/overlays.js?v=4"></script>
+  <script src="/js/broadcast-themes.js?v=6"></script>
+  <script src="/js/overlays.js?v=6"></script>
   <script src="/js/admin-flow.js?v=2"></script>
 </body>
 </html>

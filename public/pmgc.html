@@ -83,6 +83,8 @@
         transition: transform .3s cubic-bezier(.16,1,.3,1), border-color .3s;
       }
       .theme-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+      .swatch img { width: 100%; height: 100%; object-fit: cover; }
+      .swatch::before, .swatch::after { display: none; }
       .swatch {
         position: relative; height: 150px; overflow: hidden;
         background: var(--bg); display: grid; place-items: center;
@@ -146,17 +148,17 @@
       </div>
 
       <header class="hero">
-        <div class="eyebrow">KRAFTON-STYLE CHAMPIONSHIP PACKAGE · TEN THEMES · TEN SCENES</div>
+        <div class="eyebrow">KRAFTON-STYLE CHAMPIONSHIP PACKAGE · TEN EVENT-INSPIRED LAYOUTS · ELEVEN SCENES</div>
         <h1>THE <em>PMGC</em><br />BROADCAST KIT</h1>
         <p class="lede">
           A complete tournament rundown you can drive from one browser source: stream-start countdown,
-          caster intro, 30-second match drop, a diagonal live game feed with its tactical map, live points,
+          caster intro, 30-second match drop, staggered rectangular game and tactical-map frames, live points,
           the winner-winner-chicken-dinner celebration, winner stats, match points, overall standings and
           the Erangel · Miramar · Rondo map rotation. Pick a theme below — every scene restyles instantly.
         </p>
         <div class="chips">
           <span class="chip">10 themes</span>
-          <span class="chip">10 scenes</span>
+          <span class="chip">11 scenes</span>
           <span class="chip">1920×1080 OBS</span>
           <span class="chip">Live-data aware</span>
           <span class="chip">Reduced-motion safe</span>
@@ -176,11 +178,12 @@
       <div class="rundown" id="rundown"></div>
 
       <div class="foot">
-        <span>Original art &amp; code for the BGMI Cup platform · inspired by modern battle-royale esports broadcast design</span>
-        <span>Docs: <a href="/docs/pmgc-stage.md">pmgc-stage.md</a> · OBS: 1920×1080, browser source, 30 fps</span>
+        <span>Event-inspired original layouts · official PUBG map exports · original CC0 intro music</span>
+        <span>Docs: <a href="/broadcast-setup.html">OBS setup guide</a> · OBS: 1920×1080, browser source, 30 fps</span>
       </div>
     </div>
 
-    <script src="/js/pmgc-gallery.js?v=1"></script>
+  <script src="/js/broadcast-themes.js?v=6"></script>
+    <script src="/js/pmgc-gallery.js?v=6"></script>
   </body>
 </html>

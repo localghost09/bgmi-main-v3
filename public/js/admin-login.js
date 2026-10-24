@@ -14,20 +14,8 @@
     btn.textContent = 'Sign in';
   }
 
-  // A successful POST only proves the password was right. Navigating to
-  // /admin requires the session cookie to survive the trip back — and a
-  // browser that refuses to store it just shows this form again with no
-  // error at all. Leave a marker so the bounce can explain itself: this
-  // script only runs again on the login page, so a live marker means the
-  // cookie did not stick.
-  try {
-    if (sessionStorage.getItem(FLAG) === 'pending') {
-      sessionStorage.removeItem(FLAG);
-      err.textContent = 'Password accepted, but the browser did not keep the ' +
-        'session. Allow cookies for this site, or open it in its own tab, ' +
-        'then sign in again.';
-    }
-  } catch (e) { /* private mode: no sessionStorage, no marker */ }
+  // Remove the old bounce marker: it could persist after a successful login.
+  try { sessionStorage.removeItem(FLAG); } catch (e) {}
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
@@ -62,13 +50,22 @@
         });
       })
       .then(function (x) {
-        clear();
         if (x.s === 200 && x.d.ok) {
-          try { sessionStorage.setItem(FLAG, 'pending'); } catch (e) {}
-          btn.textContent = 'Opening Control Room…';
-          location.href = '/admin';
-          return;
+          btn.textContent = 'Checking session…';
+          return fetch('/api/admin/me', {
+            credentials: 'same-origin', cache: 'no-store',
+            signal: abort ? abort.signal : undefined
+          }).then(function (r) {
+            clear();
+            if (r.ok) {
+              location.replace('/admin');
+            } else {
+              fail('Password accepted, but the session could not be verified. ' +
+                'Click “Open sign-in in a new tab” below, then sign in there.');
+            }
+          });
         }
+        clear();
         if (x.s === 200) {
           fail('Sign-in returned an unexpected response. Reload and try again.');
         } else if (!x.d.error && x.s >= 500) {

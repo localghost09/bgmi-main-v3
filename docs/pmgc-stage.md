@@ -145,3 +145,66 @@ the payload, and the stage renders every string through `textContent`.
   stage is one composited layer — no per-frame layout work.
 - Fonts are self-hosted (`/assets/fonts/`), images are static JPEGs, and the
   only network traffic is one state read plus SSE.
+
+## Event-layout / OBS update
+
+The ten generic names have been replaced by `bmps-2024`, `bgms-2024`,
+`bgis-2025`, `bgis-2026`, `bmsd-2025`, `bmsd-2026`, `bmic-2025`,
+`pmgc-2025`, `ewc-2025`, `ewc-2026`. The earlier IDs remain URL aliases.
+Catalog: `public/js/broadcast-themes.js`; consumers share this single list.
+Layouts: `public/css/pmgc-layouts.css`. These are original event-inspired
+adaptations, not official CG packages; see `docs/broadcast-references.md`.
+
+The rundown now has eleven scenes: `map-intro` is inserted after `drop`.
+The drop clock expires after the real 30 seconds even in manual mode, then
+plays the 8-second selected-map bumper and moves to `live`. Auto-show does
+not skip either the configured opening clock or the match-drop clock.
+Music is original CC0 (`audio=0` to mute; OBS controls browser audio).
+
+New parameters: `battleground=erangel|miramar|rondo`, `sponsor=<text>`,
+`event=<text>`, `caster1=<text>`, `caster2=<text>`, `guides=1` (interactive
+source-coordinate guide only). Use `obs=1` for production URLs.
+
+Camera scenes, match-drop cameras and gameplay are transparent. Live+map
+has no standings, game lower-left / map upper-right, match/event upper-left
+and sponsor lower-right. Mask assets in `public/assets/obs/` must be applied
+to the independent video sources in OBS; CSS cannot crop other sources.
+Live points has a fully opaque right-side board, 15-character names, and
+accurate player status pips (white alive/red knocked/grey eliminated).
+Showcase simulation is disabled whenever real tournament state is loaded.
+
+Full user-facing instructions are served at `/broadcast-setup.html`.
+The original `/overlay` shell remains untouched.
+
+## Rectangular live + map correction
+
+The operator confirmed gameplay **bottom-right**, not bottom-left. `/pmgc/live`
+now uses separate transparent rectangular frames with no diagonal cut:
+map `(1304,80,576,324)`, gameplay `(792,428,1088,612)` at 1920×1080.
+No standings in this scene. Event/match remains upper-left; sponsor is below
+gameplay at bottom-right. Remove old OBS diagonal mask filters.
+This supersedes the older diagonal instructions above.
+
+## Latest placement correction
+
+Gameplay rectangle is **bottom-left** at `(40,428,1088,612)`. Map remains
+**top-right** at `(1304,80,576,324)`. This supersedes the prior bottom-right
+gameplay placement. Both are transparent rectangles; no diagonal masks.
+Sponsor stays bottom-right; event/match remains upper-left.
+
+Map frame enlarged to `(1240,80,640,440)` (was 576×324). Right edge
+stays at 1880. Gameplay remains `(40,428,1088,612)` with no overlap.
+The map source may need cropping to fit its taller aspect ratio in OBS.
+
+Live Points is now standings-only: the top event/match/squads/zone/time HUD
+and gameplay-frame decorations are hidden in this scene. The standings
+board and its player-status legend remain; the Live + Map HUD is unchanged.
+
+Live Points is anchored 24px from the bottom/right. Its narrower team
+column uses short tags. MP shows the squad's overall matches played; FIN
+and TOTAL remain current-match values. Larger status pips are centered in
+the status cell, vertically aligned to each row.
+
+Match Points (`/pmgc/match-standings`) now uses two equal centered tables,
+ranks 01–08 / 09–16, with repeated column headers and larger 76px rows.
+The compact Live Points overlay and Overall layouts are unchanged.

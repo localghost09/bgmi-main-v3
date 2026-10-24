@@ -10,15 +10,17 @@
       content="Ten-theme tournament broadcast rundown for OBS: stream countdown, casters, match drop, diagonal live + map feeds, chicken dinner, stats and standings."
     />
     <link rel="stylesheet" href="/assets/fonts/overlay-fonts.css" />
-    <link rel="stylesheet" href="/css/pmgc-themes.css?v=1" />
-    <link rel="stylesheet" href="/css/pmgc-stage.css?v=1" />
+    <link rel="stylesheet" href="/css/pmgc-themes.css?v=6" />
+    <link rel="stylesheet" href="/css/pmgc-stage.css?v=6" />
+    <link rel="stylesheet" href="/css/pmgc-obs.css?v=13" />
+  <link rel="stylesheet" href="/css/pmgc-layouts.css?v=7" />
   </head>
   <body class="pg-body">
     <div class="pg-fit" id="pgFit">
       <div
         class="pmgc"
         id="pmgc"
-        data-theme="krafton-gold"
+        data-theme="bmps-2024"
         data-scene="opening"
         aria-label="PMGC 2026 broadcast stage"
       >
@@ -204,6 +206,7 @@
         <!-- ===================== 03 · MATCH DROP 30s ======================= -->
         <section class="pg-scene pg-drop" data-scene="drop" aria-label="Match start countdown">
           <div class="pg-drop-art" aria-hidden="true"></div>
+          <div class="pg-drop-cams"><div class="pg-cam"><span class="pg-cam-tag" id="dropCaster1">CASTER 01 · LIVE</span></div><div class="pg-cam"><span class="pg-cam-tag" id="dropCaster2">CASTER 02 · LIVE</span></div></div>
           <div class="pg-drop-left">
             <span class="pg-kicker pg-reveal" style="--d:0.06s">
               <i class="pg-live-dot"></i> MATCH <b id="dropMatch">04</b> ·
@@ -252,20 +255,12 @@
           </div>
         </section>
 
+        <section class="pg-scene pg-mapintro" data-scene="map-intro" aria-label="Map starting animation">
+          <img id="introMapImg" alt="Official PUBG map artwork" />
+          <div class="pg-intro-copy"><span class="pg-kicker">BATTLEGROUND DEPLOYMENT</span><h1 id="introMapName">ERANGEL</h1><p>MATCH STARTING · PREPARE FOR DROP</p><button id="introAudioBtn" type="button">Enable intro music</button></div>
+        </section>
         <!-- ================ 04 · LIVE FEED + DIAGONAL MAP =================== -->
-        <section class="pg-scene pg-live" data-scene="live" aria-label="Live game feed with map feed and live standings">
-          <aside class="pg-live-standings pg-panel" aria-label="Live points">
-            <header>
-              <span class="pg-kicker">LIVE POINTS</span>
-              <b id="liveRailGroup">GROUP A</b>
-            </header>
-            <div class="pg-live-rows" id="liveRail"></div>
-            <footer>
-              <span><i class="pg-dot"></i> LIVE</span>
-              <b id="liveRailFoot">MATCH 04</b>
-            </footer>
-          </aside>
-
+        <section class="pg-scene pg-live" data-scene="live" aria-label="OBS rectangular gameplay bottom-left and tactical map top-right">
           <div class="pg-feed" id="pgFeed">
             <div class="pg-feed-demo" aria-hidden="true"></div>
             <img class="pg-feed-img" id="feedImg" alt="" />
@@ -305,7 +300,7 @@
               <span>NEXT SHRINK <b id="liveShrink">04:12</b></span>
             </div>
           </div>
-          <span class="pg-slash" aria-hidden="true"></span>
+          <div class="pg-live-sponsor" id="diagonalSponsor">PARTNER SLOT</div>
         </section>
 
         <!-- ============ 05 · LIVE FEED + LIVE POINTS STANDINGS ============= -->
@@ -349,17 +344,12 @@
           </div>
 
           <aside class="pg-livepts-board pg-panel" aria-label="Live points standings">
-            <header>
-              <span class="pg-kicker">LIVE POINTS TABLE</span>
-              <h2 class="pg-title">POINTS <em>STANDINGS</em></h2>
-              <p id="livePtsMeta">MATCH 04 · ERANGEL · GROUP A</p>
-            </header>
             <div class="pg-table-head">
-              <span>#</span><span>TEAM</span><span>FIN</span><span>PTS</span><span>ALIVE</span>
+              <span>#</span><span>TEAM</span><span title="Matches played">MP</span><span>FIN</span><span>TOTAL</span><span>STATUS</span>
             </div>
             <div class="pg-livepts-rows" id="livePtsRows"></div>
             <footer>
-              <span>LIVE · UPDATED EVERY ROTATION</span>
+              <span class="pg-status-legend"><i class="alive"></i> ALIVE <i class="knocked"></i> KNOCKED <i class="out"></i> ELIM</span>
               <b id="livePtsFoot">16 SQUADS</b>
             </footer>
           </aside>
@@ -485,16 +475,23 @@
               <div><small>STATUS</small><b id="msStatus">FINAL</b></div>
             </div>
           </header>
-          <div class="pg-board pg-panel">
-            <div class="pg-board-th">
-              <span>#</span><span>TEAM</span><span>WWCD</span><span>FINISHES</span
-              ><span>PLACEMENT PTS</span><span>TOTAL PTS</span>
+          <div class="pg-match-grid" id="msRows">
+            <div class="pg-match-panel pg-panel" aria-label="Match ranks 1 to 8">
+              <div class="pg-board-th">
+                <span>#</span><span>TEAM</span><span>WWCD</span><span>FINISHES</span><span>PLACE PTS</span><span>TOTAL</span>
+              </div>
+              <div class="pg-match-rows" id="msLeft"></div>
             </div>
-            <div class="pg-board-rows" id="msRows"></div>
-            <div class="pg-board-foot">
-              <span>MATCH RESULT · VERIFIED BY TOURNAMENT OPERATIONS</span>
-              <b id="msFoot">TOP 8 ADVANCE</b>
+            <div class="pg-match-panel pg-panel" aria-label="Match ranks 9 to 16">
+              <div class="pg-board-th">
+                <span>#</span><span>TEAM</span><span>WWCD</span><span>FINISHES</span><span>PLACE PTS</span><span>TOTAL</span>
+              </div>
+              <div class="pg-match-rows" id="msRight"></div>
             </div>
+          </div>
+          <div class="pg-match-foot pg-board-foot">
+            <span>MATCH RESULT · VERIFIED BY TOURNAMENT OPERATIONS</span>
+            <b id="msFoot">TOP 8 ADVANCE</b>
           </div>
           <div class="pg-ticker">
             <span class="pg-ticker-label">MATCH RESULT</span>
@@ -516,6 +513,7 @@
               <div><small>LEADER</small><b id="ovLeader">—</b></div>
             </div>
           </header>
+          <aside class="pg-leader-spotlight"><span>CHAMPIONSHIP LEADER</span><b id="leaderSpotName">—</b><div id="leaderSpotLogo"></div><strong id="leaderSpotPoints">0</strong><small>TOTAL POINTS</small></aside>
           <div class="pg-overall-grid">
             <div class="pg-overall-table pg-panel">
               <div class="pg-board-th">
@@ -638,6 +636,7 @@
 
     <!-- ======================== operator controls ======================== -->
     <div class="pg-preview-flag" id="pgFlag">PREVIEW · 1920×1080</div>
+    <div id="sourceGuide" hidden></div>
     <div class="pg-ui" id="pgUi" role="group" aria-label="Stage controls">
       <div class="pg-ui-row pg-ui-scenes" id="pgUiScenes"></div>
       <div class="pg-ui-row">
@@ -655,6 +654,7 @@
       <div class="pg-ui-progress"><i id="pgUiProgress"></i></div>
     </div>
 
-    <script src="/js/pmgc-stage.js?v=1" defer></script>
+  <script src="/js/broadcast-themes.js?v=6"></script>
+    <script src="/js/pmgc-stage.js?v=13" defer></script>
   </body>
 </html>

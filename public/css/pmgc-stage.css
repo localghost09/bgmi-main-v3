@@ -3545,44 +3545,44 @@
 /* ============================================================================
    THEME-SPECIFIC SCENE DRESSING
    ============================================================================ */
-.pmgc[data-theme="blackout-hud"] .pg-ticker {
+.pmgc[data-theme="pmgc-2025"] .pg-ticker {
   background: rgba(4, 6, 6, 0.92);
 }
-.pmgc[data-theme="blackout-hud"] .pg-ticker::before {
+.pmgc[data-theme="pmgc-2025"] .pg-ticker::before {
   background: var(--p-accent);
 }
-.pmgc[data-theme="vikendi-frost"] .pg-caster-card,
-.pmgc[data-theme="vikendi-frost"] .pg-live-standings,
-.pmgc[data-theme="vikendi-frost"] .pg-livepts-board {
+.pmgc[data-theme="bmsd-2026"] .pg-caster-card,
+.pmgc[data-theme="bmsd-2026"] .pg-live-standings,
+.pmgc[data-theme="bmsd-2026"] .pg-livepts-board {
   background: linear-gradient(150deg, rgba(24, 44, 68, 0.6), rgba(8, 18, 32, 0.72));
 }
-.pmgc[data-theme="red-zone"] .pg-feed,
-.pmgc[data-theme="red-zone"] .pg-livepts-feed {
+.pmgc[data-theme="bgis-2025"] .pg-feed,
+.pmgc[data-theme="bgis-2025"] .pg-livepts-feed {
   box-shadow: inset 0 0 0 2px rgba(255, 47, 56, 0.35);
 }
 .pmgc[data-theme="neon-drop"] .pg-feed-label,
-.pmgc[data-theme="pmgc-neon"] .pg-feed-label {
+.pmgc[data-theme="bgms-2024"] .pg-feed-label {
   background: rgba(4, 8, 20, 0.8);
   box-shadow: 0 0 20px rgba(37, 244, 255, 0.25);
 }
-.pmgc[data-theme="miramar-sand"] .pg-map-card-body h2,
-.pmgc[data-theme="rondo-jade"] .pg-map-card-body h2 {
+.pmgc[data-theme="bgis-2026"] .pg-map-card-body h2,
+.pmgc[data-theme="bmsd-2025"] .pg-map-card-body h2 {
   letter-spacing: 0.02em;
 }
-.pmgc[data-theme="sunset-victory"] .pg-cd::before {
+.pmgc[data-theme="ewc-2026"] .pg-cd::before {
   content: "";
   position: absolute;
   inset: 0;
   background: radial-gradient(ellipse 60% 50% at 50% 46%, rgba(255, 194, 71, 0.18), transparent 66%);
   pointer-events: none;
 }
-.pmgc[data-theme="royal-chrome"] .pg-cd-title .w2 {
+.pmgc[data-theme="ewc-2025"] .pg-cd-title .w2 {
   background: linear-gradient(180deg, #ffffff, #cdd8ea 45%, #4a6ba8 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
-.pmgc[data-theme="livid-magenta"] .pg-cd-title .w2 {
+.pmgc[data-theme="bmic-2025"] .pg-cd-title .w2 {
   background: linear-gradient(180deg, #fff0f7, #ff3d8b 55%, #a24bff);
   -webkit-background-clip: text;
   background-clip: text;
