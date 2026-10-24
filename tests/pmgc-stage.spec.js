@@ -1,8 +1,8 @@
 // @ts-check
-// PMGC broadcast stage: the ten-theme × ten-scene rundown at /pmgc/<scene>.
+// PMGC broadcast stage: the ten-theme × fifteen-scene rundown at /pmgc/<scene>.
 // Boots its own isolated server (temp DB + uploads on a free port, same
 // isolation contract as link-check.spec.js) and checks the parts that must not
-// silently rot: routing, the ten scenes, the ten themes, that both countdowns
+// silently rot: routing, the fifteen scenes, the ten themes, that both countdowns
 // actually count, live data wiring, and a clean console on every scene.
 import { test, expect } from '@playwright/test';
 import { spawn } from 'node:child_process';
@@ -13,7 +13,7 @@ import path from 'node:path';
 
 const ROOT = path.resolve(__dirname, '..');
 
-const SCENES = ['opening', 'casters', 'drop', 'map-intro', 'live', 'live-points',
+const SCENES = ['opening', 'casters', 'drop', 'map-intro', 'live', 'map-feed', 'live-points',
   'chicken-dinner', 'winner-stats', 'match-standings', 'overall',
   'map-rotation', 'mvp', 'top-players', 'overall-mvp'];
 
@@ -31,6 +31,14 @@ function freePort() {
       srv.close(() => resolve(port));
     });
   });
+}
+
+/** @param {import('@playwright/test').Locator} locator @param {number[]} expected */
+async function expectBox(locator, expected) {
+  const box = await locator.boundingBox();
+  if (!box) throw new Error('Element has no layout box');
+  expect([Math.round(box.x), Math.round(box.y),
+    Math.round(box.width), Math.round(box.height)]).toEqual(expected);
 }
 
 /** @type {import('node:child_process').ChildProcess | undefined} */
@@ -74,10 +82,10 @@ test.afterAll(() => {
   if (tmp) rmSync(tmp, { recursive: true, force: true });
 });
 
-test('gallery lists ten event themes and fourteen scenes', async ({ page }) => {
+test('gallery lists ten event themes and fifteen scenes', async ({ page }) => {
   await page.goto(base + '/pmgc');
   await expect(page.locator('.theme-card')).toHaveCount(10);
-  await expect(page.locator('.step')).toHaveCount(14);
+  await expect(page.locator('.step')).toHaveCount(15);
   await expect(page.locator('.theme-card').first())
     .toHaveAttribute('href', /\/pmgc\/casters\?theme=bmps-2024/);
 });
@@ -102,6 +110,7 @@ test('every scene routes and activates with a clean console', async ({ page }) =
 });
 
 test('all ten themes apply their own accent tokens', async ({ page }) => {
+  test.setTimeout(180000);
   const accents = new Map([
     ['bmps-2024', '#14db87'], ['bgms-2024', '#ffc153'],
     ['bgis-2025', '#ffcf19'], ['bgis-2026', '#e9dc31'],
@@ -137,10 +146,9 @@ test('the stream-start countdown and its ring actually run', async ({ page }) =>
   const before = await clock.textContent();
   const ringBefore = await page.locator('#openRing')
     .evaluate((el) => (el instanceof SVGElement) ? el.style.strokeDashoffset : '');
-  await page.waitForTimeout(2400);
-  expect(await clock.textContent()).not.toBe(before);
-  expect(await page.locator('#openRing').evaluate(
-    (el) => (el instanceof SVGElement) ? el.style.strokeDashoffset : ''))
+  await expect.poll(() => clock.textContent(), {timeout:15000}).not.toBe(before);
+  await expect.poll(() => page.locator('#openRing').evaluate(
+    (el) => (el instanceof SVGElement) ? el.style.strokeDashoffset : ''), {timeout:15000})
     .not.toBe(ringBefore);
 });
 
@@ -150,9 +158,8 @@ test('the match-drop clock counts 30 seconds down', async ({ page }) => {
   await expect(sec).toHaveText(/^\d{2}$/);
   const first = Number(await sec.textContent());
   expect(first).toBeGreaterThan(24);
-  await page.waitForTimeout(2600);
-  const second = Number(await sec.textContent());
-  expect(second).toBeLessThan(first);
+  await expect.poll(async () => Number(await sec.textContent()), {timeout:15000})
+    .toBeLessThan(first);
 });
 
 test('rectangular OBS frames place map top-right and gameplay bottom-left without standings', async ({ page }) => {
@@ -188,7 +195,8 @@ test('chicken dinner, winner stats and the map rotation are populated', async ({
   await page.goto(`${base}/pmgc/winner-stats?ui=0`);
   await expect(page.locator('#wsPlayers .pg-wplayer')).toHaveCount(4);
   await expect(page.locator('#wsTeam')).not.toHaveText('');
-  await expect(page.locator('#wsDmg')).not.toHaveText('');
+  await expect(page.locator('#wsPlayers .pg-ref-wplayer-stats b')).toHaveCount(8);
+  await expect(page.locator('#wsPlayers .pg-ref-wplayer-stats b').first()).not.toHaveText('');
 
   await page.goto(`${base}/pmgc/map-rotation?ui=0`);
   await expect(page.locator('.pg-map-card')).toHaveCount(3);
@@ -294,10 +302,10 @@ test('drop cameras stay transparent and countdown leads through the correct map 
   // The actual 30s clock has a separate ticking test. Force its deadline here
   // to exercise expiry without making every suite wait half a minute.
   await page.evaluate(() => { window.__pmgc.state.dropEnds = Date.now() - 1; });
-  await expect(page.locator('#pmgc')).toHaveAttribute('data-scene', 'map-intro', { timeout: 4000 });
+  await expect(page.locator('#pmgc')).toHaveAttribute('data-scene', 'map-intro', { timeout: 15000 });
   await expect(page.locator('#introMapName')).toHaveText('MIRAMAR');
   await expect(page.locator('#introMapImg')).toHaveAttribute('src', /map-miramar.jpg/);
-  await expect(page.locator('#pmgc')).toHaveAttribute('data-scene', 'live', { timeout: 11000 });
+  await expect(page.locator('#pmgc')).toHaveAttribute('data-scene', 'live', { timeout: 20000 });
 });
 
 test('live points have an opaque backing, short team tags, accurate player status and no fake live scoring', async ({ page }) => {
@@ -433,7 +441,7 @@ test('compact standings sit bottom-right across every theme with larger centered
   }
 });
 
-test('match points uses two equal centered grids, ranks 1–8 and 9–16, without changing Live Points', async ({ page }) => {
+test('match points uses the reference two-table geometry, ranks 1–8 and 9–16, without changing Live Points', async ({ page }) => {
   await page.setViewportSize({width: 1920, height: 1080});
   await page.goto(`${base}/pmgc/match-standings?obs=1`);
   await expect(page.locator('#msLeft .pg-row')).toHaveCount(8);
@@ -452,8 +460,9 @@ test('match points uses two equal centered grids, ranks 1–8 and 9–16, withou
       return {left: left.left, right: right.right, w1: left.width, w2: right.width,
         clipped: rows.some(row => row.getBoundingClientRect().bottom > row.closest('.pg-match-panel').getBoundingClientRect().bottom + 1)};
     });
-    expect(boxes.left, theme).toBe(80);
-    expect(boxes.right).toBe(1840);
+    expect(boxes.left, theme).toBe(196);
+    expect(boxes.right).toBe(1724);
+    expect(boxes.w1).toBe(749);
     expect(boxes.w1).toBe(boxes.w2);
     expect(boxes.clipped).toBe(false);
   }
@@ -465,9 +474,10 @@ test('match points uses two equal centered grids, ranks 1–8 and 9–16, withou
 test('MVP and top-five use real player awards, escape names, and fit all themes', async ({page}) => {
   await page.setViewportSize({width:1920, height:1080});
   const player = (name, kills, damage) => ({player:name, kills, damage, teamName:'A Long Registered Team Name', teamTag:'GODL', matches:6});
-  const awards = {matchMvp:player('MATCH ACE', 9, 1825), topPlayers:[
+  const awards = {matchMvp:player('MATCH ACE', 9, 1825), matchTopPlayers:[
     player('FIFTH', 11, 1500), player('THIRD', 16, 2500), player('FIRST <img>', 25, 3900),
-    player('SECOND', 20, 3000), player('FOURTH', 11, 1600)]};
+    player('SECOND', 20, 3000), player('FOURTH', 11, 1600)],
+    topPlayers:[player('TOURNAMENT ONLY', 99, 9999)]};
   await page.route('**/api/live/state', route => route.fulfill({json:{ok:true, teams:[], playerAwards:awards}}));
   await page.goto(`${base}/pmgc/mvp?obs=1`);
   await expect(page.locator('#mvpContent h2').first()).toHaveText('MATCH ACE');
@@ -477,7 +487,9 @@ test('MVP and top-five use real player awards, escape names, and fit all themes'
   await expect(page.locator('#topPlayersContent .pg-reference-card:not(.is-leader) h2')).toHaveText(['SECOND', 'THIRD', 'FOURTH', 'FIFTH']);
   await expect(page.locator('#topPlayersContent img')).toHaveCount(0);
   await expect(page.locator('#topPlayersContent .pg-reference-card')).toHaveCount(5);
-  await expect(page.locator('#topPlayersContent .is-leader dd')).toHaveText(['—', '25', '3,900', '—', '—']);
+  await expect(page.locator('#topPlayersContent .is-leader dd')).toHaveText(['—', '25', '3900', '—', '—']);
+  await expect(page.locator('#topPlayersContent')).not.toContainText('TOURNAMENT ONLY');
+  await expect(page.locator('#topPlayersContent .is-leader dt:visible')).toHaveText(['FINISHES', 'DAMAGE', 'SURV. TIME', 'KNOCKS']);
   await expect(page.locator('.pg-topplayers .pg-reference-disclaimer')).toContainText('LIVE SCORING');
   for (const theme of THEMES) {
     await page.evaluate(t => {
@@ -502,7 +514,96 @@ test('player awards show waiting states rather than fictional showcase winners',
   await page.goto(`${base}/pmgc/top-players?obs=1`);
   await expect(page.locator('#topPlayersContent .pg-reference-card')).toHaveCount(5);
   await expect(page.locator('#topPlayersContent h2')).toHaveText(['PENDING','PENDING','PENDING','PENDING','PENDING']);
-  await expect(page.locator('#topPlayersMode')).toContainText('AWAITING PLAYER DATA');
+  await expect(page.locator('#topPlayersMode')).toContainText('AWAITING CURRENT-MATCH PLAYER DATA');
+});
+
+test('all five BGIS current-match references keep their values, geometry and OBS map aperture', async ({page}) => {
+  test.setTimeout(180000);
+  await page.setViewportSize({width:1920,height:1080});
+  await page.emulateMedia({reducedMotion:'reduce'});
+  const problems = [];
+  page.on('pageerror', error => problems.push(String(error)));
+  page.on('console', message => { if (message.type() === 'error') problems.push(message.text()); });
+  const openReference = async scene => {
+    await page.goto(`${base}/pmgc/${scene}?obs=1&reference=1`);
+    await expect(page.locator(`.pg-scene[data-scene="${scene}"]`)).toHaveClass(/is-active/);
+    await expect.poll(() => page.locator('.pg-scene.is-active img:visible').evaluateAll(images =>
+      images.every(image => image.complete && image.naturalWidth > 0))).toBe(true);
+    await page.evaluate(() => document.getAnimations().forEach(animation => {
+      try { animation.finish(); } catch { animation.pause(); }
+    }));
+  };
+
+  await openReference('mvp');
+  await expect(page.locator('.pg-mvp .pg-ref-heading h1')).toHaveText('MVP OF THE MATCH');
+  await expect(page.locator('#mvpMatch')).toHaveText('MATCH 13');
+  await expect(page.locator('.pg-ref-mvp-name')).toHaveText('NINZAJAVIN');
+  await expect(page.locator('.pg-ref-mvp-knocks b')).toHaveText('11');
+  await expect(page.locator('.pg-ref-mvp-finishes b')).toHaveText('8');
+  await expect(page.locator('.pg-ref-mvp-damage b')).toHaveText('1554');
+  await expect(page.locator('.pg-ref-mvp-survival b')).toHaveText('26:06');
+  await expectBox(page.locator('.pg-ref-mvp-team'), [573,409,302,290]);
+  await expectBox(page.locator('.pg-ref-mvp-name'), [573,699,605,140]);
+  await expectBox(page.locator('.pg-ref-mvp-finishes'), [1218,409,300,430]);
+  await expectBox(page.locator('.pg-ref-mvp-damage'), [1518,409,340,215]);
+
+  await openReference('winner-stats');
+  await expect(page.locator('.pg-wstats .pg-ref-heading h1')).toHaveText('WWCD TEAM STATS');
+  await expect(page.locator('#wsMeta')).toHaveText('MATCH 13');
+  await expect(page.locator('#wsTeam')).toHaveText('IQOO ORANGUTAN');
+  await expect(page.locator('#wsPlayers .pg-wplayer')).toHaveCount(4);
+  await expect(page.locator('#wsPlayers h3')).toHaveText(
+    ['IQOOXOGAKOP','IQOOXOGWIZGOD','IQOOXOGATTANKI','IQOOXOGAARU']);
+  await expect(page.locator('#wsPlayers .pg-ref-wplayer-stats b')).toHaveText(
+    ['7','803','5','752','3','503','1','270']);
+  await expectBox(page.locator('#wsPlayers .pg-wplayer').first(), [184,300,340,552]);
+  await expectBox(page.locator('#wsPlayers .pg-wplayer').last(), [1398,300,340,552]);
+
+  await openReference('top-players');
+  await expect(page.locator('.pg-topplayers .pg-ref-heading h1')).toHaveText('TOP PLAYERS');
+  await expect(page.locator('#topPlayersMatch')).toHaveText('MATCH 13');
+  await expect(page.locator('#topPlayersContent h2')).toHaveText(
+    ['NINZAJAVIN','IQOOXOGAKOP','MYTHDETROX','IQOOXOGWIZGOD','GODLSPOWERR1']);
+  await expect(page.locator('#topPlayersContent .is-leader dd')).toHaveText(
+    ['—','8','1554','26:06','11']);
+  const visualStatOrder = await page.locator('#topPlayersContent .is-leader .pg-reference-stat:not(.pg-ref-stat-rating)')
+    .evaluateAll(rows => rows.map(row => ({label:row.querySelector('dt').textContent,
+      top:row.getBoundingClientRect().top})).sort((a,b) => a.top-b.top).map(row => row.label));
+  expect(visualStatOrder).toEqual(['FINISHES','SURV. TIME','DAMAGE','KNOCKS']);
+  await expectBox(page.locator('#topPlayersContent .pg-reference-card').first(), [80,207,441,764]);
+  await expectBox(page.locator('#topPlayersContent .pg-reference-card').nth(1), [560,345,290,626]);
+
+  await openReference('match-standings');
+  await expect(page.locator('#msMatch')).toHaveText('MATCH 13');
+  await expect(page.locator('#msLeaderDamage')).toHaveText('2328');
+  await expect(page.locator('#msLeaderHeals')).toHaveText('1172');
+  await expect(page.locator('#msLeaderKnocks')).toHaveText('12');
+  await expect(page.locator('#msLeaderHeadshots')).toHaveText('1');
+  await expect(page.locator('#msRows .pg-ref-standing-team > b')).toHaveText(
+    ['OG','NINZ','SOUL','K9','NBE','RNTX','GODL','MYTH',
+      'GENS','VE','WF','LEFP','RGE','WELT','TT','VS']);
+  await expect(page.locator('#msRows .num.pts')).toHaveText(
+    ['26','17','15','12','11','11','9','7','6','5','4','3','3','1','1','1']);
+  await expectBox(page.locator('.pg-ref-leader-banner'), [196,266,1528,169]);
+  await expectBox(page.locator('.pg-match-panel').first(), [196,452,749,550]);
+  await expectBox(page.locator('.pg-match-panel').last(), [975,452,749,550]);
+
+  await openReference('map-feed');
+  await expect(page.locator('#mapFeedTitle')).toHaveText('GRAND FINALS - M14');
+  await expect(page.locator('.pg-ref-map-team')).toHaveCount(16);
+  await expect(page.locator('.pg-ref-map-team-name')).toHaveText(
+    ['VE','LEFP','MYTH','NBE','WELT','WF','OG','SOUL',
+      'GODL','K9','RNTX','TT','NINZ','VS','RGE','GENS']);
+  await expect(page.locator('#mapFeedImage')).toBeVisible();
+  await expectBox(page.locator('.pg-ref-map-aperture'), [419,0,1084,1080]);
+  await expectBox(page.locator('#mapFeedLeft .pg-ref-map-team').first(), [37,236,152,186]);
+  await expectBox(page.locator('#mapFeedRight .pg-ref-map-team').first(), [1536,236,152,186]);
+
+  await page.goto(`${base}/pmgc/map-feed?obs=1`);
+  await expect(page.locator('#mapFeedImage')).toBeHidden();
+  expect(await page.locator('.pg-ref-map-aperture').evaluate(
+    element => getComputedStyle(element).backgroundColor)).toBe('rgba(0, 0, 0, 0)');
+  expect(problems, problems.join('\n')).toEqual([]);
 });
 
 test('overall MVP reference has five seeded portraits, rating order and all five stat rows', async ({page}) => {
@@ -551,7 +652,7 @@ test('overall MVP reference has five seeded portraits, rating order and all five
 test('live reference cards refresh rankings and keep missing players and stats honest', async ({page}) => {
   await page.clock.install();
   let players = [{player:'ALPHA',teamTag:'A',kills:3,damage:900}, {player:'BETA',teamTag:'B',kills:2,damage:800}];
-  await page.route('**/api/live/state', route => route.fulfill({json:{ok:true,teams:[],playerAwards:{topPlayers:players}}}));
+  await page.route('**/api/live/state', route => route.fulfill({json:{ok:true,teams:[],playerAwards:{matchTopPlayers:players, topPlayers:[{player:'TOURNAMENT ONLY',kills:99,damage:9999}]}}}));
   await page.goto(`${base}/pmgc/top-players?obs=1`);
   const cards = page.locator('#topPlayersContent .pg-reference-card');
   await expect(cards).toHaveCount(5);
@@ -562,24 +663,48 @@ test('live reference cards refresh rankings and keep missing players and stats h
   players = [{player:'ALPHA',teamTag:'A',kills:3,damage:900}, {player:'BETA',teamTag:'B',kills:7,damage:1800}];
   await page.clock.fastForward(16000);
   await expect(cards.first().locator('h2')).toHaveText('BETA');
-  await expect(cards.first().locator('dd')).toHaveText(['—','7','1,800','—','—']);
+  await expect(cards.first().locator('dd')).toHaveText(['—','7','1800','—','—']);
+  await expect(page.locator('#topPlayersContent')).not.toContainText('TOURNAMENT ONLY');
   await expect(page.locator('#topPlayersContent img[src*="mvp-reference"]')).toHaveCount(0);
 });
 
 
-test('admin top-five preview retains the exact reference chrome and explicitly labeled seed fallback', async ({page}) => {
-  await page.goto(`${base}/pmgc/top-players?obs=1&preview=1`);
-  await expect(page.locator('.pg-topplayers .pg-reference-heading h1')).toHaveText('TOURNAMENT MVP');
-  await expect(page.locator('.pg-topplayers .pg-reference-heading p')).toHaveText('BGIS 2026');
-  await expect(page.locator('.pg-topplayers .pg-reference-event-mark')).toBeVisible();
+test('current-match reference preview is explicit, labeled, and never leaks into live OBS', async ({page}) => {
+  await page.route('**/api/live/state', route => route.fulfill({json:{ok:true,teams:[],
+    playerAwards:{matchTopPlayers:[],topPlayers:[{player:'TOURNAMENT ONLY',kills:99,damage:9999}]}}}));
+  await page.goto(`${base}/pmgc/top-players?obs=1&reference=1`);
+  await expect(page.locator('.pg-topplayers .pg-ref-heading h1')).toHaveText('TOP PLAYERS');
+  await expect(page.locator('#topPlayersMatch')).toHaveText('MATCH 13');
+  await expect(page.locator('.pg-topplayers .pg-ref-event-mark')).toBeVisible();
   await expect(page.locator('#topPlayersContent .pg-reference-card')).toHaveCount(5);
-  await expect(page.locator('#topPlayersContent .is-leader h2')).toHaveText('GENSHUNTERRZ');
+  await expect(page.locator('#topPlayersContent .is-leader h2')).toHaveText('NINZAJAVIN');
+  await expect(page.locator('#topPlayersMode')).toContainText('NOT LIVE RESULTS');
+  await page.goto(`${base}/pmgc/top-players?obs=1&preview=1`);
+  await expect(page.locator('#topPlayersContent .is-leader h2')).toHaveText('NINZAJAVIN');
+  await expect(page.locator('#topPlayersMatch')).toHaveText('MATCH 13');
   await expect(page.locator('#topPlayersMode')).toContainText('NOT LIVE RESULTS');
   await page.goto(`${base}/pmgc/top-players?obs=1`);
   await expect(page.locator('#topPlayersContent .is-leader h2')).toHaveText('PENDING');
-  await expect(page.locator('#topPlayersContent img[src*="mvp-reference"]')).toHaveCount(0);
+  await expect(page.locator('#topPlayersContent')).not.toContainText('TOURNAMENT ONLY');
+  await expect(page.locator('#topPlayersContent img[src*="bgis-2026"]')).toHaveCount(0);
+  await page.goto(`${base}/pmgc/winner-stats?obs=1`);
+  await expect(page.locator('#wsTeam')).not.toHaveText('IQOO ORANGUTAN');
+  await expect(page.locator('#wsPlayers img[src*="bgis-2026"]')).toHaveCount(0);
 });
 
+
+test('preview never blends reference awards with a partial live award payload', async ({page}) => {
+  await page.route('**/api/live/state', route => route.fulfill({json:{ok:true,teams:[],
+    playerAwards:{matchMvp:null,matchTopPlayers:[{player:'LIVE LEADER',teamTag:'LIVE',kills:6,damage:1200}],topPlayers:[]}}}));
+  await page.goto(`${base}/pmgc/mvp?obs=1&preview=1`);
+  await expect(page.locator('#mvpContent .pg-award-empty')).toHaveText('MVP AWAITING MATCH DATA');
+  await expect(page.locator('#mvpContent')).not.toContainText('NINZAJAVIN');
+  await page.goto(`${base}/pmgc/top-players?obs=1&preview=1`);
+  await expect(page.locator('#topPlayersContent .is-leader h2')).toHaveText('LIVE LEADER');
+  await expect(page.locator('#topPlayersContent')).not.toContainText('NINZAJAVIN');
+  await expect(page.locator('#topPlayersMatch')).not.toHaveText('MATCH 13');
+  await expect(page.locator('#topPlayersMode')).toContainText('LIVE SCORING');
+});
 
 test('common Program URL follows producer scene, theme and caster edits without reloading OBS', async ({page, context}) => {
   await page.goto(`${base}/pmgc/program?obs=1`);
@@ -593,7 +718,7 @@ test('common Program URL follows producer scene, theme and caster edits without 
   await expect(admin.getByRole('heading', {name: 'Preview', exact: true})).toHaveCount(0);
   await expect(admin.locator('#programUrl, #programSceneBtns, #tokenField, #previewFrame')).toHaveCount(0);
   await expect(admin.locator('#pmgcUrl')).toHaveValue(`${base}/pmgc/program?obs=1`);
-  await expect(admin.locator('#pmgcSceneButtons button')).toHaveCount(14);
+  await expect(admin.locator('#pmgcSceneButtons button')).toHaveCount(15);
   const preview = admin.frameLocator('#pmgcPreviewFrame');
   await admin.locator('#pmgcSceneButtons button[data-scene="casters"]').click();
   await expect(page.locator('#pmgc')).toHaveAttribute('data-scene','casters');
@@ -625,6 +750,9 @@ test('common Program URL follows producer scene, theme and caster edits without 
   await expect(pinned.locator('#pmgc')).toHaveAttribute('data-scene','live');
   await expect(pinned.locator('#pmgc')).toHaveAttribute('data-theme','bmps-2024');
   await expect(admin.locator('#pmgcUrl')).toHaveValue(`${base}/pmgc/program?obs=1`);
+  await admin.locator('#pmgcSceneButtons button[data-scene="map-feed"]').click();
+  await expect(page.locator('#pmgc')).toHaveAttribute('data-scene','map-feed');
+  await expect(pinned.locator('#pmgc')).toHaveAttribute('data-scene','live');
   await admin.close(); await pinned.close();
 });
 

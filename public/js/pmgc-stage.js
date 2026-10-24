@@ -1,6 +1,6 @@
 /* ============================================================================
    PMGC 2026 — BROADCAST STAGE CONTROLLER
-   Ten-scene rundown, ten themes, live demo simulation and optional live data.
+   Fifteen-scene rundown, ten themes, live demo simulation and optional live data.
 
    URL options (every one is optional):
      ?scene=live            pin a scene (opening … map-rotation)
@@ -24,6 +24,8 @@
   if (!root) return;
 
   var params = new URLSearchParams(location.search);
+  var referenceMode = params.get('reference') === '1';
+  if (referenceMode) root.setAttribute('data-reference', 'true');
   var programMode = /\/pmgc\/program\/?$/.test(location.pathname);
   var programRevision = null;
   if (programMode) root.style.opacity = '0';
@@ -49,6 +51,7 @@
     { id: 'drop', label: '03 Match Drop', ms: 30000, word: 'DROP IN' },
     { id: 'map-intro', label: 'Map intro', ms: 8000, word: 'DEPLOYMENT' },
     { id: 'live', label: '04 Live + Map', ms: 24000, word: 'MATCH LIVE' },
+    { id: 'map-feed', label: 'Map Feed + Teams', ms: 24000, word: 'TACTICAL MAP' },
     { id: 'live-points', label: '05 Live Points', ms: 20000, word: 'POINTS' },
     { id: 'chicken-dinner', label: '06 Chicken Dinner', ms: 15000, word: 'CHICKEN DINNER' },
     { id: 'winner-stats', label: '07 Winner Stats', ms: 16000, word: 'MATCH STATS' },
@@ -158,6 +161,9 @@
 
   /* ------------------------------------------------------------ showcase */
   function buildDemo() {
+    if (referenceMode && window.BGIS_MATCH_REFERENCE) {
+      return JSON.parse(JSON.stringify(window.BGIS_MATCH_REFERENCE));
+    }
     var teams = DEMO_ORDER.map(function (row, i) {
       var name = row[0], tag = row[1], wins = row[2], priorPts = row[3];
       var priorFin = row[4], matchKills = row[5];
@@ -232,6 +238,10 @@
         matchPlace: Number(t.placement) || 0,
         matchPlacePts: Math.max(0, (Number(t.matchPoints) || 0) - (Number(t.kills) || 0)),
         matchTotal: Number(t.matchPoints) || 0,
+        damage: Number(t.damage) || (t.players || []).reduce(function (sum, p) { return sum + (Number(p.damage) || 0); }, 0),
+        heals: t.heals == null ? null : Number(t.heals),
+        knocks: t.knocks == null ? null : Number(t.knocks),
+        headshots: t.headshots == null ? null : Number(t.headshots),
         alive: (t.players || []).filter(function (p) { return (p.status || 'alive') === 'alive'; }).length,
         players: t.players || []
       };
@@ -258,6 +268,8 @@
         role: idx === 0 ? 'ASSAULT' : idx === 1 ? 'FLEX' : idx === 2 ? 'SNIPER' : 'SUPPORT',
         kills: Number(p.kills) || 0,
         damage: Number(p.damage) || 0,
+        survival: p.survival || p.survivalTime || '',
+        knocks: p.knocks == null ? null : Number(p.knocks),
         no: idx + 1,
         avatarUrl: p.avatarUrl || ''
       };
@@ -280,7 +292,11 @@
         kills: winnerRow.matchKills, place: 1,
         total: winnerRow.matchTotal || winnerRow.total,
         wwcd: winnerRow.wins,
-        damage: players.reduce(function (s, p) { return s + p.damage; }, 0),
+        damage: winnerRow.damage || players.reduce(function (s, p) { return s + p.damage; }, 0),
+        heals: winnerRow.heals,
+        knocks: winnerRow.knocks,
+        headshots: winnerRow.headshots,
+        lineupUrl: winnerRow.lineupUrl || '',
         players: players.length ? players : fallback.winner.players
       },
       killFeed: fallback.killFeed
@@ -667,7 +683,7 @@
     });
   }
 
-  /* match points standings (6 columns, 16 rows) */
+  /* Current-match points: two five-column tables and a leader stat banner. */
   function renderMatchStandings() {
     var left = $('msLeft');
     var right = $('msRight');
@@ -676,28 +692,47 @@
     right.replaceChildren();
     var teams = state.data.teams.slice().sort(function (a, b) {
       return (b.matchTotal || 0) - (a.matchTotal || 0) ||
-        (b.matchKills || 0) - (a.matchKills || 0) ||
-        (a.matchPlace || 99) - (b.matchPlace || 99);
+        (a.matchPlace || 99) - (b.matchPlace || 99) ||
+        (b.matchKills || 0) - (a.matchKills || 0);
     });
     teams.slice(0, 16).forEach(function (team, i) {
       var row = el('div', 'pg-row');
       row.style.setProperty('--i', i % 8);
       row.classList.toggle('is-first', i === 0);
-      if (i < 8) row.classList.add('is-top');
       row.appendChild(el('span', 'rank', pad(i + 1)));
-      row.appendChild(teamCell(team, 'GROUP ' + team.group));
-      row.appendChild(el('span', 'num', team.matchPlace === 1 ? '01' : '—'));
-      row.appendChild(el('span', 'num', team.matchKills));
+      var identity = el('div', 'pg-ref-standing-team');
+      var logo = el('span', 'pg-ref-standing-logo');
+      setLogo(logo, team.logo, team.shortName || team.name, team.tag);
+      identity.appendChild(logo);
+      identity.appendChild(el('b', null, team.shortName || team.broadcastTag || team.tag || team.name));
+      if (team.matchPlace === 1) {
+        var wwcd = el('img', 'pg-ref-wwcd');
+        wwcd.src = '/assets/images/bgis-2026/teams/wwcd.png';
+        wwcd.alt = 'WWCD';
+        identity.appendChild(wwcd);
+      }
+      row.appendChild(identity);
       row.appendChild(el('span', 'num', team.matchPlacePts));
+      row.appendChild(el('span', 'num', team.matchKills));
       row.appendChild(el('span', 'num pts', team.matchTotal));
       (i < 8 ? left : right).appendChild(row);
     });
     var p = state.data;
-    if ($('msKicker')) $('msKicker').textContent = 'MATCH ' + pad(p.match) + ' · ' + String(p.map).toUpperCase();
-    if ($('msWinner')) $('msWinner').textContent = p.winner.name;
-    if ($('msTeams')) $('msTeams').textContent = teams.length;
-    if ($('msTickerMatch')) $('msTickerMatch').textContent = 'MATCH ' + pad(p.match);
-    if ($('msFoot')) $('msFoot').textContent = 'TOP ' + Math.min(8, teams.length) + ' ADVANCE';
+    var leader = teams[0] || p.winner || {};
+    var winner = p.winner || {};
+    var dash = function (value) { return value == null || value === '' ? '—' : String(Number(value)); };
+    if ($('msMatch')) $('msMatch').textContent = 'MATCH ' + Number(p.match || 1);
+    if ($('msLeaderLogo')) setLogo($('msLeaderLogo'), leader.mapLogo || winner.mapLogo || leader.logo || winner.logo, leader.shortName || leader.name || 'WINNER', leader.tag);
+    if ($('msLeaderDamage')) $('msLeaderDamage').textContent = dash(winner.damage != null ? winner.damage : leader.damage);
+    if ($('msLeaderHeals')) $('msLeaderHeals').textContent = dash(winner.heals != null ? winner.heals : leader.heals);
+    if ($('msLeaderKnocks')) $('msLeaderKnocks').textContent = dash(winner.knocks != null ? winner.knocks : leader.knocks);
+    if ($('msLeaderHeadshots')) $('msLeaderHeadshots').textContent = dash(winner.headshots != null ? winner.headshots : leader.headshots);
+    var lineup = $('msLeaderLineup');
+    if (lineup) {
+      var lineupUrl = winner.lineupUrl || leader.lineupUrl || '';
+      lineup.classList.toggle('hidden', !lineupUrl);
+      if (lineupUrl) lineup.src = lineupUrl; else lineup.removeAttribute('src');
+    }
   }
 
   /* overall standings, split 01–08 / 09–16 */
@@ -853,68 +888,114 @@
     });
   }
 
+  function currentMatchStat(label, value, className) {
+    var row = el('div', 'pg-reference-stat' + (className ? ' ' + className : ''));
+    row.appendChild(el('dt', null, label));
+    row.appendChild(el('dd', null, value == null || value === '' ? '—' : String(value)));
+    return row;
+  }
+
+  function fillCurrentMatchCards(host, leaders) {
+    for (var i = 0; i < 5; i += 1) {
+      var player = leaders[i];
+      var card = el('article', 'pg-reference-card' + (i === 0 ? ' is-leader' : ''));
+      card.setAttribute('aria-label', 'Rank ' + (i + 1) + (player ? ': ' + player.player : ': awaiting player data'));
+      var portrait = el('div', 'pg-reference-portrait');
+      var photo = player && (player.avatarUrl || player.photoUrl);
+      if (photo) {
+        var image = el('img'); image.src = photo; image.alt = player.player;
+        portrait.appendChild(image);
+      } else {
+        portrait.classList.add('pg-reference-live-placeholder');
+        if (player && player.logo) {
+          var logo = el('img'); logo.src = player.logo; logo.alt = player.teamName || 'Team logo';
+          logo.className = 'pg-reference-team-logo'; portrait.appendChild(logo);
+        } else {
+          portrait.appendChild(el('span', 'pg-reference-monogram', player ? initials(player.player) : '#' + (i + 1)));
+        }
+        portrait.appendChild(el('small', 'pg-reference-photo-note', player ? 'PLAYER PHOTO NOT SET' : 'AWAITING PLAYER DATA'));
+      }
+      if (player && !photo) portrait.appendChild(el('span', 'pg-reference-team-tag', player.teamTag || player.teamName || ''));
+      card.appendChild(portrait);
+      var name = el('h2', 'pg-reference-name', player ? player.player : 'PENDING');
+      name.title = player ? player.player : 'Awaiting player data';
+      card.appendChild(name);
+      var metrics = el('dl', 'pg-reference-stats');
+      // Rating stays in the DOM as an explicitly untracked metric for backwards
+      // compatibility, but the current-match reference shows these four rows.
+      metrics.appendChild(currentMatchStat('MVP RATING', '—', 'pg-ref-stat-rating'));
+      metrics.appendChild(currentMatchStat('FINISHES', player ? money(player.kills) : '—', 'pg-ref-stat-finishes'));
+      metrics.appendChild(currentMatchStat('DAMAGE', player ? String(Number(player.damage) || 0) : '—', 'pg-ref-stat-damage'));
+      metrics.appendChild(currentMatchStat('SURV. TIME', player && (player.survival || player.survivalTime), 'pg-ref-stat-survival'));
+      metrics.appendChild(currentMatchStat('KNOCKS', player && player.knocks != null ? player.knocks : '—', 'pg-ref-stat-knocks'));
+      card.appendChild(metrics);
+      host.appendChild(card);
+    }
+  }
+
   function renderPlayerAwards() {
-    var awards = state.playerAwards || {};
+    var seed = window.BGIS_MATCH_REFERENCE;
+    var awards = referenceMode && seed ? seed.playerAwards : (state.playerAwards || {});
     var mvp = awards.matchMvp;
-    var leaders = (awards.topPlayers || []).slice().sort(function (a, b) {
+    var leaders = (awards.matchTopPlayers || []).slice();
+    var referencePreview = referenceMode && seed;
+    if (flag('preview', false) && seed && !mvp && !leaders.length) {
+      // Preview fallback is a single snapshot, never a blend of seeded and
+      // live awards. Any real current-match award keeps the whole view live.
+      mvp = seed.playerAwards.matchMvp;
+      leaders = seed.playerAwards.matchTopPlayers.slice();
+      referencePreview = true;
+    }
+    leaders.sort(function (a, b) {
       return b.kills - a.kills || b.damage - a.damage || String(a.player).localeCompare(String(b.player));
-    }).slice(0, 5);
+    });
+    leaders = leaders.slice(0, 5);
     var host = $('mvpContent'); var top = $('topPlayersContent');
     if (!host || !top) return;
     host.replaceChildren(); top.replaceChildren();
+    var awardMatch = referencePreview && seed ? seed.match : state.data.match;
+    if ($('mvpMatch')) $('mvpMatch').textContent = 'MATCH ' + Number(awardMatch || 1);
+    if ($('topPlayersMatch')) $('topPlayersMatch').textContent = 'MATCH ' + Number(awardMatch || 1);
     if (mvp && mvp.kills > 0) {
-      host.appendChild(awardProfile(mvp, 1));
-      var stats = el('div', 'pg-mvp-stats');
-      stats.appendChild(el('span', 'pg-award-kicker', 'MATCH MVP · PERFORMANCE REPORT'));
-      stats.appendChild(el('h2', null, 'THE DIFFERENCE MAKER'));
-      stats.appendChild(awardMetric('FINISHES', money(mvp.kills)));
-      stats.appendChild(awardMetric('DAMAGE DEALT', money(mvp.damage)));
-      stats.appendChild(el('p', 'pg-award-method', 'Ranked by finishes · damage breaks ties'));
-      host.appendChild(stats);
+      var card = el('article', 'pg-ref-mvp-card');
+      var person = el('div', 'pg-ref-mvp-person');
+      var portrait = mvp.cutoutUrl || mvp.avatarUrl || mvp.photoUrl;
+      if (portrait) {
+        var photo = el('img', mvp.cutoutUrl ? 'cutout' : 'portrait');
+        photo.src = portrait; photo.alt = mvp.player; person.appendChild(photo);
+      } else {
+        person.appendChild(el('span', 'pg-ref-mvp-initials', initials(mvp.player)));
+        person.appendChild(el('span', 'pg-ref-mvp-jersey', mvp.teamTag || initials(mvp.teamName)));
+      }
+      card.appendChild(person);
+      var team = el('div', 'pg-ref-mvp-team');
+      var teamLogo = el('span', 'pg-ref-mvp-team-logo');
+      setLogo(teamLogo, mvp.logo, mvp.teamName, mvp.teamTag);
+      team.appendChild(teamLogo);
+      team.appendChild(el('b', null, mvp.teamTag || mvp.teamName || 'TEAM'));
+      card.appendChild(team);
+      var knocks = el('div', 'pg-ref-mvp-knocks');
+      knocks.appendChild(el('small', null, 'KNOCKS'));
+      knocks.appendChild(el('b', null, mvp.knocks == null ? '—' : mvp.knocks));
+      card.appendChild(knocks);
+      card.appendChild(el('h2', 'pg-ref-mvp-name', mvp.player));
+      var finishes = awardMetric('FINISHES', money(mvp.kills));
+      finishes.classList.add('pg-ref-mvp-finishes'); card.appendChild(finishes);
+      var damage = awardMetric('DAMAGE', String(Number(mvp.damage) || 0));
+      damage.classList.add('pg-ref-mvp-damage'); card.appendChild(damage);
+      var survival = awardMetric('SURV. TIME', mvp.survival || mvp.survivalTime || '—');
+      survival.classList.add('pg-ref-mvp-survival'); card.appendChild(survival);
+      host.appendChild(card);
     } else {
       host.appendChild(el('div', 'pg-award-empty', 'MVP AWAITING MATCH DATA'));
     }
+    fillCurrentMatchCards(top, leaders);
     var topFooter = $('topPlayersMode');
-    if (flag('preview', false) && !leaders.length && window.PMGC_MVP_REFERENCE) {
-      fillMvpReferenceCards(top, window.PMGC_MVP_REFERENCE);
-      topFooter.textContent = 'SEEDED REFERENCE PREVIEW · NO SCORED PLAYERS YET · NOT LIVE RESULTS';
-      return;
-    }
-    topFooter.textContent = leaders.length
-      ? 'LIVE SCORING · FINISHES FIRST · DAMAGE TIEBREAK · — = NOT TRACKED'
-      : 'AWAITING PLAYER DATA · LIVE SOURCE · — = NOT TRACKED';
-    {
-      for (var i = 0; i < 5; i += 1) {
-        var player = leaders[i];
-        var card = el('article', 'pg-reference-card' + (i === 0 ? ' is-leader' : ''));
-        card.setAttribute('aria-label', 'Rank ' + (i + 1) + (player ? ': ' + player.player : ': awaiting player data'));
-        var portrait = el('div', 'pg-reference-portrait');
-        var photo = player && (player.avatarUrl || player.photoUrl);
-        if (photo) {
-          var image = el('img'); image.src = photo; image.alt = player.player;
-          portrait.appendChild(image);
-        } else {
-          portrait.classList.add('pg-reference-live-placeholder');
-          if (player && player.logo) {
-            var logo = el('img'); logo.src = player.logo; logo.alt = player.teamName || 'Team logo';
-            logo.className = 'pg-reference-team-logo'; portrait.appendChild(logo);
-          } else { portrait.appendChild(el('span', 'pg-reference-monogram', player ? initials(player.player) : '#' + (i + 1))); }
-          portrait.appendChild(el('small', 'pg-reference-photo-note', player ? 'PLAYER PHOTO NOT SET' : 'AWAITING PLAYER DATA'));
-        }
-        if (player) portrait.appendChild(el('span', 'pg-reference-team-tag', player.teamTag || player.teamName || ''));
-        card.appendChild(portrait);
-        var name = el('h2', 'pg-reference-name', player ? player.player : 'PENDING');
-        name.title = player ? player.player : 'Awaiting player data'; card.appendChild(name);
-        var metrics = el('dl', 'pg-reference-stats');
-        [['MVP RATING', '—'], ['FINISHES', player ? money(player.kills) : '—'],
-          ['DAMAGE', player ? money(player.damage) : '—'], ['AVG. SURV.', '—'], ['KNOCKS', '—']].forEach(function (pair) {
-          var row = el('div', 'pg-reference-stat');
-          row.appendChild(el('dt', null, pair[0])); row.appendChild(el('dd', null, pair[1]));
-          metrics.appendChild(row);
-        });
-        card.appendChild(metrics); top.appendChild(card);
-      }
-    }
+    topFooter.textContent = referencePreview
+      ? 'SEEDED REFERENCE PREVIEW · NOT LIVE RESULTS'
+      : leaders.length
+        ? 'LIVE SCORING · CURRENT MATCH · FINISHES FIRST · DAMAGE TIEBREAK · — = NOT TRACKED'
+        : 'AWAITING CURRENT-MATCH PLAYER DATA · LIVE SOURCE · — = NOT TRACKED';
   }
 
   function renderWinnerStats() {
@@ -922,56 +1003,81 @@
     var p = state.data;
     if (!w) return;
     if ($('wsTeam')) $('wsTeam').textContent = w.name;
-    if ($('wsMeta')) {
-      $('wsMeta').textContent = 'MATCH ' + pad(p.match) + ' · ' +
-        String(p.map).toUpperCase() + ' · GROUP ' + p.group;
-    }
-    if ($('wsFin')) $('wsFin').textContent = w.kills;
-    if ($('wsDmg')) $('wsDmg').textContent = money(w.damage);
-    if ($('wsPts')) $('wsPts').textContent = w.total;
-    if ($('wsWwcd')) $('wsWwcd').textContent = '#' + pad(w.wwcd || 1);
-    if ($('wsLogo')) setLogo($('wsLogo'), w.logo, w.name, w.tag);
+    if ($('wsMeta')) $('wsMeta').textContent = 'MATCH ' + Number(p.match || 1);
+    if ($('wsLogo')) setLogo($('wsLogo'), w.mapLogo || w.logo, w.name, w.tag);
 
     var host = $('wsPlayers');
     if (!host) return;
     host.replaceChildren();
-    var top = Math.max.apply(null, w.players.map(function (pl) { return pl.damage || 0; }).concat([1]));
-    w.players.forEach(function (player, i) {
+    for (var i = 0; i < 4; i += 1) {
+      var player = w.players[i] || { name: 'PENDING', kills: null, damage: null };
       var card = el('article', 'pg-wplayer');
       card.style.setProperty('--i', i);
       var photo = el('div', 'pg-wplayer-photo');
-      var crops = ['18% 18%', '82% 18%', '14% 62%', '88% 60%'];
-      photo.style.setProperty('--crop', crops[i % crops.length]);
-      photo.appendChild(el('span', 'num', pad(player.no || i + 1)));
       if (player.avatarUrl) {
         var img = document.createElement('img');
         img.src = player.avatarUrl;
         img.alt = player.name;
         photo.appendChild(img);
+      } else {
+        photo.appendChild(el('span', 'pg-ref-wplayer-initials', initials(player.name)));
       }
-      photo.appendChild(el('span', 'crop-tag', 'SQUAD CAM'));
       var body = el('div', 'pg-wplayer-body');
       body.appendChild(el('h3', null, player.name));
-      var meta = el('div', 'pg-wplayer-meta');
-      meta.appendChild(el('span', 'role', player.role || 'PLAYER'));
-      var stats = el('div', 'stat');
-      var s1 = el('span');
-      s1.appendChild(el('small', null, 'FINISHES'));
-      s1.appendChild(el('b', null, player.kills || 0));
-      var s2 = el('span');
-      s2.appendChild(el('small', null, 'DAMAGE'));
-      s2.appendChild(el('b', null, money(player.damage || 0)));
-      stats.appendChild(s1);
-      stats.appendChild(s2);
-      meta.appendChild(stats);
-      body.appendChild(meta);
-      var bar = el('span', 'pg-wplayer-bar');
-      bar.style.setProperty('--w', Math.round(((player.damage || 0) / top) * 100) + '%');
-      body.appendChild(bar);
+      var stats = el('div', 'pg-ref-wplayer-stats');
+      var finishes = el('div');
+      finishes.appendChild(el('small', null, 'FINISHES'));
+      finishes.appendChild(el('b', null, player.kills == null ? '—' : player.kills));
+      var damage = el('div');
+      damage.appendChild(el('small', null, 'DAMAGE'));
+      damage.appendChild(el('b', null, player.damage == null ? '—' : money(player.damage)));
+      stats.appendChild(finishes); stats.appendChild(damage);
+      body.appendChild(stats);
       card.appendChild(photo);
       card.appendChild(body);
       host.appendChild(card);
+    }
+  }
+
+  /* Tactical map feed with eight team marks on each side. */
+  function renderMapFeed() {
+    var left = $('mapFeedLeft'); var right = $('mapFeedRight');
+    if (!left || !right) return;
+    left.replaceChildren(); right.replaceChildren();
+    var teams = state.data.teams.slice();
+    var byTag = {};
+    teams.forEach(function (team) { byTag[String(team.tag || team.shortName || team.name).toUpperCase()] = team; });
+    var order = state.data.mapOrder || teams.map(function (team) { return team.tag || team.shortName || team.name; });
+    var used = {};
+    var ordered = order.map(function (tag) {
+      var team = byTag[String(tag).toUpperCase()];
+      if (team) used[String(tag).toUpperCase()] = true;
+      return team;
+    }).filter(Boolean);
+    teams.forEach(function (team) {
+      var tag = String(team.tag || team.shortName || team.name).toUpperCase();
+      if (!used[tag]) ordered.push(team);
     });
+    ordered.slice(0, 16).forEach(function (team, index) {
+      var tag = team.shortName || team.broadcastTag || team.tag || team.name;
+      var card = el('article', 'pg-ref-map-team');
+      card.style.setProperty('--i', index % 8);
+      var logo = el('div', 'pg-ref-map-team-logo');
+      setLogo(logo, team.mapLogo || team.logo, tag, tag);
+      card.appendChild(logo);
+      card.appendChild(el('b', 'pg-ref-map-team-name', tag));
+      (index < 8 ? left : right).appendChild(card);
+    });
+    var match = state.data.mapFeedMatch || state.data.match || 1;
+    var stage = String(state.data.stage || 'GRAND FINALS').split('·')[0].trim().toUpperCase();
+    if ($('mapFeedTitle')) $('mapFeedTitle').textContent = stage + ' - M' + match;
+    var image = $('mapFeedImage');
+    if (image) {
+      var art = params.get('map') || (state.data.reference
+        ? '/assets/images/bgis-2026/map-erangel.jpg'
+        : MAP_ART[String(state.data.map).toLowerCase()] || MAP_ART.erangel);
+      if (image.getAttribute('src') !== art) image.src = art;
+    }
   }
 
   /* map rotation */
@@ -1136,7 +1242,7 @@
     clearTimeout(introExit);
     introMusic.pause();
     introMusic.currentTime = 0;
-    document.body.classList.toggle('pg-capture', ['casters', 'drop', 'live', 'live-points'].indexOf(id) !== -1);
+    document.body.classList.toggle('pg-capture', ['casters', 'drop', 'live', 'live-points', 'map-feed'].indexOf(id) !== -1 && !(referenceMode && id === 'map-feed'));
     if (id === 'map-intro') {
       var mapKey = String(state.data.map || 'erangel').toLowerCase();
       $('introMapName').textContent = mapKey.toUpperCase();
@@ -1184,6 +1290,7 @@
     }
     if (id === 'winner-stats') renderWinnerStats();
     if (id === 'match-standings') renderMatchStandings();
+    if (id === 'map-feed') renderMapFeed();
     if (id === 'overall') renderOverall();
     if (id === 'map-rotation') renderMaps();
   }
@@ -1238,6 +1345,7 @@
     renderChickenDinner();
     renderWinnerStats();
     renderPlayerAwards();
+    renderMapFeed();
     renderOverallMvpReference();
     renderMaps();
     renderKillFeed(true);
@@ -1245,6 +1353,7 @@
 
   /* ------------------------------------------------------------ live data */
   function applyLiveState(payload) {
+    if (referenceMode) return;
     if (!state.useDemo && (!payload || !payload.teams || payload.teams.length < 4)) return;
     state.data = fromLive(payload, demoData);
     state.alive = state.data.teams.reduce(function (sum, t) { return sum + (t.players || []).filter(function (p) { return p.status === 'alive' || p.status === 'knocked'; }).length; }, 0);
