@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>PMGC 2026 Broadcast Stage · Theme Gallery</title>
+    <meta
+      name="description"
+      content="Ten broadcast overlay themes inspired by KRAFTON India Esports / PMGC 2026 — pick a theme, run the full ten-scene show."
+    />
+    <link rel="stylesheet" href="/assets/fonts/overlay-fonts.css" />
+    <style>
+      :root {
+        --ink: #06070a;
+        --panel: #0d0f14;
+        --line: rgba(255, 255, 255, 0.1);
+        --gold: #e8c15c;
+        --text: #f4f2ea;
+        --muted: #9aa1ac;
+        --display: "Barlow Condensed", Impact, sans-serif;
+        --body: "Rajdhani", Arial, sans-serif;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background:
+          radial-gradient(ellipse 70% 46% at 78% 0%, rgba(232, 193, 92, 0.14), transparent 62%),
+          radial-gradient(ellipse 60% 40% at 8% 100%, rgba(63, 107, 216, 0.16), transparent 66%),
+          var(--ink);
+        color: var(--text);
+        font-family: var(--body);
+        min-height: 100vh;
+      }
+      a { color: inherit; }
+      .wrap { max-width: 1420px; margin: 0 auto; padding: 34px 26px 80px; }
+      .topbar {
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 18px; padding-bottom: 22px; border-bottom: 1px solid var(--line);
+      }
+      .brand { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+      .brand .mark {
+        display: grid; place-items: center; width: 46px; height: 46px;
+        border: 1px solid var(--gold); color: var(--gold);
+        font: 800 18px/1 var(--display); letter-spacing: .04em;
+      }
+      .brand b { display: block; font: 800 22px/1 var(--display); letter-spacing: .1em; }
+      .brand small { display: block; margin-top: 4px; color: var(--muted); font: 700 10px/1 var(--body); letter-spacing: .26em; }
+      .toplinks { display: flex; gap: 10px; flex-wrap: wrap; }
+      .btn {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 11px 16px; border: 1px solid var(--line); border-radius: 7px;
+        background: rgba(255, 255, 255, 0.04); text-decoration: none;
+        font: 700 12px/1 var(--body); letter-spacing: .14em; text-transform: uppercase;
+        color: var(--text); transition: .2s;
+      }
+      .btn:hover { background: rgba(255, 255, 255, 0.1); }
+      .btn--gold { background: var(--gold); color: #0a0b0d; border-color: transparent; }
+      .hero { padding: 54px 0 30px; max-width: 900px; }
+      .eyebrow { font: 700 12px/1 var(--body); letter-spacing: .34em; color: var(--gold); text-transform: uppercase; }
+      h1 {
+        margin: 16px 0 0; font: 800 88px/.9 var(--display);
+        letter-spacing: .01em; text-transform: uppercase;
+      }
+      h1 em { font-style: normal; color: var(--gold); }
+      .lede { margin: 18px 0 0; font: 500 19px/1.5 var(--body); color: var(--muted); letter-spacing: .03em; max-width: 780px; }
+      .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+      .chip {
+        padding: 8px 13px; border: 1px solid var(--line); border-radius: 999px;
+        font: 700 11px/1 var(--body); letter-spacing: .18em; color: var(--muted); text-transform: uppercase;
+      }
+      .section-head {
+        display: flex; align-items: flex-end; justify-content: space-between; gap: 18px;
+        margin: 46px 0 20px; padding-bottom: 14px; border-bottom: 1px solid var(--line);
+      }
+      .section-head h2 { margin: 0; font: 800 34px/1 var(--display); letter-spacing: .06em; text-transform: uppercase; }
+      .section-head p { margin: 0; color: var(--muted); font: 600 12px/1.5 var(--body); letter-spacing: .1em; text-transform: uppercase; }
+      .themes { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; }
+      .theme-card {
+        position: relative; display: flex; flex-direction: column;
+        border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+        background: var(--panel); text-decoration: none;
+        transition: transform .3s cubic-bezier(.16,1,.3,1), border-color .3s;
+      }
+      .theme-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+      .swatch img { width: 100%; height: 100%; object-fit: cover; }
+      .swatch::before, .swatch::after { display: none; }
+      .swatch {
+        position: relative; height: 150px; overflow: hidden;
+        background: var(--bg); display: grid; place-items: center;
+      }
+      .swatch::before {
+        content: ""; position: absolute; inset: 0;
+        background: repeating-linear-gradient(115deg, transparent 0 44px, var(--accent) 44px 45px);
+        opacity: .16;
+      }
+      .swatch::after {
+        content: ""; position: absolute; inset: 0;
+        background: radial-gradient(ellipse 70% 70% at 30% 20%, var(--accent), transparent 66%);
+        opacity: .26;
+      }
+      .swatch b {
+        position: relative; z-index: 2; font: 800 46px/.9 var(--display);
+        letter-spacing: .06em; color: var(--accent); text-transform: uppercase;
+        text-shadow: 0 6px 40px rgba(0,0,0,.55);
+      }
+      .theme-body { padding: 16px 18px 18px; }
+      .theme-body h3 { margin: 0; font: 800 24px/1 var(--display); letter-spacing: .05em; text-transform: uppercase; }
+      .theme-body p { margin: 8px 0 0; color: var(--muted); font: 600 12px/1.5 var(--body); letter-spacing: .06em; text-transform: uppercase; }
+      .theme-acts { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+      .theme-acts span {
+        padding: 6px 9px; border: 1px solid var(--line); border-radius: 6px;
+        font: 700 10px/1 var(--body); letter-spacing: .14em; color: var(--muted); text-transform: uppercase;
+      }
+      .rundown { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+      .step {
+        position: relative; padding: 16px 18px 16px 52px;
+        border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.025);
+        text-decoration: none; transition: .2s;
+      }
+      .step:hover { background: rgba(232,193,92,.08); border-color: rgba(232,193,92,.4); }
+      .step b { position: absolute; left: 16px; top: 16px; font: 800 22px/1 var(--display); color: var(--gold); }
+      .step strong { display: block; font: 700 14px/1.2 var(--body); letter-spacing: .1em; text-transform: uppercase; }
+      .step small { display: block; margin-top: 5px; color: var(--muted); font: 600 11px/1.4 var(--body); letter-spacing: .06em; }
+      .foot {
+        margin-top: 54px; padding-top: 20px; border-top: 1px solid var(--line);
+        display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap;
+        color: var(--muted); font: 600 11px/1.6 var(--body); letter-spacing: .1em; text-transform: uppercase;
+      }
+      .foot a { color: var(--gold); text-decoration: none; }
+      @media (max-width: 640px) {
+        h1 { font-size: 56px; }
+        .wrap { padding: 22px 16px 60px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="topbar">
+        <a class="brand" href="/">
+          <span class="mark">BG</span>
+          <span><b>PMGC BROADCAST STAGE</b><small>BGMI CUP · 2026 PACKAGE</small></span>
+        </a>
+        <div class="toplinks">
+          <a class="btn" href="/admin/overlays">Overlay producer</a>
+          <a class="btn btn--gold" href="/pmgc/opening?ui=1">Open the stage →</a>
+        </div>
+      </div>
+
+      <header class="hero">
+        <div class="eyebrow">KRAFTON-STYLE CHAMPIONSHIP PACKAGE · TEN EVENT-INSPIRED LAYOUTS · ELEVEN SCENES</div>
+        <h1>THE <em>PMGC</em><br />BROADCAST KIT</h1>
+        <p class="lede">
+          A complete tournament rundown you can drive from one browser source: stream-start countdown,
+          caster intro, 30-second match drop, staggered rectangular game and tactical-map frames, live points,
+          the winner-winner-chicken-dinner celebration, winner stats, match points, overall standings and
+          the Erangel · Miramar · Rondo map rotation. Pick a theme below — every scene restyles instantly.
+        </p>
+        <div class="chips">
+          <span class="chip">10 themes</span>
+          <span class="chip">11 scenes</span>
+          <span class="chip">1920×1080 OBS</span>
+          <span class="chip">Live-data aware</span>
+          <span class="chip">Reduced-motion safe</span>
+        </div>
+      </header>
+
+      <div class="section-head">
+        <h2>01 — Pick a theme</h2>
+        <p>Click a card to open the stage with that identity</p>
+      </div>
+      <div class="themes" id="themes"></div>
+
+      <div class="section-head">
+        <h2>02 — Run the show</h2>
+        <p>Every scene is its own OBS URL, or let “Play full show” run the rundown</p>
+      </div>
+      <div class="rundown" id="rundown"></div>
+
+      <div class="foot">
+        <span>Event-inspired original layouts · official PUBG map exports · original CC0 intro music</span>
+        <span>Docs: <a href="/broadcast-setup.html">OBS setup guide</a> · OBS: 1920×1080, browser source, 30 fps</span>
+      </div>
+    </div>
+
+  <script src="/js/broadcast-themes.js?v=6"></script>
+    <script src="/js/pmgc-gallery.js?v=6"></script>
+  </body>
+</html>

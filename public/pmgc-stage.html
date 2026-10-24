@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>PMGC 2026 Broadcast Stage · BGMI Cup</title>
+    <meta
+      name="description"
+      content="Ten-theme tournament broadcast rundown for OBS: stream countdown, casters, match drop, diagonal live + map feeds, chicken dinner, stats and standings."
+    />
+    <link rel="stylesheet" href="/assets/fonts/overlay-fonts.css" />
+    <link rel="stylesheet" href="/css/pmgc-themes.css?v=6" />
+    <link rel="stylesheet" href="/css/pmgc-stage.css?v=6" />
+    <link rel="stylesheet" href="/css/pmgc-obs.css?v=13" />
+  <link rel="stylesheet" href="/css/pmgc-layouts.css?v=7" />
+  </head>
+  <body class="pg-body">
+    <div class="pg-fit" id="pgFit">
+      <div
+        class="pmgc"
+        id="pmgc"
+        data-theme="bmps-2024"
+        data-scene="opening"
+        aria-label="PMGC 2026 broadcast stage"
+      >
+        <!-- ============================ background ========================== -->
+        <div class="pg-bg" aria-hidden="true">
+          <div class="pg-bg-art"></div>
+          <div class="pg-motif"></div>
+          <div class="pg-bg-glow"></div>
+          <div class="pg-bg-grid"></div>
+          <div class="pg-bg-scan"></div>
+          <div class="pg-bg-grain"></div>
+          <div class="pg-bg-fx" id="pgSparks"></div>
+          <div class="pg-bg-vigne"></div>
+        </div>
+
+        <!-- ============================ score bug ========================== -->
+        <header class="pg-bug" id="pgBug">
+          <div class="pg-bug-brand">
+            <span class="mark" id="bugMark">BG</span>
+            <div>
+              <b id="bugEvent">PMGC 2026</b>
+              <small id="bugStage">GROUP STAGE · DAY 02</small>
+            </div>
+          </div>
+          <div class="pg-bug-center">
+            <b>MATCH <span id="bugMatch">04</span></b>
+            <i></i>
+            <span class="val" id="bugMap">ERANGEL</span>
+            <i></i>
+            <span>GROUP <span id="bugGroup">A</span></span>
+          </div>
+          <div class="pg-bug-right">
+            <div class="pg-bug-stat"><small>SQUADS</small><b id="bugAlive">16</b></div>
+            <div class="pg-bug-stat"><small>ZONE</small><b id="bugZone">3</b></div>
+            <div class="pg-bug-clock"><small>MATCH TIME</small><span id="bugClock">12:48</span></div>
+          </div>
+        </header>
+
+        <!-- ======================= 01 · STREAM STARTING ===================== -->
+        <section class="pg-scene pg-opening" data-scene="opening" aria-label="Stream starting soon">
+          <div class="pg-open-copy">
+            <div class="pg-open-kicker pg-reveal" style="--d:0.1s">
+              <span class="pg-live-pill"><i></i>PMGC 2026</span>
+              <span>PRE-SHOW · BROADCAST A</span>
+            </div>
+            <h1 class="pg-open-title">
+              <span class="ln pg-reveal" style="--d:0.18s">STREAM</span>
+              <span class="ln pg-open-title-accent pg-reveal" style="--d:0.3s">STARTING</span>
+              <span class="ln pg-reveal" style="--d:0.42s">SOON</span>
+            </h1>
+            <p class="pg-open-sub pg-reveal" style="--d:0.52s">
+              <span id="openStage">GROUP STAGE · DAY 02</span> · <b id="openMap">ERANGEL</b> OPENER
+            </p>
+            <div class="pg-open-timer pg-reveal" style="--d:0.6s">
+              <div class="pg-ring pg-ring-lg">
+                <svg viewBox="0 0 240 240" aria-hidden="true">
+                  <circle class="ring-bg" cx="120" cy="120" r="104" />
+                  <circle class="ring-fg" id="openRing" cx="120" cy="120" r="104" />
+                </svg>
+                <div class="pg-ring-label">
+                  <small>GOING LIVE IN</small>
+                  <b id="openClock">20:00</b>
+                  <span id="openPhase">PRE-SHOW</span>
+                </div>
+              </div>
+              <div class="pg-open-timer-side">
+                <span class="pg-tag">COUNTDOWN</span>
+                <p>Production online. Squads are entering the match lobby.</p>
+                <div class="pg-open-ticks" id="openTicks" aria-hidden="true"></div>
+              </div>
+            </div>
+            <div class="pg-open-chips pg-reveal" style="--d:0.72s">
+              <span class="pg-chip"><b id="openSquads">16</b> SQUADS</span>
+              <span class="pg-chip"><b>03</b> MAPS</span>
+              <span class="pg-chip"><b id="openMatches">06</b> MATCHES</span>
+              <span class="pg-chip pg-chip-accent" id="openPrize">₹ 10,00,000 PRIZE POOL</span>
+            </div>
+          </div>
+          <div class="pg-open-art pg-reveal-scale" style="--d:0.28s">
+            <div class="pg-open-art-frame">
+              <img src="/assets/images/pmgc/operator-hero.jpg" alt="" />
+            </div>
+            <div class="pg-open-art-scan" aria-hidden="true"></div>
+            <div class="pg-open-art-plate">
+              <b>THE BATTLEGROUNDS</b>
+              <span>SQUAD · TPP<br />16 TEAMS · ONE CROWN</span>
+            </div>
+          </div>
+          <div class="pg-open-rail">PMGC 2026 · ROAD TO THE GLOBAL CHAMPIONSHIP</div>
+          <div class="pg-ticker">
+            <span class="pg-ticker-label">SHOW OPEN</span>
+            <div class="pg-ticker-track"><div class="pg-ticker-run" data-ticker-run></div></div>
+            <span class="pg-ticker-right">SCHEDULED 18:00 IST</span>
+          </div>
+        </section>
+
+        <!-- ========================= 02 · CASTERS ========================== -->
+        <section class="pg-scene pg-casters" data-scene="casters" aria-label="Caster intro">
+          <div class="pg-section-head">
+            <span class="pg-kicker pg-reveal" style="--d:0.08s">LIVE COMMENTARY</span>
+            <h2 class="pg-title pg-reveal" style="--d:0.16s">THE VOICES <em>OF THE DROP</em></h2>
+            <p class="pg-sub pg-reveal" style="--d:0.26s">
+              <b id="casterEventName">PMGC 2026</b> · TWO CASTERS · ONE BATTLEGROUND
+            </p>
+          </div>
+
+          <div class="pg-caster-grid">
+            <article class="pg-caster-card pg-reveal-x" style="--d:0.3s">
+              <div class="pg-cam" id="camWrap1">
+                <div class="pg-cam-demo" aria-hidden="true" style="--crop:14% 20%"></div>
+                <img class="pg-cam-photo" id="camPhoto1" alt="" />
+                <div class="pg-cam-corners" aria-hidden="true"></div>
+                <span class="pg-cam-tag"><i></i> CAM 01 · LIVE</span>
+                <div class="pg-cam-eq" aria-hidden="true">
+                  <i style="--d:0s;--h:72%"></i><i style="--d:.12s;--h:44%"></i>
+                  <i style="--d:.24s;--h:88%"></i><i style="--d:.36s;--h:56%"></i>
+                  <i style="--d:.18s;--h:96%"></i><i style="--d:.3s;--h:38%"></i>
+                  <i style="--d:.42s;--h:66%"></i><i style="--d:.06s;--h:82%"></i>
+                  <i style="--d:.2s;--h:50%"></i><i style="--d:.34s;--h:74%"></i>
+                </div>
+              </div>
+              <div class="pg-caster-copy">
+                <span class="pg-role">PLAY-BY-PLAY · HOST</span>
+                <h3 id="casterName1">NOVA</h3>
+                <p id="casterLine1">Calls every rotation, every fight, every clutch.</p>
+                <div class="pg-eq" aria-hidden="true">
+                  <i style="--d:0s;--h:62%"></i><i style="--d:.1s;--h:94%"></i>
+                  <i style="--d:.2s;--h:48%"></i><i style="--d:.3s;--h:78%"></i>
+                  <i style="--d:.15s;--h:36%"></i><i style="--d:.25s;--h:88%"></i>
+                  <i style="--d:.35s;--h:54%"></i><i style="--d:.05s;--h:70%"></i>
+                  <i style="--d:.22s;--h:42%"></i><i style="--d:.32s;--h:82%"></i>
+                  <i style="--d:.12s;--h:58%"></i><i style="--d:.28s;--h:74%"></i>
+                </div>
+              </div>
+            </article>
+
+            <article class="pg-caster-card pg-reveal-x" style="--d:0.42s">
+              <div class="pg-cam" id="camWrap2">
+                <div class="pg-cam-demo" aria-hidden="true" style="--crop:86% 18%"></div>
+                <img class="pg-cam-photo" id="camPhoto2" alt="" />
+                <div class="pg-cam-corners" aria-hidden="true"></div>
+                <span class="pg-cam-tag"><i></i> CAM 02 · LIVE</span>
+                <div class="pg-cam-eq" aria-hidden="true">
+                  <i style="--d:.2s;--h:58%"></i><i style="--d:.3s;--h:86%"></i>
+                  <i style="--d:0s;--h:42%"></i><i style="--d:.1s;--h:90%"></i>
+                  <i style="--d:.4s;--h:64%"></i><i style="--d:.14s;--h:34%"></i>
+                  <i style="--d:.24s;--h:76%"></i><i style="--d:.04s;--h:52%"></i>
+                  <i style="--d:.34s;--h:88%"></i><i style="--d:.44s;--h:46%"></i>
+                </div>
+              </div>
+              <div class="pg-caster-copy">
+                <span class="pg-role">COLOR · ANALYST</span>
+                <h3 id="casterName2">ARC</h3>
+                <p id="casterLine2">Reads the zone, breaks down the endgame maths.</p>
+                <div class="pg-eq" aria-hidden="true">
+                  <i style="--d:.08s;--h:52%"></i><i style="--d:.18s;--h:80%"></i>
+                  <i style="--d:.28s;--h:66%"></i><i style="--d:.38s;--h:92%"></i>
+                  <i style="--d:.03s;--h:44%"></i><i style="--d:.13s;--h:72%"></i>
+                  <i style="--d:.23s;--h:58%"></i><i style="--d:.33s;--h:84%"></i>
+                  <i style="--d:.09s;--h:38%"></i><i style="--d:.19s;--h:76%"></i>
+                  <i style="--d:.29s;--h:62%"></i><i style="--d:.39s;--h:88%"></i>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="pg-hype pg-reveal" style="--d:0.56s">
+            <span class="pg-hype-tag">HYPE</span>
+            <div class="pg-hype-track">
+              <span id="hypeLine">
+                <b>16 squads.</b> Three maps. One crown — and we are LIVE in 30 seconds.
+                Lock in, India. <b>THE DROP IS COMING.</b>
+              </span>
+            </div>
+          </div>
+          <div class="pg-ticker">
+            <span class="pg-ticker-label">ON AIR</span>
+            <div class="pg-ticker-track"><div class="pg-ticker-run" data-ticker-run></div></div>
+            <span class="pg-ticker-right">CASTERS · LIVE</span>
+          </div>
+        </section>
+
+        <!-- ===================== 03 · MATCH DROP 30s ======================= -->
+        <section class="pg-scene pg-drop" data-scene="drop" aria-label="Match start countdown">
+          <div class="pg-drop-art" aria-hidden="true"></div>
+          <div class="pg-drop-cams"><div class="pg-cam"><span class="pg-cam-tag" id="dropCaster1">CASTER 01 · LIVE</span></div><div class="pg-cam"><span class="pg-cam-tag" id="dropCaster2">CASTER 02 · LIVE</span></div></div>
+          <div class="pg-drop-left">
+            <span class="pg-kicker pg-reveal" style="--d:0.06s">
+              <i class="pg-live-dot"></i> MATCH <b id="dropMatch">04</b> ·
+              <span id="dropGroup">GROUP A</span>
+            </span>
+            <h1 class="pg-big pg-drop-title pg-reveal" style="--d:0.14s">
+              MATCH<br /><em>STARTING</em>
+            </h1>
+            <div class="pg-drop-meta pg-reveal" style="--d:0.26s">
+              <div><small>MAP</small><b id="dropMap">ERANGEL</b></div>
+              <div><small>FORMAT</small><b>SQUAD TPP</b></div>
+              <div><small>SQUADS</small><b id="dropSquads">16</b></div>
+            </div>
+            <p class="pg-drop-hype" id="dropHype">LOCK IN. DROP IN. DOMINATE.</p>
+          </div>
+
+          <div class="pg-drop-clockwrap pg-reveal-scale" style="--d:0.2s">
+            <div class="pg-drop-clock">
+              <svg class="pg-drop-ring" viewBox="0 0 360 360" aria-hidden="true">
+                <circle class="track" cx="180" cy="180" r="160" />
+                <circle class="prog" id="dropRing" cx="180" cy="180" r="160" />
+              </svg>
+              <span class="pg-drop-orbit" aria-hidden="true"></span>
+              <div class="pg-drop-num">
+                <b id="dropSec">30</b>
+                <small>SECONDS TO DROP</small>
+              </div>
+            </div>
+            <div class="pg-drop-alert" id="dropAlert">GET READY</div>
+          </div>
+
+          <div class="pg-drop-mapmini pg-reveal" style="--d:0.4s">
+            <img id="dropMapImg" src="/assets/images/pmgc/map-erangel.jpg" alt="" />
+            <div class="pg-drop-route" aria-hidden="true"><span class="pg-plane">✈</span></div>
+            <div class="pg-drop-mapmini-foot">
+              <span>FLIGHT PATH · ROTATION PLAN</span>
+              <b id="dropMapName">ERANGEL</b>
+              <small id="dropMapNote">MILITARY BASE → GEORGOPOL → PRISON</small>
+            </div>
+          </div>
+
+          <div class="pg-ticker">
+            <span class="pg-ticker-label">NEXT DROP</span>
+            <div class="pg-ticker-track"><div class="pg-ticker-run" data-ticker-run></div></div>
+            <span class="pg-ticker-right" id="dropTickerMatch">MATCH 04 · ERANGEL</span>
+          </div>
+        </section>
+
+        <section class="pg-scene pg-mapintro" data-scene="map-intro" aria-label="Map starting animation">
+          <img id="introMapImg" alt="Official PUBG map artwork" />
+          <div class="pg-intro-copy"><span class="pg-kicker">BATTLEGROUND DEPLOYMENT</span><h1 id="introMapName">ERANGEL</h1><p>MATCH STARTING · PREPARE FOR DROP</p><button id="introAudioBtn" type="button">Enable intro music</button></div>
+        </section>
+        <!-- ================ 04 · LIVE FEED + DIAGONAL MAP =================== -->
+        <section class="pg-scene pg-live" data-scene="live" aria-label="OBS rectangular gameplay bottom-left and tactical map top-right">
+          <div class="pg-feed" id="pgFeed">
+            <div class="pg-feed-demo" aria-hidden="true"></div>
+            <img class="pg-feed-img" id="feedImg" alt="" />
+            <div class="pg-feed-corners" aria-hidden="true"></div>
+            <span class="pg-feed-label"><i></i> LIVE GAME FEED</span>
+            <div class="pg-feed-stats">
+              <div class="pg-feed-stat"><small>ALIVE</small><b id="feedAlive">68</b></div>
+              <div class="pg-feed-stat"><small>TEAMS</small><b id="feedTeams">16</b></div>
+            </div>
+            <div class="pg-kills" id="killFeed" aria-label="Elimination feed"></div>
+          </div>
+
+          <div class="pg-mapwin">
+            <img class="pg-map-img" id="mapImg" src="/assets/images/pmgc/map-erangel.jpg" alt="" />
+            <div class="pg-map-hud" aria-hidden="true">
+              <span class="map-grid"></span>
+              <span class="ring r3"></span>
+              <span class="ring r2"></span>
+              <span class="zone-now"></span>
+              <span class="ring r1"></span>
+              <span class="zone-next"></span>
+              <span class="plane-path"></span>
+              <span class="plane-dot"></span>
+              <span class="map-marker m1"></span>
+              <span class="map-marker m2"></span>
+              <span class="map-marker m3"></span>
+              <span class="map-marker m4"></span>
+              <span class="map-compass">N</span>
+            </div>
+            <div class="pg-map-head">
+              <span>TACTICAL MAP FEED</span>
+              <b id="liveMapName">ERANGEL</b>
+            </div>
+            <div class="pg-map-foot">
+              <span>ZONE <b id="liveZone">3</b></span>
+              <span>ALIVE <b id="liveAlive">68</b></span>
+              <span>NEXT SHRINK <b id="liveShrink">04:12</b></span>
+            </div>
+          </div>
+          <div class="pg-live-sponsor" id="diagonalSponsor">PARTNER SLOT</div>
+        </section>
+
+        <!-- ============ 05 · LIVE FEED + LIVE POINTS STANDINGS ============= -->
+        <section class="pg-scene pg-livepts" data-scene="live-points" aria-label="Live game feed with live points standings">
+          <div class="pg-livepts-feed">
+            <div class="pg-feed-demo" aria-hidden="true"></div>
+            <img class="pg-feed-img" id="feedImg2" alt="" />
+            <div class="pg-feed-corners" aria-hidden="true"></div>
+            <span class="pg-feed-label"><i></i> LIVE GAME FEED</span>
+            <div class="pg-kills" id="killFeed2" aria-label="Elimination feed"></div>
+          </div>
+
+          <div class="pg-livepts-map">
+            <img class="pg-map-img" id="mapImg2" src="/assets/images/pmgc/map-erangel.jpg" alt="" />
+            <div class="pg-map-hud" aria-hidden="true">
+              <span class="map-grid"></span>
+              <span class="ring r3"></span>
+              <span class="ring r2"></span>
+              <span class="zone-now"></span>
+              <span class="ring r1"></span>
+              <span class="zone-next"></span>
+              <span class="plane-path"></span>
+              <span class="map-marker m1"></span>
+              <span class="map-marker m2"></span>
+              <span class="map-marker m3"></span>
+              <span class="map-compass">N</span>
+            </div>
+            <div class="pg-map-head">
+              <span>TACTICAL MAP</span>
+              <b id="liveMapName2">ERANGEL</b>
+            </div>
+            <div class="pg-map-foot">
+              <span>ZONE <b id="liveZone2">3</b></span>
+              <span>ALIVE <b id="liveAlive2">68</b></span>
+              <span>PHASE <b id="livePhase2">MID GAME</b></span>
+            </div>
+            <div class="pg-livepts-counter">
+              <b id="livePtsCounter">68</b>
+              <span>PLAYERS<br />STILL ALIVE</span>
+            </div>
+          </div>
+
+          <aside class="pg-livepts-board pg-panel" aria-label="Live points standings">
+            <div class="pg-table-head">
+              <span>#</span><span>TEAM</span><span title="Matches played">MP</span><span>FIN</span><span>TOTAL</span><span>STATUS</span>
+            </div>
+            <div class="pg-livepts-rows" id="livePtsRows"></div>
+            <footer>
+              <span class="pg-status-legend"><i class="alive"></i> ALIVE <i class="knocked"></i> KNOCKED <i class="out"></i> ELIM</span>
+              <b id="livePtsFoot">16 SQUADS</b>
+            </footer>
+          </aside>
+        </section>
+
+        <!-- =================== 06 · CHICKEN DINNER ========================= -->
+        <section class="pg-scene pg-cd" data-scene="chicken-dinner" aria-label="Winner winner chicken dinner">
+          <div class="pg-cd-rays" aria-hidden="true"></div>
+          <div class="pg-cd-burst" aria-hidden="true"></div>
+          <div class="pg-cd-confetti" id="cdConfetti" aria-hidden="true"></div>
+          <span class="pg-cd-corner tl" aria-hidden="true"></span>
+          <span class="pg-cd-corner br" aria-hidden="true"></span>
+
+          <div class="pg-cd-trophy" aria-hidden="true">
+            <svg viewBox="0 0 120 130" fill="currentColor">
+              <path d="M36 10h48v16c0 16-10 28-24 30-14-2-24-14-24-30V10z" />
+              <path d="M36 16H22v8c0 12 8 20 20 21v-8c-8-1-13-6-13-13v-8h7z" opacity=".72" />
+              <path d="M84 16h14v8c0 12-8 20-20 21v-8c8-1 13-6 13-13v-8h-7z" opacity=".72" />
+              <rect x="55" y="56" width="10" height="20" />
+              <path d="M42 76h36l4 12H38z" />
+              <rect x="34" y="88" width="52" height="9" />
+              <rect x="28" y="97" width="64" height="10" />
+              <path d="M55 116h10v10H55z" opacity=".6" />
+            </svg>
+          </div>
+
+          <div class="pg-cd-inner">
+            <div class="pg-cd-eyebrow"><span id="cdMatchMeta">MATCH 04 · ERANGEL · GROUP A</span></div>
+            <h1 class="pg-cd-title">
+              <span class="w1">WINNER</span>
+              <span class="w2">WINNER</span>
+            </h1>
+            <div class="pg-cd-chicken">
+              <svg viewBox="0 0 64 64" fill="currentColor" aria-hidden="true">
+                <ellipse cx="33" cy="38" rx="19" ry="14" />
+                <circle cx="23" cy="27" r="7" />
+                <path d="M44 30c6-3 10-1 10 4s-6 7-10 5z" />
+                <path d="M17 23l-6-4 4 8z" />
+                <path d="M20 20c1-4 4-6 7-5-2 2-2 4-1 6z" />
+                <ellipse cx="33" cy="56" rx="25" ry="5" opacity=".4" />
+                <ellipse cx="33" cy="45" rx="10" ry="5" opacity=".22" />
+              </svg>
+              <span class="pg-cd-dinner-word">CHICKEN <b>DINNER</b></span>
+              <svg viewBox="0 0 64 64" fill="currentColor" aria-hidden="true" style="transform:scaleX(-1)">
+                <ellipse cx="33" cy="38" rx="19" ry="14" />
+                <circle cx="23" cy="27" r="7" />
+                <path d="M44 30c6-3 10-1 10 4s-6 7-10 5z" />
+                <path d="M17 23l-6-4 4 8z" />
+                <path d="M20 20c1-4 4-6 7-5-2 2-2 4-1 6z" />
+                <ellipse cx="33" cy="56" rx="25" ry="5" opacity=".4" />
+                <ellipse cx="33" cy="45" rx="10" ry="5" opacity=".22" />
+              </svg>
+            </div>
+
+            <div class="pg-cd-team">
+              <div class="pg-cd-logo" id="cdLogo">TM</div>
+              <div class="pg-cd-team-copy">
+                <small>MATCH CHAMPIONS · WWCD</small>
+                <h2 id="cdTeam">AWAITING WINNER</h2>
+                <p id="cdTeamMeta">SQUAD VICTORY · CHICKEN DINNER #03</p>
+              </div>
+              <div class="pg-cd-stats">
+                <div><small>FINISHES</small><b id="cdFin">0</b></div>
+                <div><small>PLACEMENT</small><b id="cdRank">#1</b></div>
+                <div><small>POINTS</small><b id="cdPts">0</b></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pg-cd-foot">
+            <span id="cdFootLeft">BATTLEGROUNDS · MATCH WINNER</span>
+            <b>VICTORY CONFIRMED</b>
+            <span id="cdFootRight">RESULTS DESK</span>
+          </div>
+          <div class="pg-ticker">
+            <span class="pg-ticker-label">CHICKEN DINNER</span>
+            <div class="pg-ticker-track"><div class="pg-ticker-run" data-ticker-run></div></div>
+            <span class="pg-ticker-right">WWCD</span>
+          </div>
+        </section>
+
+        <!-- ================ 07 · WINNER MATCH STATS ======================== -->
+        <section class="pg-scene pg-wstats" data-scene="winner-stats" aria-label="Chicken dinner match stats">
+          <div class="pg-wstats-left pg-panel pg-reveal-x" style="--d:0.1s">
+            <div class="pg-wstats-head">
+              <span class="pg-kicker">CHICKEN DINNER · MATCH STATS</span>
+            </div>
+            <div class="pg-wstats-team">
+              <div class="pg-logo-lg" id="wsLogo">TM</div>
+              <div>
+                <small>WINNING SQUAD</small>
+                <h1 id="wsTeam">TEAM NAME</h1>
+                <p id="wsMeta">MATCH 04 · ERANGEL · GROUP A</p>
+              </div>
+            </div>
+            <div class="pg-wstats-totals">
+              <div><small>TEAM FINISHES</small><b id="wsFin">0</b></div>
+              <div><small>TOTAL DAMAGE</small><b id="wsDmg">0</b></div>
+              <div><small>MATCH POINTS</small><b id="wsPts">0</b></div>
+            </div>
+            <div class="pg-wstats-badge">
+              WWCD TOTAL <b id="wsWwcd">#03</b>
+            </div>
+          </div>
+          <div class="pg-wstats-players" id="wsPlayers"></div>
+          <div class="pg-ticker">
+            <span class="pg-ticker-label">PLAYER STATS</span>
+            <div class="pg-ticker-track"><div class="pg-ticker-run" data-ticker-run></div></div>
+            <span class="pg-ticker-right">VERIFIED · MATCH DATA</span>
+          </div>
+        </section>
+
+        <!-- ================ 08 · MATCH POINTS STANDINGS ==================== -->
+        <section class="pg-scene pg-mstats" data-scene="match-standings" aria-label="Match points standings">
+          <header class="pg-board-head">
+            <div>
+              <span class="pg-kicker" id="msKicker">MATCH 04 · ERANGEL</span>
+              <h1 class="pg-title">POINTS <em>STANDINGS</em></h1>
+            </div>
+            <div class="pg-board-meta">
+              <div><small>WINNER</small><b id="msWinner">—</b></div>
+              <div><small>SQUADS</small><b id="msTeams">16</b></div>
+              <div><small>STATUS</small><b id="msStatus">FINAL</b></div>
+            </div>
+          </header>
+          <div class="pg-match-grid" id="msRows">
+            <div class="pg-match-panel pg-panel" aria-label="Match ranks 1 to 8">
+              <div class="pg-board-th">
+                <span>#</span><span>TEAM</span><span>WWCD</span><span>FINISHES</span><span>PLACE PTS</span><span>TOTAL</span>
+              </div>
+              <div class="pg-match-rows" id="msLeft"></div>
+            </div>
+            <div class="pg-match-panel pg-panel" aria-label="Match ranks 9 to 16">
+              <div class="pg-board-th">
+                <span>#</span><span>TEAM</span><span>WWCD</span><span>FINISHES</span><span>PLACE PTS</span><span>TOTAL</span>
+              </div>
+              <div class="pg-match-rows" id="msRight"></div>
+            </div>
+          </div>
+          <div class="pg-match-foot pg-board-foot">
+            <span>MATCH RESULT · VERIFIED BY TOURNAMENT OPERATIONS</span>
+            <b id="msFoot">TOP 8 ADVANCE</b>
+          </div>
+          <div class="pg-ticker">
+            <span class="pg-ticker-label">MATCH RESULT</span>
+            <div class="pg-ticker-track"><div class="pg-ticker-run" data-ticker-run></div></div>
+            <span class="pg-ticker-right" id="msTickerMatch">MATCH 04</span>
+          </div>
+        </section>
+
+        <!-- =================== 09 · OVERALL STANDINGS ====================== -->
+        <section class="pg-scene pg-overall" data-scene="overall" aria-label="Overall standings">
+          <header class="pg-board-head">
+            <div>
+              <span class="pg-kicker" id="ovKicker">AFTER MATCH 04 · GROUP A</span>
+              <h1 class="pg-title">OVERALL <em>STANDINGS</em></h1>
+            </div>
+            <div class="pg-board-meta">
+              <div><small>MATCHES PLAYED</small><b id="ovMatches">04</b></div>
+              <div><small>SQUADS</small><b id="ovTeams">16</b></div>
+              <div><small>LEADER</small><b id="ovLeader">—</b></div>
+            </div>
+          </header>
+          <aside class="pg-leader-spotlight"><span>CHAMPIONSHIP LEADER</span><b id="leaderSpotName">—</b><div id="leaderSpotLogo"></div><strong id="leaderSpotPoints">0</strong><small>TOTAL POINTS</small></aside>
+          <div class="pg-overall-grid">
+            <div class="pg-overall-table pg-panel">
+              <div class="pg-board-th">
+                <span>#</span><span>TEAM</span><span>MATCHES</span
+                ><span>WINS</span><span>FIN</span><span>PLACE PTS</span
+                ><span>TOTAL</span>
+              </div>
+              <div class="pg-overall-rows" id="ovLeft"></div>
+            </div>
+            <div class="pg-overall-table pg-panel">
+              <div class="pg-board-th">
+                <span>#</span><span>TEAM</span><span>MATCHES</span
+                ><span>WINS</span><span>FIN</span><span>PLACE PTS</span
+                ><span>TOTAL</span>
+              </div>
+              <div class="pg-overall-rows" id="ovRight"></div>
+            </div>
+          </div>
+          <div class="pg-qual-legend">
+            <span class="q"><i></i> TOP 8 QUALIFY</span>
+            <span class="out"><i></i> ELIMINATED</span>
+            <span>06 MATCHES · 03 MAPS</span>
+            <span class="live"><i class="pg-live-dot"></i> SERIES IN PROGRESS</span>
+          </div>
+          <div class="pg-ticker">
+            <span class="pg-ticker-label">OVERALL</span>
+            <div class="pg-ticker-track"><div class="pg-ticker-run" data-ticker-run></div></div>
+            <span class="pg-ticker-right">POINTS TABLE</span>
+          </div>
+        </section>
+
+        <!-- ===================== 10 · MAP ROTATION ======================== -->
+        <section class="pg-scene pg-maps" data-scene="map-rotation" aria-label="Map rotation">
+          <header class="pg-maps-head">
+            <div>
+              <span class="pg-kicker">TODAY'S BATTLEGROUNDS</span>
+              <h1 class="pg-title">MAP <em>ROTATION</em></h1>
+            </div>
+            <p class="pg-sub">THREE MAPS · SIX MATCHES<br /><b>ONE CHAMPION</b></p>
+          </header>
+
+          <div class="pg-map-cards">
+            <article class="pg-map-card pg-reveal" style="--i:0" data-map="Erangel">
+              <div class="pg-map-card-art">
+                <img src="/assets/images/pmgc/map-erangel.jpg" alt="Erangel tactical map" />
+                <span class="pg-map-index">MAP 01</span>
+                <span class="pg-map-tag">OPENING</span>
+              </div>
+              <div class="pg-map-card-body">
+                <h2>ERANGEL</h2>
+                <p>GREEN FIELDS · MILITARY BASE · ROLLING HILLS</p>
+                <div class="pg-map-matches">
+                  <span class="done">M1</span><span class="done">M2</span><span>M5</span>
+                </div>
+                <div class="pg-map-stats">
+                  <div><small>MATCHES</small><b>3</b></div>
+                  <div><small>BEST</small><b id="mapBestErangel">—</b></div>
+                </div>
+              </div>
+            </article>
+
+            <article class="pg-map-card pg-reveal is-next" style="--i:1" data-map="Miramar">
+              <div class="pg-map-card-art">
+                <img src="/assets/images/pmgc/map-miramar.jpg" alt="Miramar tactical map" />
+                <span class="pg-map-index">MAP 02</span>
+                <span class="pg-map-tag">DESERT</span>
+              </div>
+              <div class="pg-map-card-body">
+                <h2>MIRAMAR</h2>
+                <p>DESERT CANYON · HACIENDA · LONG ROTATIONS</p>
+                <div class="pg-map-matches">
+                  <span class="done">M3</span><span class="done">M4</span><span>M6</span>
+                </div>
+                <div class="pg-map-stats">
+                  <div><small>MATCHES</small><b>3</b></div>
+                  <div><small>BEST</small><b id="mapBestMiramar">—</b></div>
+                </div>
+              </div>
+            </article>
+
+            <article class="pg-map-card pg-reveal" style="--i:2" data-map="Rondo">
+              <div class="pg-map-card-art">
+                <img src="/assets/images/pmgc/map-rondo.jpg" alt="Rondo tactical map" />
+                <span class="pg-map-index">MAP 03</span>
+                <span class="pg-map-tag">CLOSER</span>
+              </div>
+              <div class="pg-map-card-body">
+                <h2>RONDO</h2>
+                <p>JADE LAKELAND · PAGODAS · URBAN ENDGAMES</p>
+                <div class="pg-map-matches">
+                  <span class="done">M3</span><span class="done">M5</span><span>M6</span>
+                </div>
+                <div class="pg-map-stats">
+                  <div><small>MATCHES</small><b>3</b></div>
+                  <div><small>BEST</small><b id="mapBestRondo">—</b></div>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="pg-maps-foot">
+            <span>MAP POOL · <b>ERANGEL · MIRAMAR · RONDO</b></span>
+            <span id="mapsFootMeta">MATCH 04 OF 06 · NEXT: MIRAMAR</span>
+          </div>
+          <div class="pg-ticker">
+            <span class="pg-ticker-label">MAP POOL</span>
+            <div class="pg-ticker-track"><div class="pg-ticker-run" data-ticker-run></div></div>
+            <span class="pg-ticker-right">OFFICIAL ROTATION</span>
+          </div>
+        </section>
+
+        <!-- ============================ scene wipe ======================== -->
+        <div class="pg-wipe" id="pgWipe" aria-hidden="true">
+          <span class="w1"></span>
+          <span class="w2"></span>
+          <b id="pgWipeLabel">NEXT</b>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================== operator controls ======================== -->
+    <div class="pg-preview-flag" id="pgFlag">PREVIEW · 1920×1080</div>
+    <div id="sourceGuide" hidden></div>
+    <div class="pg-ui" id="pgUi" role="group" aria-label="Stage controls">
+      <div class="pg-ui-row pg-ui-scenes" id="pgUiScenes"></div>
+      <div class="pg-ui-row">
+        <label for="pgUiTheme">Theme</label>
+        <select id="pgUiTheme" aria-label="Broadcast theme"></select>
+        <button id="pgUiAuto" type="button">▶ Play full show</button>
+        <button id="pgUiPrev" type="button">◀ Prev</button>
+        <button id="pgUiNext" type="button">Next ▶</button>
+        <button id="pgUiRepeat" type="button" title="Loop the current scene animation">↻ Replay</button>
+        <button id="pgUiFull" type="button">⛶ Fullscreen</button>
+        <button id="pgUiHide" type="button">Hide UI</button>
+        <a href="/pmgc" id="pgUiGallery">Theme gallery</a>
+        <span class="pg-ui-note" id="pgUiState">MANUAL</span>
+      </div>
+      <div class="pg-ui-progress"><i id="pgUiProgress"></i></div>
+    </div>
+
+  <script src="/js/broadcast-themes.js?v=6"></script>
+    <script src="/js/pmgc-stage.js?v=13" defer></script>
+  </body>
+</html>

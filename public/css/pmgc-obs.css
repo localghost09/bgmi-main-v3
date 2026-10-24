@@ -1,0 +1,134 @@
+/* Video is supplied by OBS sources BELOW this Browser Source. No demo artwork
+   or translucent ancestor is allowed over a video aperture. 1920 x 1080. */
+html:has(body.pg-capture), body.pg-capture { background: transparent !important; }
+.pg-capture .pmgc, .pg-capture .pg-scene { background: transparent !important; }
+.pg-capture .pg-bg { display: none !important; }
+.pg-capture .pg-cam-demo, .pg-capture .pg-cam-photo,
+.pg-capture .pg-feed-demo, .pg-capture .pg-feed-img,
+.pg-capture .pg-map-hud, .pg-capture .pg-map-img,
+.pg-capture .pg-feed-stats, .pg-capture .pg-kills { display: none !important; }
+.pg-capture .pg-cam, .pg-capture .pg-feed, .pg-capture .pg-mapwin,
+.pg-capture .pg-livepts-feed { background: transparent !important; box-shadow: none !important; }
+.pg-capture .pg-caster-card { background: transparent; box-shadow: none; }
+.pg-capture .pg-caster-card::before { display: none; }
+.pg-caster-copy { background: var(--p-panel-solid); }
+.pg-cam-eq { display: none; }
+/* Caster windows have a consistent 16:9 aperture above a compact nameplate. */
+.pg-caster-grid { top: 300px; height: 570px; }
+.pg-caster-card { display: grid; grid-template-columns: 1fr; grid-template-rows: 450px 120px; clip-path: none; }
+.pg-caster-copy { padding: 14px 26px; }
+.pg-caster-copy h3 { font-size: 38px; }
+.pg-caster-copy .pg-eq, .pg-caster-copy p { display: none; }
+.pg-drop-art, .pg-drop-mapmini { display: none; }
+.pg-drop-left { top: 130px; left: 80px; }
+.pg-drop-title { font-size: 90px; }
+.pg-drop-clockwrap { top: 190px; right: 140px; }
+.pg-drop-cams { position: absolute; left: 80px; top: 570px; display: flex; gap: 28px; }
+.pg-drop-cams .pg-cam { width: 640px; height: 360px; border: 3px solid var(--p-accent); }
+/* Two staggered RECTANGULAR OBS apertures, per the operator's correction.
+   Full-HD source positions: map 1240,80 / 640x440; game 40,428 / 1088x612. */
+.pg-live-standings { display: none !important; }
+.pg-live .pg-feed { inset: auto; left: 40px; top: 428px; width: 1088px; height: 612px; clip-path: none; border: 3px solid var(--p-accent); }
+.pg-live .pg-mapwin { inset: auto; left: 1240px; top: 80px; width: 640px; height: 440px; clip-path: none; border: 3px solid var(--p-accent); transform: none; }
+.pg-live .pg-feed-label { top: auto; bottom: 16px; left: 16px; }
+.pg-live .pg-map-head { top: 12px; right: 16px; left: auto; }
+.pg-live .pg-map-head b { font-size: 20px; }
+.pg-live .pg-map-head span { font-size: 10px; }
+.pg-live .pg-map-foot { display: none; }
+.pg-live .pg-slash { display: none !important; }
+.pg-live-sponsor { position: absolute; right: 40px; bottom: 8px; padding: 6px 18px; background: var(--p-panel-solid); border-left: 4px solid var(--p-accent); font: 700 16px/1.2 var(--p-body); }
+.pmgc[data-scene="live"] .pg-bug { right: auto; width: 1080px; }
+.pmgc[data-scene="live"] .pg-bug-right { display: none; }
+/* Fullscreen gameplay; only the right scoreboard is opaque. */
+.pg-livepts-map { display: none !important; }
+.pg-livepts-feed { inset: 0; width: 100%; height: 100%; clip-path: none; border: 0; }
+.pg-livepts-board { left: auto; right: 24px; top: 110px; width: 510px; height: 940px; background: var(--p-panel-solid) !important; clip-path: none; }
+.pg-livepts-board header { padding: 15px 18px; }
+.pg-livepts-board header .pg-title { font-size: 30px; }
+.pg-livepts-board .pg-table-head, .pg-livepts-rows .pg-row { grid-template-columns: 30px minmax(0,1fr) 42px 52px 72px; gap: 6px; padding: 0 12px; }
+.pg-livepts-rows .pg-row { height: 44px; flex-shrink: 0; }
+.pg-livepts-rows .copy { min-width: 0; }
+.pg-livepts-rows .team { font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pg-livepts-rows .logo { width: 24px; height: 24px; }
+.pg-livepts-rows .name { gap: 6px; min-width: 0; }
+.pg-livepts-board .pg-alive i, .pg-status-legend i { display: inline-block; width: 9px; height: 12px; border: 0; box-shadow: none; opacity: 1; }
+.pg-livepts-board i.alive, .pg-status-legend i.alive { background: #fff; }
+.pg-livepts-board i.knocked, .pg-status-legend i.knocked { background: #ff303e; }
+.pg-livepts-board i.out, .pg-status-legend i.out { background: #747880; }
+.pg-livepts-board footer { flex-wrap: wrap; gap: 12px; padding: 16px 12px; letter-spacing: .04em; }
+.pg-status-legend { display: flex; gap: 6px; align-items: center; }
+/* Animated deployment bumper with actual map artwork, not generated terrain. */
+.pg-mapintro { background: #080a0e; overflow: hidden; }
+.pg-mapintro > img { position: absolute; width: 100%; height: 100%; object-fit: cover; opacity: .5; animation: pgDeploy 8s ease-out both; }
+.pg-intro-copy { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(90deg,#080a0ecc,transparent,#080a0ecc); }
+.pg-intro-copy h1 { font: 800 160px var(--p-display); margin: 25px 0; color: var(--p-accent); animation: pgMapTitle 1s ease-out both; }
+.pg-intro-copy p { font: 700 28px var(--p-body); letter-spacing: .4em; }
+#introAudioBtn { color: white; background: #151820; border: 1px solid var(--p-accent); padding: 12px 20px; cursor: pointer; }
+@keyframes pgDeploy { from { transform: scale(1.7) rotate(-6deg); filter: blur(12px); } to { transform: scale(1); filter: blur(0); } }
+@keyframes pgMapTitle { from { opacity: 0; transform: translateY(100px); letter-spacing: .4em; } to { opacity: 1; transform: translateY(0); letter-spacing: .06em; } }
+@media (prefers-reduced-motion: reduce) { .pg-mapintro > img, .pg-intro-copy h1 { animation: none; } }
+/* Same-origin preview uses a checkerboard BEHIND the alpha canvas; never in OBS. */
+.pg-body:has(#sourceGuide:not([hidden])) { background: repeating-conic-gradient(#182029 0 25%,#10171e 0 50%) 0/32px 32px !important; }
+#sourceGuide { position: fixed; top: 0; left: 50%; transform: translateX(-50%); background: #090d15ed; border-bottom: 2px solid #98e3bf; padding: 10px 20px; z-index: 200; font: 16px monospace; color: white; max-width: 95vw; }
+.pg-capture .pg-drop-left, .pg-capture .pg-drop-clockwrap { background: var(--p-panel-solid); padding: 20px; }
+.pg-capture .pg-drop-title { margin: 10px 0; }
+.pg-live-sponsor { max-width: 600px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* All apertures are transparent in old OBS CEF too (no :has() dependency). */
+.pg-capture .pmgc::before, .pg-capture .pmgc::after { display: none; }
+.pg-livepts-board .pg-alive { gap: 4px; }
+.pg-body.is-obs #introAudioBtn { display: none; }
+/* Never interpolate an opaque stage colour into a transparent video scene. */
+.pg-capture .pmgc, .pg-body.is-obs .pmgc { transition: none !important; }
+/* Center the *scaled* 1920 canvas. Grid's intrinsic minimum track size otherwise
+   pushes half the stage offscreen in a smaller preview window. */
+.pg-fit { display: block; }
+.pg-fit > .pmgc { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(var(--pg-fit, 1)); }
+/* Strip the old static-map vignette: even a translucent gradient would tint
+   the independently captured OBS map and obscure sponsor labels. */
+.pg-capture .pg-mapwin::after { display: none !important; }
+.pg-live-sponsor { z-index: 12; color: var(--p-text); }
+.pmgc[data-scene="live"] .pg-bug { width: 1080px; }
+.pmgc[data-scene="live"] .pg-bug-center { flex-shrink: 0; white-space: nowrap; }
+.pg-bug-brand b { max-width: 340px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* A compact upper-right clock never covers either lower camera aperture. */
+.pg-drop-clockwrap { top: 110px; right: 180px; }
+.pg-drop-clock { width: 340px; height: 340px; }
+.pg-drop-num b { font-size: 160px; }
+.pg-drop-num small { font-size: 11px; }
+/* Theme dressing must not paint a gradient on the camera's ancestor. */
+.pg-capture .pg-caster-card { background: transparent !important; }
+/* Live Points is standings-only: no event/match HUD or gameplay decorations. */
+.pmgc[data-scene="live-points"] .pg-bug,
+.pmgc[data-scene="live-points"] .pg-livepts-feed { display: none !important; }
+/* Compact broadcast score strip: short tags and larger type, no empty space
+   reserved for the removed title. Auto-height also fits smaller lobbies. */
+.pmgc[data-scene="live-points"] .pg-livepts-board { height: auto !important; }
+.pg-livepts-rows { flex: 0 0 auto; padding: 0; }
+.pg-livepts-rows .pg-row { height: 40px; min-height: 40px; }
+.pg-livepts-rows .team { font: 800 32px/1 var(--p-display); letter-spacing: .035em; }
+.pg-livepts-rows .num, .pg-livepts-rows .num.pts { font-size: 28px; line-height: 1; font-weight: 800; }
+.pg-livepts-rows .rank { font-size: 20px; height: 28px; }
+.pg-livepts-rows .logo { width: 28px; height: 28px; }
+.pg-livepts-board .pg-table-head { font-size: 15px; height: 36px; flex: 0 0 36px; }
+.pg-livepts-board .pg-alive i { width: 11px; height: 16px; }
+.pg-livepts-board footer { font-size: 12px; padding: 12px; gap: 8px; }
+/* Bottom-right compact score strip, consistent across all ten theme skins. */
+.pmgc[data-scene="live-points"] .pg-scene.pg-livepts .pg-livepts-board {
+  top: auto; left: auto; right: 24px; bottom: 24px; width: 460px;
+}
+.pg-livepts-board .pg-table-head, .pg-livepts-rows .pg-row {
+  grid-template-columns: 26px minmax(110px, 1fr) 40px 38px 48px 96px;
+  gap: 5px; padding: 0 10px;
+}
+.pg-livepts-rows .team { font-size: 30px; }
+.pg-livepts-rows .num.matches { font-size: 26px; text-align: center; }
+.pg-livepts-board .pg-alive {
+  display: flex; align-items: center; justify-content: center;
+  align-self: stretch; gap: 6px; height: 100%; width: 100%;
+}
+.pg-livepts-board .pg-alive i { width: 14px; height: 22px; flex: 0 0 14px; margin: 0; }
+.pg-livepts-board .pg-table-head span:nth-child(n+3) { text-align: center; }
+.pg-livepts-rows .rank { width: 26px; }
+/* Larger, clearly spaced status-key icons below the standings. */
+.pg-livepts-board .pg-status-legend { gap: 8px; font-size: 13px; }
+.pg-livepts-board .pg-status-legend i { width: 14px; height: 22px; flex: 0 0 14px; }

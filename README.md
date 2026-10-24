@@ -99,6 +99,8 @@ Change the bind with `HOST` / `PORT` (`$env:PORT='9000'; python server.py`).
 | `/results` | Standings, group tables, match results |
 | `/about` · `/privacy.html` · | Info pages |
 | `/overlay/<scene>` | Original OBS overlay scene (token-gated data) |
+| `/pmgc` | PMGC broadcast stage gallery — 10 themes, 10-scene rundown |
+| `/pmgc/<scene>?theme=<id>` | PMGC stage scene for OBS (see [docs/pmgc-stage.md](docs/pmgc-stage.md)) |
 | `/standings` · `/operator` · `/login` | Legacy redirects → `/results` · `/admin/control` · `/admin` |
 
 **Admin** (one session + CSRF, gated server-side on every route):
@@ -108,7 +110,7 @@ Change the bind with `HOST` / `PORT` (`$env:PORT='9000'; python server.py`).
 | `/admin` | Registration approval dashboard |
 | `/admin/matches` | Match schedule + start times + check-in + scoring rules |
 | `/admin/control` | Match Control Desk (drive a live match) |
-| `/admin/overlays` | Overlay producer (URLs, token, event logo, preview) |
+| `/admin/overlays` | Overlay producer (URLs, token, event logo, preview, PMGC stage) |
 | `/admin/caster` | Caster dashboard + push-stat-card |
 
 **API:** registration/status endpoints (see [docs/api.md](docs/api.md)) plus

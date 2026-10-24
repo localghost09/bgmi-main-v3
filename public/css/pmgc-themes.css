@@ -1,0 +1,106 @@
+/* Event-inspired palettes. Research/provenance: docs/broadcast-references.md.
+   Geometry lives in pmgc-layouts.css, OBS alpha rules in pmgc-obs.css. */
+.pmgc {
+ --p-display: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
+ --p-body: "Rajdhani", Arial, sans-serif;
+ --p-positive: #fff; --p-danger: #ff303e; --p-cut: 14px;
+ --p-radius: 0px; --p-radius-sm: 0px; --p-skew: -12deg; --p-track: .08em;
+ --p-title-transform: uppercase; --p-title-style: normal; --p-title-weight: 800;
+ --p-shadow: rgba(0,0,0,.6); --p-line-soft: rgba(255,255,255,.12);
+ --p-panel-clip: polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px);
+ --p-motif-opacity: .45;
+}
+.pmgc[data-theme="bmps-2024"] {
+ --p-accent: #14db87; --p-accent-2: #14db87; --p-accent-3: #fff;
+ --p-bg: #061510; --p-bg-2: #0b251c;
+ --p-panel: #0b251c; --p-panel-2: #0b251c; --p-panel-solid: #0b251c;
+ --p-text: #f6f7fb; --p-muted: #b9c7d6;
+ --p-line: rgba(20,219,135,.45); --p-glow: rgba(20,219,135,.25);
+ --p-accent-12: rgba(20,219,135,.12); --p-accent-20: rgba(20,219,135,.20); --p-accent-30: rgba(20,219,135,.30);
+}
+.pmgc[data-theme="bgms-2024"] {
+ --p-accent: #ffc153; --p-accent-2: #ffc153; --p-accent-3: #fff;
+ --p-bg: #180e0b; --p-bg-2: #21160e;
+ --p-panel: #21160e; --p-panel-2: #21160e; --p-panel-solid: #21160e;
+ --p-text: #f6f7fb; --p-muted: #b9c7d6;
+ --p-line: rgba(255,193,83,.45); --p-glow: rgba(255,193,83,.25);
+ --p-accent-12: rgba(255,193,83,.12); --p-accent-20: rgba(255,193,83,.20); --p-accent-30: rgba(255,193,83,.30);
+}
+.pmgc[data-theme="bgis-2025"] {
+ --p-accent: #ffcf19; --p-accent-2: #ffcf19; --p-accent-3: #fff;
+ --p-bg: #041b34; --p-bg-2: #07345e;
+ --p-panel: #07345e; --p-panel-2: #07345e; --p-panel-solid: #07345e;
+ --p-text: #f6f7fb; --p-muted: #b9c7d6;
+ --p-line: rgba(255,207,25,.45); --p-glow: rgba(255,207,25,.25);
+ --p-accent-12: rgba(255,207,25,.12); --p-accent-20: rgba(255,207,25,.20); --p-accent-30: rgba(255,207,25,.30);
+}
+.pmgc[data-theme="bgis-2026"] {
+ --p-accent: #e9dc31; --p-accent-2: #e9dc31; --p-accent-3: #fff;
+ --p-bg: #0b1027; --p-bg-2: #171c32;
+ --p-panel: #171c32; --p-panel-2: #171c32; --p-panel-solid: #171c32;
+ --p-text: #f6f7fb; --p-muted: #b9c7d6;
+ --p-line: rgba(233,220,49,.45); --p-glow: rgba(233,220,49,.25);
+ --p-accent-12: rgba(233,220,49,.12); --p-accent-20: rgba(233,220,49,.20); --p-accent-30: rgba(233,220,49,.30);
+}
+.pmgc[data-theme="bmsd-2025"] {
+ --p-accent: #12d8c4; --p-accent-2: #12d8c4; --p-accent-3: #fff;
+ --p-bg: #efeee7; --p-bg-2: #10134a;
+ --p-panel: #10134a; --p-panel-2: #10134a; --p-panel-solid: #10134a;
+ --p-text: #f6f7fb; --p-muted: #b9c7d6;
+ --p-line: rgba(18,216,196,.45); --p-glow: rgba(18,216,196,.25);
+ --p-accent-12: rgba(18,216,196,.12); --p-accent-20: rgba(18,216,196,.20); --p-accent-30: rgba(18,216,196,.30);
+}
+.pmgc[data-theme="bmsd-2026"] {
+ --p-accent: #b8e54b; --p-accent-2: #b8e54b; --p-accent-3: #fff;
+ --p-bg: #071723; --p-bg-2: #152839;
+ --p-panel: #152839; --p-panel-2: #152839; --p-panel-solid: #152839;
+ --p-text: #f6f7fb; --p-muted: #b9c7d6;
+ --p-line: rgba(184,229,75,.45); --p-glow: rgba(184,229,75,.25);
+ --p-accent-12: rgba(184,229,75,.12); --p-accent-20: rgba(184,229,75,.20); --p-accent-30: rgba(184,229,75,.30);
+}
+.pmgc[data-theme="bmic-2025"] {
+ --p-accent: #5e9dff; --p-accent-2: #5e9dff; --p-accent-3: #fff;
+ --p-bg: #08172d; --p-bg-2: #112742;
+ --p-panel: #112742; --p-panel-2: #112742; --p-panel-solid: #112742;
+ --p-text: #f6f7fb; --p-muted: #b9c7d6;
+ --p-line: rgba(94,157,255,.45); --p-glow: rgba(94,157,255,.25);
+ --p-accent-12: rgba(94,157,255,.12); --p-accent-20: rgba(94,157,255,.20); --p-accent-30: rgba(94,157,255,.30);
+}
+.pmgc[data-theme="pmgc-2025"] {
+ --p-accent: #f1ce65; --p-accent-2: #f1ce65; --p-accent-3: #fff;
+ --p-bg: #e9edf6; --p-bg-2: #303c99;
+ --p-panel: #303c99; --p-panel-2: #303c99; --p-panel-solid: #303c99;
+ --p-text: #f6f7fb; --p-muted: #b9c7d6;
+ --p-line: rgba(241,206,101,.45); --p-glow: rgba(241,206,101,.25);
+ --p-accent-12: rgba(241,206,101,.12); --p-accent-20: rgba(241,206,101,.20); --p-accent-30: rgba(241,206,101,.30);
+}
+.pmgc[data-theme="ewc-2025"] {
+ --p-accent: #a5e9ff; --p-accent-2: #a5e9ff; --p-accent-3: #fff;
+ --p-bg: #0c0730; --p-bg-2: #24145b;
+ --p-panel: #24145b; --p-panel-2: #24145b; --p-panel-solid: #24145b;
+ --p-text: #f6f7fb; --p-muted: #b9c7d6;
+ --p-line: rgba(165,233,255,.45); --p-glow: rgba(165,233,255,.25);
+ --p-accent-12: rgba(165,233,255,.12); --p-accent-20: rgba(165,233,255,.20); --p-accent-30: rgba(165,233,255,.30);
+}
+.pmgc[data-theme="ewc-2026"] {
+ --p-accent: #eac775; --p-accent-2: #eac775; --p-accent-3: #fff;
+ --p-bg: #171109; --p-bg-2: #21190f;
+ --p-panel: #21190f; --p-panel-2: #21190f; --p-panel-solid: #21190f;
+ --p-text: #f6f7fb; --p-muted: #b9c7d6;
+ --p-line: rgba(234,199,117,.45); --p-glow: rgba(234,199,117,.25);
+ --p-accent-12: rgba(234,199,117,.12); --p-accent-20: rgba(234,199,117,.20); --p-accent-30: rgba(234,199,117,.30);
+}
+
+.pg-motif { background: repeating-linear-gradient(115deg, transparent 0 115px, var(--p-accent-12) 115px 117px); }
+.pmgc[data-theme="bmps-2024"] .pg-motif { background: repeating-linear-gradient(90deg,transparent 0 160px,var(--p-accent-12) 160px 164px); }
+.pmgc[data-theme="bgms-2024"] .pg-motif { background: repeating-conic-gradient(from 45deg at 50% 70%,transparent 0 24deg,var(--p-accent-12) 24deg 25deg); }
+.pmgc[data-theme="bgis-2025"] .pg-motif { background: repeating-linear-gradient(135deg,transparent 0 250px,var(--p-accent-20) 250px 300px); }
+.pmgc[data-theme="bgis-2026"] .pg-motif { background: repeating-linear-gradient(0deg,transparent 0 120px,var(--p-accent-12) 120px 122px); }
+.pmgc[data-theme="bmsd-2025"] .pg-bg-art, .pmgc[data-theme="pmgc-2025"] .pg-bg-art { display: none; }
+.pmgc[data-theme="bmsd-2025"] .pg-bg-vigne, .pmgc[data-theme="pmgc-2025"] .pg-bg-vigne { opacity: .12; }
+.pmgc[data-theme="bmsd-2025"] .pg-motif { background: repeating-linear-gradient(-8deg,transparent 0 260px,#11134a22 260px 340px); }
+.pmgc[data-theme="bmsd-2026"] .pg-motif { background: repeating-linear-gradient(0deg,transparent 0 60px,#ae6cff26 60px 62px),repeating-linear-gradient(90deg,transparent 0 60px,#ae6cff26 60px 62px); }
+.pmgc[data-theme="bmic-2025"] .pg-motif { background: repeating-linear-gradient(90deg,transparent 0 150px,#f04c4222 150px 220px); }
+.pmgc[data-theme="pmgc-2025"] .pg-motif { background: repeating-conic-gradient(from 20deg at 90% 50%,transparent 0 25deg,#d6b34344 25deg 26deg); }
+.pmgc[data-theme="ewc-2025"] .pg-motif { background: repeating-linear-gradient(0deg,transparent 0 16px,#a56cff22 16px 18px); }
+.pmgc[data-theme="ewc-2026"] .pg-motif { background: radial-gradient(ellipse at 85% 25%,#eac77555,transparent 60%); }

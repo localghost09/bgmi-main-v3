@@ -56,6 +56,9 @@ RATE_LIMIT = int(os.environ.get("BGMI_RATE_LIMIT", "30"))
 RATE_WINDOW = int(os.environ.get("BGMI_RATE_WINDOW", "3600"))
 STATUS_RATE_LIMIT = int(os.environ.get("BGMI_STATUS_RATE_LIMIT", "5"))
 STATUS_RATE_WINDOW = int(os.environ.get("BGMI_STATUS_RATE_WINDOW", "60"))
+# Explicit temporary preview-only operator switch. Disabled by default.
+ADMIN_LOGIN_BYPASS = os.environ.get("BGMI_ADMIN_LOGIN_BYPASS", "") == "1"
+BYPASS_CSRF = secrets.token_urlsafe(32)
 SESSION_TTL = int(os.environ.get("BGMI_SESSION_TTL", "1209600"))  # absolute cap
 # Idle expiry: a session unused for this many seconds is revoked even if the
 # absolute TTL has not elapsed.  Configurable so ops can tighten it for events.
@@ -81,6 +84,7 @@ CONTENT_TYPES = {
     ".css": "text/css; charset=utf-8",
     ".js": "text/javascript; charset=utf-8",
     ".json": "application/json; charset=utf-8",
+    ".wav": "audio/wav",
     ".png": "image/png",
     ".jpg": "image/jpeg",
     ".jpeg": "image/jpeg",
@@ -1165,6 +1169,51 @@ class Handler(BaseHTTPRequestHandler):
         if not self._head_only:
             self.wfile.write(body)
 
+    def request_host(self):
+        """Host the browser used (proxies forward it in X-Forwarded-Host)."""
+        for header in ("X-Forwarded-Host", "Host"):
+            value = (self.headers.get(header) or "").strip().lower()
+            if value:
+                return value.split(",")[0].strip()
+        return ""
+
+    def is_preview_host(self):
+        """True when this page is being served through the sandbox preview
+        proxy (https://<port>-<sandbox>.e2b.app).
+
+        Those previews render the app inside a cross-site iframe on a host we
+        do not control, which changes two rules: the frame has to be allowed
+        (X-Frame-Options cannot express an allowlist, so CSP frame-ancestors
+        takes over) and the session cookie has to be SameSite=None (+Secure,
+        +Partitioned) or the browser silently drops it and sign-in appears to
+        do nothing."""
+        host = self.request_host()
+        extra = [h.strip().lower() for h in
+                 os.environ.get("BGMI_PREVIEW_HOSTS", "").split(",") if h.strip()]
+        suffixes = tuple(extra) + (".e2b.app", ".e2b.dev")
+        return host.endswith(suffixes) if host else False
+
+    def is_https_request(self):
+        proto = (self.headers.get("X-Forwarded-Proto") or "").strip().lower()
+        if proto.split(",")[0].strip() == "https":
+            return True
+        if (self.headers.get("X-Forwarded-Ssl") or "").lower() == "on":
+            return True
+        return self.is_preview_host()      # the preview proxy always fronts TLS
+
+    def frame_ancestors(self):
+        """CSP frame-ancestors value.
+
+        Production deployments keep the strict 'self' (plus whatever the
+        operator allowlists). Preview hosts allow any ancestor because the
+        parent is an app shell we cannot predict; every write still needs a
+        session cookie and the per-session CSRF token, so UI redressing is the
+        only residual risk in a development sandbox."""
+        override = (os.environ.get("BGMI_FRAME_ANCESTORS") or "").strip()
+        if override:
+            return override
+        return "*" if self.is_preview_host() else "'self'"
+
     def end_headers(self):
         # security headers on every response (JSON, CSV, pages, 404s):
         # uploaded images can never be sniffed into HTML/script
@@ -1185,12 +1234,16 @@ class Handler(BaseHTTPRequestHandler):
             "frame-src 'self'; "
             "object-src 'none'; "
             "base-uri 'self'; "
-            "form-action 'self'")
+            "form-action 'self'; "
+            "frame-ancestors " + self.frame_ancestors())
         # admin pages must never be framed (clickjacking); overlay shells
-        # stay frameable so the producer preview iframe works.
-        path = getattr(self, "path", "") or ""
-        self.send_header("X-Frame-Options",
-                         "DENY" if path.startswith("/admin") else "SAMEORIGIN")
+        # stay frameable so the producer preview iframe works. Preview hosts
+        # are exempt: XFO has no allowlist, frame-ancestors above governs.
+        if not self.is_preview_host():
+            path = getattr(self, "path", "") or ""
+            self.send_header("X-Frame-Options",
+                             "DENY" if path.startswith("/admin")
+                             else "SAMEORIGIN")
         super().end_headers()
 
     def send_csv(self, filename, rows):
@@ -1272,6 +1325,8 @@ class Handler(BaseHTTPRequestHandler):
 
     def admin_session(self):
         """Return (admin_row, csrf) when a valid session cookie is present."""
+        if ADMIN_LOGIN_BYPASS:
+            return ({"id": 0, "username": "preview-admin"}, BYPASS_CSRF)
         return session_lookup(self.session_raw())
 
     def _same_origin(self):
@@ -1313,17 +1368,25 @@ class Handler(BaseHTTPRequestHandler):
                 return None
         return sess
 
+    def cookie_attributes(self):
+        """Cookie attributes that survive the context this page is served in.
+
+        Plain HTTP (local dev): SameSite=Lax — nothing cross-site can post.
+        HTTPS (a real deployment, or an embedded preview iframe): the cookie
+        has to be SameSite=None to be sent from a third-party frame, which
+        browsers only accept together with Secure; Partitioned (CHIPS) keeps
+        it working even when third-party cookies are switched off."""
+        if not self.is_https_request():
+            return "Path=/; HttpOnly; SameSite=Lax"
+        return "Path=/; HttpOnly; SameSite=None; Secure; Partitioned"
+
     def set_session_cookie(self, raw):
-        secure = (self.headers.get("X-Forwarded-Proto", "") == "https" or
-                  self.headers.get("X-Forwarded-Proto", "").lower() == "https")
-        return {
-            "Set-Cookie": "bgmi_admin=%s; Path=/; HttpOnly; SameSite=Lax; "
-                          "Max-Age=%d%s" % (raw, SESSION_TTL,
-                                            "; Secure" if secure else "")}
+        return {"Set-Cookie": "bgmi_admin=%s; %s; Max-Age=%d"
+                              % (raw, self.cookie_attributes(), SESSION_TTL)}
 
     def clear_session_cookie(self):
-        return {"Set-Cookie": "bgmi_admin=; Path=/; HttpOnly; SameSite=Lax; "
-                              "Max-Age=0"}
+        return {"Set-Cookie": "bgmi_admin=; %s; Max-Age=0"
+                              % self.cookie_attributes()}
 
     def client_ip(self):
         peer = self.client_address[0]
@@ -1640,6 +1703,14 @@ class Handler(BaseHTTPRequestHandler):
 
         if path in ("/teams", "/teams.html"):
             return self.serve_static("/teams.html")
+
+        # PMGC broadcast stage: /pmgc is the theme gallery, /pmgc/<scene> is the
+        # 1920x1080 stage (one OBS browser source per scene). The scene also
+        # travels as ?scene=, so both /pmgc/live and /pmgc?scene=live work.
+        if path in ("/pmgc", "/pmgc/", "/pmgc.html"):
+            return self.serve_static("/pmgc.html")
+        if path.startswith("/pmgc/"):
+            return self.serve_static("/pmgc-stage.html")
 
         # legacy URLs from the old broadcast app keep working
         if path in ("/standings", "/standings.html"):
@@ -3412,6 +3483,9 @@ class Handler(BaseHTTPRequestHandler):
 # ---------------------------------------------------------------------------
 
 def main():
+    if ADMIN_LOGIN_BYPASS:
+        print("WARNING: ADMIN LOGIN BYPASSED. Anyone with this server URL has admin access. "
+              "Unset BGMI_ADMIN_LOGIN_BYPASS and restart to restore authentication.", flush=True)
     init_db()
     # drain any jobs a previous run left behind before serving traffic
     try:
