@@ -13,6 +13,19 @@
   required on top of that.
 - **Headers** — `X-Content-Type-Options: nosniff` and `Referrer-Policy:
   strict-origin-when-cross-origin` on every response.
+- **Framing** — `X-Frame-Options: DENY` on `/admin*`, `SAMEORIGIN` everywhere
+  else, backed by a CSP `frame-ancestors 'self'`. See *Preview hosts* below for
+  the one exception and why it exists.
+- **Preview hosts** — when the request arrives through a sandbox preview
+  proxy (`*.e2b.app`, or anything listed in `BGMI_PREVIEW_HOSTS`), the app is
+  rendered inside a cross-site iframe on a host we do not control. Both the
+  frame policy and the cookie have to change or sign-in silently no-ops:
+  `X-Frame-Options` is dropped in favour of `frame-ancestors *`, and
+  `bgmi_admin` is issued `SameSite=None; Secure; Partitioned` (CHIPS) so it is
+  sent from a third-party frame even with third-party cookies disabled.
+  `BGMI_FRAME_ANCESTORS` overrides the ancestor list for a real deployment.
+  Production hosts keep `DENY`/`'self'` — the exception never applies unless
+  the request actually came from a preview host.
 - **Path safety** — `.py/.db/.db-wal/.db-shm/.pyc`, dotfiles and `..` escapes
   are blocked; `uploads/` resolves only inside `BGMI_UPLOADS`.
 - **Privacy** — `/status` misses are byte-identical regardless of whether the
