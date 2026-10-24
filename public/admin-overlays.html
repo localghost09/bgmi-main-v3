@@ -53,83 +53,7 @@
       </div>
     </header>
 
-    <!-- token + branding -->
-    <section class="bc-card">
-      <h2 class="bc-h2">Access &amp; branding</h2>
-      <p class="bc-p">These are the original broadcast overlay scenes. Every overlay URL carries this secret token &mdash; rotating it instantly cuts off the old URLs, so re-copy them into OBS afterwards.</p>
-      <div class="bc-form-row">
-        <div style="flex:1; min-width:260px;">
-          <label class="bc-label" for="tokenField">Overlay token</label>
-          <input class="bc-input" id="tokenField" readonly>
-        </div>
-        <button class="bc-btn bc-btn--no" id="rotateBtn">Rotate token</button>
-      </div>
-      <div class="bc-form-row">
-        <div style="flex:1; min-width:220px;">
-          <label class="bc-label" for="logoField">Event logo <span class="bc-dim">(stream-start scene; /uploads/… or https://…)</span></label>
-          <input class="bc-input" id="logoField" placeholder="/uploads/event-logo.png">
-        </div>
-        <div style="min-width:130px;">
-          <label class="bc-label" for="themeField">Overlay accent</label>
-          <input class="bc-input" id="themeField" type="color" value="#b6ff3e" style="width:90px;padding:4px;">
-        </div>
-        <div style="min-width:170px;">
-          <label class="bc-label" for="themePickField">Theme</label>
-          <select class="bc-select" id="themePickField" style="width:100%;"></select>
-        </div>
-        <div style="flex:1; min-width:220px;">
-          <label class="bc-label" for="sponsorField">Sponsor / presentation line <span class="bc-dim">(optional)</span></label>
-          <input class="bc-input" id="sponsorField" maxlength="120" placeholder="Powered by …">
-        </div>
-        <button class="bc-btn bc-btn--go" id="saveThemeBtn">Save</button>
-      </div>
-      <div class="bc-form-row">
-        <div style="flex:1; min-width:180px;">
-          <label class="bc-label" for="casterField">Caster 1</label>
-          <input class="bc-input" id="casterField" maxlength="60" placeholder="Main caster">
-        </div>
-        <div style="flex:1; min-width:180px;">
-          <label class="bc-label" for="caster2Field">Caster 2</label>
-          <input class="bc-input" id="caster2Field" maxlength="60" placeholder="Second caster">
-        </div>
-        <div style="flex:2; min-width:220px;">
-          <label class="bc-label" for="casterTaglineField">Caster tagline</label>
-          <input class="bc-input" id="casterTaglineField" maxlength="120" placeholder="The battle starts now">
-        </div>
-      </div>
-      <p class="bc-p" style="margin:12px 0 0;">Event name, date, venue, format labels and qualification slots are managed in <a href="/admin/event" style="color:var(--acid);">Event setup</a> so the website and stream never drift apart.</p>
-      <div class="bc-notice hidden" id="themeNotice" role="status"></div>
-    </section>
-
-    <!-- preview -->
-    <section class="bc-card">
-      <h2 class="bc-h2">Preview</h2>
-      <div class="bc-form-row">
-        <div>
-          <label class="bc-label" for="previewPick">Overlay</label>
-          <select class="bc-select" id="previewPick" style="width:auto;"></select>
-        </div>
-        <span class="bc-p" style="margin:0;">scaled from a 1920&times;1080 canvas &mdash; exactly what OBS sees</span>
-      </div>
-      <div class="bc-preview" id="previewBox"><iframe id="previewFrame"
-        title="Overlay preview" scrolling="no"></iframe></div>
-    </section>
-
-    <!-- program output: one OBS URL, scenes switched from here -->
-    <section class="bc-card" style="margin-top:18px;">
-      <h2 class="bc-h2">Program output <span class="bc-dim">&mdash; one URL for OBS</span></h2>
-      <p class="bc-p">Add just this URL as a Browser source in OBS (1920&times;1080, custom CSS empty) and switch scenes with the buttons below &mdash; the OBS browser source follows within a second, no refresh.</p>
-      <div class="bc-form-row">
-        <div style="flex:1; min-width:260px;">
-          <label class="bc-label" for="programUrl">Program URL</label>
-          <input class="bc-input" id="programUrl" readonly>
-        </div>
-        <button class="bc-btn" id="copyProgramBtn">Copy URL</button>
-      </div>
-      <div id="programSceneBtns" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;"></div>
-    </section>
-
-    <!-- PMGC broadcast stage: ten event layouts x eleven scenes -->
+    <!-- PMGC broadcast stage: ten event layouts x fourteen scenes -->
     <section class="bc-card" style="margin-top:18px;" id="pmgcCard">
       <h2 class="bc-h2">PMGC stage <span class="bc-dim">&mdash; 10 event layouts &middot; 14 scenes</span></h2>
       <p class="bc-p">
@@ -242,7 +166,7 @@
   <script src="/js/site-config.js?v=2"></script>
   <script src="/js/admin-shell.js?v=1"></script>
   <script src="/js/broadcast-themes.js?v=6"></script>
-  <script src="/js/overlays.js?v=12"></script>
+  <script src="/js/overlays.js?v=13"></script>
   <script src="/js/admin-flow.js?v=2"></script>
 </body>
 </html>
