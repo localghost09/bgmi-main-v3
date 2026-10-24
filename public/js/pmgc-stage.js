@@ -53,7 +53,8 @@
     { id: 'overall', label: '09 Overall', ms: 20000, word: 'OVERALL' },
     { id: 'map-rotation', label: '10 Map Rotation', ms: 18000, word: 'MAP POOL' },
     { id: 'mvp', label: '11 MVP', ms: 16000, word: 'MOST VALUABLE PLAYER' },
-    { id: 'top-players', label: '12 Top 5 Players', ms: 18000, word: 'TOP 5 PLAYERS' }
+    { id: 'top-players', label: '12 Top 5 Players', ms: 18000, word: 'TOP 5 PLAYERS' },
+    { id: 'overall-mvp', label: '13 Overall Top 5 MVP', ms: 20000, word: 'TOURNAMENT MVP' }
   ];
   var SCENE_IDS = SCENES.map(function (s) { return s.id; });
   var SCENE_WORDS = {};
@@ -816,6 +817,39 @@
     name.appendChild(copy); card.appendChild(name);
     return card;
   }
+  function renderOverallMvpReference() {
+    var host = $('overallMvpCards');
+    var seed = window.PMGC_MVP_REFERENCE;
+    if (!host || host.childElementCount || !seed) return;
+    $('overallMvpEvent').textContent = seed.event;
+    $('overallMvpSeedLabel').textContent = seed.label;
+    fillMvpReferenceCards(host, seed);
+  }
+  function fillMvpReferenceCards(host, seed) {
+    seed.players.slice().sort(function (a, b) { return b.rating - a.rating; }).slice(0, 5).forEach(function (player, index) {
+      var card = el('article', 'pg-reference-card' + (index === 0 ? ' is-leader' : ''));
+      card.setAttribute('aria-label', 'Rank ' + (index + 1) + ': ' + player.name);
+      var portrait = el('div', 'pg-reference-portrait');
+      var img = el('img');
+      img.src = '/assets/images/mvp-reference/' + player.photo;
+      img.alt = player.name + ' — portrait cropped from supplied reference';
+      img.width = index === 0 ? 328 : 225; img.height = index === 0 ? 254 : 214;
+      portrait.appendChild(img);
+      card.appendChild(portrait);
+      var name = el('h2', 'pg-reference-name', player.name);
+      name.title = player.name; card.appendChild(name);
+      var metrics = el('dl', 'pg-reference-stats');
+      [['MVP RATING', player.rating.toFixed(2)], ['FINISHES', player.finishes],
+        ['DAMAGE', player.damage], ['AVG. SURV.', player.survival], ['KNOCKS', player.knocks]].forEach(function (pair) {
+        var row = el('div', 'pg-reference-stat');
+        row.appendChild(el('dt', null, pair[0]));
+        row.appendChild(el('dd', null, String(pair[1])));
+        metrics.appendChild(row);
+      });
+      card.appendChild(metrics); host.appendChild(card);
+    });
+  }
+
   function renderPlayerAwards() {
     var awards = state.playerAwards || {};
     var mvp = awards.matchMvp;
@@ -837,31 +871,47 @@
     } else {
       host.appendChild(el('div', 'pg-award-empty', 'MVP AWAITING MATCH DATA'));
     }
-    if (leaders.length) {
-      var featured = awardProfile(leaders[0], 1);
-      var metrics = el('div', 'pg-award-feature-metrics');
-      metrics.appendChild(awardMetric('FINISHES', money(leaders[0].kills)));
-      metrics.appendChild(awardMetric('DAMAGE', money(leaders[0].damage)));
-      metrics.appendChild(awardMetric('MATCHES', money(leaders[0].matches)));
-      featured.appendChild(metrics); top.appendChild(featured);
-      var list = el('div', 'pg-award-chasers');
-      for (var i = 1; i < 5; i += 1) {
+    var topFooter = $('topPlayersMode');
+    if (flag('preview', false) && !leaders.length && window.PMGC_MVP_REFERENCE) {
+      fillMvpReferenceCards(top, window.PMGC_MVP_REFERENCE);
+      topFooter.textContent = 'SEEDED REFERENCE PREVIEW · NO SCORED PLAYERS YET · NOT LIVE RESULTS';
+      return;
+    }
+    topFooter.textContent = leaders.length
+      ? 'LIVE SCORING · FINISHES FIRST · DAMAGE TIEBREAK · — = NOT TRACKED'
+      : 'AWAITING PLAYER DATA · LIVE SOURCE · — = NOT TRACKED';
+    {
+      for (var i = 0; i < 5; i += 1) {
         var player = leaders[i];
-        var row = el('article', 'pg-award-player-row');
-        row.appendChild(el('span', 'pg-award-row-rank', '#' + pad(i + 1)));
-        if (player) {
-          var identity = el('div', 'pg-award-row-name');
-          identity.appendChild(el('small', null, player.teamTag || player.teamName));
-          identity.appendChild(el('h3', null, player.player));
-          row.appendChild(identity);
-          row.appendChild(awardMetric('FIN', money(player.kills)));
-          row.appendChild(awardMetric('DAMAGE', money(player.damage)));
-          row.appendChild(awardMetric('MP', money(player.matches)));
-        } else { row.appendChild(el('p', 'pg-award-pending', 'AWAITING PLAYER DATA')); }
-        list.appendChild(row);
+        var card = el('article', 'pg-reference-card' + (i === 0 ? ' is-leader' : ''));
+        card.setAttribute('aria-label', 'Rank ' + (i + 1) + (player ? ': ' + player.player : ': awaiting player data'));
+        var portrait = el('div', 'pg-reference-portrait');
+        var photo = player && (player.avatarUrl || player.photoUrl);
+        if (photo) {
+          var image = el('img'); image.src = photo; image.alt = player.player;
+          portrait.appendChild(image);
+        } else {
+          portrait.classList.add('pg-reference-live-placeholder');
+          if (player && player.logo) {
+            var logo = el('img'); logo.src = player.logo; logo.alt = player.teamName || 'Team logo';
+            logo.className = 'pg-reference-team-logo'; portrait.appendChild(logo);
+          } else { portrait.appendChild(el('span', 'pg-reference-monogram', player ? initials(player.player) : '#' + (i + 1))); }
+          portrait.appendChild(el('small', 'pg-reference-photo-note', player ? 'PLAYER PHOTO NOT SET' : 'AWAITING PLAYER DATA'));
+        }
+        if (player) portrait.appendChild(el('span', 'pg-reference-team-tag', player.teamTag || player.teamName || ''));
+        card.appendChild(portrait);
+        var name = el('h2', 'pg-reference-name', player ? player.player : 'PENDING');
+        name.title = player ? player.player : 'Awaiting player data'; card.appendChild(name);
+        var metrics = el('dl', 'pg-reference-stats');
+        [['MVP RATING', '—'], ['FINISHES', player ? money(player.kills) : '—'],
+          ['DAMAGE', player ? money(player.damage) : '—'], ['AVG. SURV.', '—'], ['KNOCKS', '—']].forEach(function (pair) {
+          var row = el('div', 'pg-reference-stat');
+          row.appendChild(el('dt', null, pair[0])); row.appendChild(el('dd', null, pair[1]));
+          metrics.appendChild(row);
+        });
+        card.appendChild(metrics); top.appendChild(card);
       }
-      top.appendChild(list);
-    } else { top.appendChild(el('div', 'pg-award-empty', 'TOP 5 AWAITING PLAYER DATA')); }
+    }
   }
 
   function renderWinnerStats() {
@@ -1180,6 +1230,7 @@
     renderChickenDinner();
     renderWinnerStats();
     renderPlayerAwards();
+    renderOverallMvpReference();
     renderMaps();
     renderKillFeed(true);
   }

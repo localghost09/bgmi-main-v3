@@ -15,7 +15,7 @@ const ROOT = path.resolve(__dirname, '..');
 
 const SCENES = ['opening', 'casters', 'drop', 'map-intro', 'live', 'live-points',
   'chicken-dinner', 'winner-stats', 'match-standings', 'overall',
-  'map-rotation', 'mvp', 'top-players'];
+  'map-rotation', 'mvp', 'top-players', 'overall-mvp'];
 
 const THEMES = ['bmps-2024', 'bgms-2024', 'bgis-2025', 'bgis-2026',
   'bmsd-2025', 'bmsd-2026', 'bmic-2025', 'pmgc-2025',
@@ -73,10 +73,10 @@ test.afterAll(() => {
   if (tmp) rmSync(tmp, { recursive: true, force: true });
 });
 
-test('gallery lists ten event themes and thirteen scenes', async ({ page }) => {
+test('gallery lists ten event themes and fourteen scenes', async ({ page }) => {
   await page.goto(base + '/pmgc');
   await expect(page.locator('.theme-card')).toHaveCount(10);
-  await expect(page.locator('.step')).toHaveCount(13);
+  await expect(page.locator('.step')).toHaveCount(14);
   await expect(page.locator('.theme-card').first())
     .toHaveAttribute('href', /\/pmgc\/casters\?theme=bmps-2024/);
 });
@@ -462,21 +462,24 @@ test('MVP and top-five use real player awards, escape names, and fit all themes'
   await expect(page.locator('#mvpContent h2').first()).toHaveText('MATCH ACE');
   await expect(page.locator('#mvpContent .pg-award-metric b').first()).toHaveText('9');
   await page.goto(`${base}/pmgc/top-players?obs=1`);
-  await expect(page.locator('#topPlayersContent .pg-award-profile h2')).toHaveText('FIRST <img>');
-  await expect(page.locator('.pg-award-player-row h3')).toHaveText(['SECOND', 'THIRD', 'FOURTH', 'FIFTH']);
+  await expect(page.locator('#topPlayersContent .is-leader h2')).toHaveText('FIRST <img>');
+  await expect(page.locator('#topPlayersContent .pg-reference-card:not(.is-leader) h2')).toHaveText(['SECOND', 'THIRD', 'FOURTH', 'FIFTH']);
   await expect(page.locator('#topPlayersContent img')).toHaveCount(0);
+  await expect(page.locator('#topPlayersContent .pg-reference-card')).toHaveCount(5);
+  await expect(page.locator('#topPlayersContent .is-leader dd')).toHaveText(['—', '25', '3,900', '—', '—']);
+  await expect(page.locator('.pg-topplayers .pg-reference-disclaimer')).toContainText('LIVE SCORING');
   for (const theme of THEMES) {
     await page.evaluate(t => {
       window.__pmgc.setTheme(t);
       document.getAnimations().forEach(a => {try {a.finish();} catch {a.pause();}});
     }, theme);
-    const bounds = await page.evaluate(() => [...document.querySelectorAll('#topPlayersContent article, #topPlayersContent .pg-award-feature-metrics')].map(e => {
+    const bounds = await page.evaluate(() => [...document.querySelectorAll('#topPlayersContent article')].map(e => {
       const b=e.getBoundingClientRect();return {bottom:b.bottom,left:b.left,right:b.right,overflow:e.scrollWidth>e.clientWidth+1};
     }));
     for (const box of bounds) {
-      expect(box.bottom,theme).toBeLessThanOrEqual(971);
-      expect(box.left).toBeGreaterThanOrEqual(80);
-      expect(box.right).toBeLessThanOrEqual(1841);
+      expect(box.bottom,theme).toBeLessThanOrEqual(1009);
+      expect(box.left).toBeGreaterThanOrEqual(56);
+      expect(box.right).toBeLessThanOrEqual(1865);
       expect(box.overflow, theme).toBe(false);
     }
   }
@@ -486,5 +489,82 @@ test('player awards show waiting states rather than fictional showcase winners',
   await page.goto(`${base}/pmgc/mvp?obs=1`);
   await expect(page.locator('#mvpContent')).toHaveText('MVP AWAITING MATCH DATA');
   await page.goto(`${base}/pmgc/top-players?obs=1`);
-  await expect(page.locator('#topPlayersContent')).toHaveText('TOP 5 AWAITING PLAYER DATA');
+  await expect(page.locator('#topPlayersContent .pg-reference-card')).toHaveCount(5);
+  await expect(page.locator('#topPlayersContent h2')).toHaveText(['PENDING','PENDING','PENDING','PENDING','PENDING']);
+  await expect(page.locator('#topPlayersMode')).toContainText('AWAITING PLAYER DATA');
+});
+
+test('overall MVP reference has five seeded portraits, rating order and all five stat rows', async ({page}) => {
+  await page.setViewportSize({width:1920,height:1080});
+  // A real scoring response must never replace the explicitly seeded snapshot.
+  await page.route('**/api/live/state', route => route.fulfill({json:{ok:true, teams:[],
+    playerAwards:{matchMvp:{player:'LIVE PLAYER',kills:99,damage:10000},topPlayers:[]}}}));
+  await page.goto(`${base}/pmgc/overall-mvp?theme=bgis-2026&obs=1`);
+  const cards = page.locator('#overallMvpCards .pg-reference-card');
+  await expect(cards).toHaveCount(5);
+  await expect(cards.locator('h2')).toHaveText(['GENSHUNTERRZ','IQOOSOULJOKER9','IQOOSOULLEGITT','IQOOXOGAKOP','IQOOSOULGOBLIN']);
+  await expect(cards.first().locator('dd')).toHaveText(['1.32','54','10487','22:11','46']);
+  await expect(cards.nth(1).locator('dd')).toHaveText(['1.27','47','11131','22:03','50']);
+  await expect(cards.nth(2).locator('dd')).toHaveText(['1.25','48','10660','21:24','48']);
+  await expect(cards.locator('dt')).toHaveCount(25);
+  await expect(page.locator('#overallMvpSeedLabel')).toContainText('NOT LIVE RESULTS');
+  await expect(page.locator('#pgBug')).toBeHidden();
+  await expect.poll(async () => page.locator('#overallMvpCards img').evaluateAll(images =>
+    images.every(img => img.complete && img.naturalWidth > 0))).toBe(true);
+  await expect(cards.first()).toHaveClass(/is-leader/);
+  // Seeded portraits and metrics are reference data even after live updates.
+  await expect(page.locator('#mvpContent h2').first()).toHaveText('LIVE PLAYER');
+  await expect(cards.first().locator('h2')).toHaveText('GENSHUNTERRZ');
+  for (const theme of THEMES) {
+    await page.evaluate(t => {
+      window.__pmgc.setTheme(t);
+      document.getAnimations().forEach(a => {try {a.finish();} catch {a.pause();}});
+    }, theme);
+    const geometry = await cards.evaluateAll(els => els.map(e => {
+      const rect=e.getBoundingClientRect();
+      return {top:rect.top,bottom:rect.bottom,left:rect.left,right:rect.right,
+        color:getComputedStyle(e).backgroundColor,
+        overflow:[...e.querySelectorAll('.pg-reference-stat')].some(row => row.scrollWidth > row.clientWidth + 1)};
+    }));
+    expect(geometry[0].top).toBeLessThan(geometry[1].top);
+    expect(geometry[0].color).toBe('rgb(237, 196, 13)');
+    for (const box of geometry) {
+      expect(box.bottom, theme).toBeLessThanOrEqual(1009);
+      expect(box.left).toBeGreaterThanOrEqual(56);
+      expect(box.right).toBeLessThanOrEqual(1865);
+      expect(box.overflow,theme).toBe(false);
+    }
+  }
+});
+
+test('live reference cards refresh rankings and keep missing players and stats honest', async ({page}) => {
+  await page.clock.install();
+  let players = [{player:'ALPHA',teamTag:'A',kills:3,damage:900}, {player:'BETA',teamTag:'B',kills:2,damage:800}];
+  await page.route('**/api/live/state', route => route.fulfill({json:{ok:true,teams:[],playerAwards:{topPlayers:players}}}));
+  await page.goto(`${base}/pmgc/top-players?obs=1`);
+  const cards = page.locator('#topPlayersContent .pg-reference-card');
+  await expect(cards).toHaveCount(5);
+  await expect(cards.first().locator('h2')).toHaveText('ALPHA');
+  await expect(cards.nth(2).locator('h2')).toHaveText('PENDING');
+  await expect(cards.nth(2).locator('dd')).toHaveText(['—','—','—','—','—']);
+  await expect(page.locator('#topPlayersContent img')).toHaveCount(0);
+  players = [{player:'ALPHA',teamTag:'A',kills:3,damage:900}, {player:'BETA',teamTag:'B',kills:7,damage:1800}];
+  await page.clock.fastForward(16000);
+  await expect(cards.first().locator('h2')).toHaveText('BETA');
+  await expect(cards.first().locator('dd')).toHaveText(['—','7','1,800','—','—']);
+  await expect(page.locator('#topPlayersContent img[src*="mvp-reference"]')).toHaveCount(0);
+});
+
+
+test('admin top-five preview retains the exact reference chrome and explicitly labeled seed fallback', async ({page}) => {
+  await page.goto(`${base}/pmgc/top-players?obs=1&preview=1`);
+  await expect(page.locator('.pg-topplayers .pg-reference-heading h1')).toHaveText('TOURNAMENT MVP');
+  await expect(page.locator('.pg-topplayers .pg-reference-heading p')).toHaveText('BGIS 2026');
+  await expect(page.locator('.pg-topplayers .pg-reference-event-mark')).toBeVisible();
+  await expect(page.locator('#topPlayersContent .pg-reference-card')).toHaveCount(5);
+  await expect(page.locator('#topPlayersContent .is-leader h2')).toHaveText('GENSHUNTERRZ');
+  await expect(page.locator('#topPlayersMode')).toContainText('NOT LIVE RESULTS');
+  await page.goto(`${base}/pmgc/top-players?obs=1`);
+  await expect(page.locator('#topPlayersContent .is-leader h2')).toHaveText('PENDING');
+  await expect(page.locator('#topPlayersContent img[src*="mvp-reference"]')).toHaveCount(0);
 });

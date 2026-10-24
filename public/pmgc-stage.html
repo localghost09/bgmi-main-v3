@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="/css/pmgc-themes.css?v=6" />
     <link rel="stylesheet" href="/css/pmgc-stage.css?v=6" />
     <link rel="stylesheet" href="/css/pmgc-obs.css?v=13" />
-  <link rel="stylesheet" href="/css/pmgc-layouts.css?v=8" />
+  <link rel="stylesheet" href="/css/pmgc-layouts.css?v=11" />
   </head>
   <body class="pg-body">
     <div class="pg-fit" id="pgFit">
@@ -468,10 +468,21 @@
           <div class="pg-award-content pg-mvp-content" id="mvpContent"></div>
           <footer class="pg-award-footer">MATCH MVP <span>FINISHES FIRST · DAMAGE TIEBREAK · LIVE SCORING DATA</span></footer>
         </section>
-        <section class="pg-scene pg-awards pg-topplayers" data-scene="top-players" aria-label="Top five players">
-          <header class="pg-award-heading"><span>TOURNAMENT LEADERBOARD · INCLUDES LIVE MATCH</span><h1>TOP <em>5</em> PLAYERS</h1></header>
-          <div class="pg-award-content pg-topplayers-content" id="topPlayersContent"></div>
-          <footer class="pg-award-footer">THE ELIMINATORS <span>RANKED BY FINISHES · DAMAGE BREAKS TIES · MP = MATCHES PLAYED</span></footer>
+        <section class="pg-scene pg-overall-mvp pg-topplayers" data-scene="top-players" aria-label="Top five players — live tournament data">
+          <div class="pg-reference-tape" aria-hidden="true">BREAKING BARRIERS</div>
+          <header class="pg-reference-heading"><h1>TOURNAMENT MVP</h1><p>BGIS 2026</p></header>
+          <img class="pg-reference-event-mark" src="/assets/images/mvp-reference/bgis-mark.png" alt="BGIS 2026 reference theme mark">
+          <div class="pg-reference-cards" id="topPlayersContent"></div>
+          <footer class="pg-reference-disclaimer" id="topPlayersMode">LIVE SCORING · FINISHES FIRST · DAMAGE TIEBREAK · — = NOT TRACKED</footer>
+        </section>
+
+        <!-- Supplied BGIS image: seeded reference snapshot, never live data. -->
+        <section class="pg-scene pg-overall-mvp" data-scene="overall-mvp" aria-label="Overall top five MVP — seeded reference preview">
+          <div class="pg-reference-tape" aria-hidden="true">BREAKING BARRIERS</div>
+          <header class="pg-reference-heading"><h1>TOURNAMENT MVP</h1><p id="overallMvpEvent">BGIS 2026</p></header>
+          <img class="pg-reference-event-mark" src="/assets/images/mvp-reference/bgis-mark.png" alt="BGIS 2026 reference event mark">
+          <div class="pg-reference-cards" id="overallMvpCards"></div>
+          <footer class="pg-reference-disclaimer" id="overallMvpSeedLabel">SEEDED REFERENCE PREVIEW · NOT LIVE RESULTS</footer>
         </section>
 
         <!-- ================ 08 · MATCH POINTS STANDINGS ==================== -->
@@ -667,6 +678,7 @@
     </div>
 
   <script src="/js/broadcast-themes.js?v=6"></script>
-    <script src="/js/pmgc-stage.js?v=15" defer></script>
+    <script src="/js/pmgc-mvp-reference.js?v=1"></script>
+    <script src="/js/pmgc-stage.js?v=18" defer></script>
   </body>
 </html>

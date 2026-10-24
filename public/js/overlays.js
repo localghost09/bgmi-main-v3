@@ -234,7 +234,8 @@
     ['overall', '09 · Overall standings'],
     ['map-rotation', '10 · Map rotation'],
     ['mvp', '11 · Match MVP'],
-    ['top-players', '12 · Top 5 players']
+    ['top-players', '12 · Top 5 players'],
+    ['overall-mvp', '13 · Overall Top 5 MVP (seeded reference)']
   ];
 
   function pmgcUrl() {

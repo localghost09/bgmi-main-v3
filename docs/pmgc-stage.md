@@ -244,3 +244,57 @@ chaser rows for top five. Team logo/name, player IGN and neutral jersey/
 monogram placeholder are supported. Player photo upload is not added here;
 current scoring has no player portrait field. Reference survey and limits are
 recorded in `docs/broadcast-references.md`.
+
+## Supplied-image Overall Top 5 MVP reference
+
+The rundown has **14 scenes**. Choose **13 · Overall Top 5 MVP (seeded
+reference)** in `/admin/overlays`, or open `/pmgc/overall-mvp?obs=1`.
+
+This is a separate reference-preview scene, not a replacement for the live
+Match MVP or Top 5 Players scenes. It recreates the operator-supplied BGIS 2026
+composition: purple background, caution-tape corner, centered title/event,
+five side-by-side portrait cards, taller #1 card and yellow leader statistics.
+All cards have MVP rating, finishes, damage, average survival and knocks.
+The fixed purple/yellow palette intentionally follows this reference rather
+than changing with the theme selector.
+
+Portraits and event mark are cropped from the supplied screenshot. The
+editable seed fixture is `public/js/pmgc-mvp-reference.js`; images are in
+`public/assets/images/mvp-reference/`. Rank follows the supplied MVP rating,
+not finishes (47 finishes ranks above 48 in the reference). A persistent
+**SEEDED REFERENCE PREVIEW · NOT LIVE RESULTS** footer identifies the snapshot,
+including in OBS mode. No user/tournament records, APIs or database scores are
+changed, and live SSE updates cannot replace these seed values. Seeded ratings,
+survival and knocks are copied reference values, not calculated official stats.
+
+## Approved reference theme applied to live Top 5 Players
+
+`/pmgc/top-players` now uses the approved purple five-column card design with
+an enlarged yellow #1 card. Select **12 · Top 5 players** in the producer;
+existing OBS links continue to work. The background/palette stay fixed to the
+approved design regardless of the theme selector. The heading reads TOP 5
+PLAYERS / OVERALL · LIVE TOURNAMENT, without a misleading BGIS event badge.
+
+Names, team tags, finishes and damage come from the public player-awards
+payload, sorted by finishes and damage. SSE/refetch and fallback polling update
+rank order automatically. Missing slots show PENDING. Official MVP rating,
+average survival and knocks remain `—` because this app does not track them;
+no reference snapshot values are assigned to live participants. Player portrait
+URLs are rendered if supplied; otherwise use a team logo or player monogram
+with PLAYER PHOTO NOT SET. Current scoring still has no portrait-upload field.
+
+The separate `/pmgc/overall-mvp` seeded reference is retained unchanged and
+clearly labeled as a snapshot, not live results. Match MVP is unchanged.
+
+### Top-five reference correction
+
+Preserve the approved reference chrome on `/pmgc/top-players`: TOURNAMENT MVP /
+BGIS 2026 theme heading, source event mark, BREAKING BARRIERS tape, white photo
+surfaces, gray name bands, and the original five-card geometry. BGIS 2026 here
+identifies the requested reference theme, not the user's tournament identity.
+The previous alternate TOP 5 header/badge and dark photo placeholders are
+superseded. Missing scores never collapse the design into a generic waiting
+panel: live OBS keeps five PENDING cards until scores exist. The producer's
+`preview=1` iframe may show the reference seed only while no live leaders exist,
+always labeled NOT LIVE RESULTS. OBS copy links omit `preview=1`, so they never
+silently show seed players. As soon as leaders arrive, the preview uses them.
