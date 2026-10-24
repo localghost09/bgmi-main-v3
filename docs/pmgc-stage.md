@@ -1,13 +1,14 @@
 # PMGC 2026 broadcast stage
 
-A ten-theme, ten-scene tournament rundown for OBS, built for this platform.
+A ten-theme, fifteen-scene tournament rundown for OBS, built for this platform.
 The colour language, panel geometry, type treatment and motion are an original
 interpretation of modern battle-royale esports broadcast design (the
 KRAFTON India Esports / PMGC school: black-and-gold championship grades,
 high-contrast accents, slashed panels, heavy condensed type, diagonal feeds).
-No official KRAFTON logo, game artwork or character asset is bundled — the
-key art and the three map plates in `public/assets/images/pmgc/` were produced
-for this project.
+The original PMGC theme does not bundle official KRAFTON logos or character
+art; its key art and three map plates in `public/assets/images/pmgc/` were
+produced for this project. The separate, explicitly enabled BGIS reference
+package uses crops from the operator-supplied screenshots, as documented below.
 
 | URL | What it is |
 |---|---|
@@ -24,13 +25,18 @@ for this project.
 | 01 | `opening` | **Stream starting soon** — event art, ring countdown (`?start=` seconds, default 1200), phase label, squads/maps/matches chips |
 | 02 | `casters` | **Caster intro** — two camera plates, names, roles, tags, equaliser, scrolling hype line |
 | 03 | `drop` | **Match drop** — 30-second ring clock, `GET READY → STAND BY → DROP NOW`, caster hype lines, flight-path map card |
-| 04 | `live` | **Live + map (diagonal)** — gameplay feed above a raked seam, tactical map below, live-points rail, elimination feed, score bug |
-| 05 | `live-points` | **Live game feed + live points standings** — feed with the map tucked underneath, 16-row live points table |
-| 06 | `chicken-dinner` | **Winner winner chicken dinner** — sunburst, confetti, slam-in type, trophy, winning squad strip |
-| 07 | `winner-stats` | **Chicken dinner stats** — team totals plus four player cards (finishes, damage) |
-| 08 | `match-standings` | **Match points** — 16-row result table (WWCD, finishes, placement points, total) |
-| 09 | `overall` | **Overall standings** — two tables, 01–08 left and 09–16 right; each row carries matches played, wins, finishes, placement points and total, plus the qualification legend |
-| 10 | `map-rotation` | **Map rotation** — Erangel · Miramar · Rondo cards with match slots and best squad |
+| 04 | `map-intro` | **Map deployment** — eight-second selected-map bumper between drop and gameplay |
+| 05 | `live` | **Live + map** — transparent rectangular gameplay and tactical-map apertures |
+| 06 | `map-feed` | **Map feed + teams** — central transparent map aperture with eight team marks on each side |
+| 07 | `live-points` | **Live points standings** — compact 16-row match-points table with player-status pips |
+| 08 | `chicken-dinner` | **Winner winner chicken dinner** — sunburst, confetti, slam-in type, trophy, winning squad strip |
+| 09 | `winner-stats` | **Chicken dinner stats** — four player cards with finishes and damage |
+| 10 | `match-standings` | **Match points** — two 01–08 / 09–16 tables plus the winning team's damage, heals, knocks and headshots |
+| 11 | `overall` | **Overall standings** — two tables with matches played, wins, finishes, placement points and total |
+| 12 | `map-rotation` | **Map rotation** — Erangel · Miramar · Rondo cards with match slots and best squad |
+| 13 | `mvp` | **Current-match MVP** — scoring leader with finishes, damage and tracked extended metrics |
+| 14 | `top-players` | **Current-match Top 5** — player leaders sorted by finishes, damage and IGN |
+| 15 | `overall-mvp` | **Overall Top 5 MVP** — separately labeled, editable tournament-reference snapshot |
 
 | Live + diagonal map | Live points |
 |---|---|
@@ -44,9 +50,9 @@ for this project.
 |---|---|
 | ![Match points standings](screenshots/pmgc-match-points.jpg) | ![Overall standings](screenshots/pmgc-overall.jpg) |
 
-"Play full show" walks the rundown in order (22s → 15s → 12s → 24s → 20s →
-15s → 16s → 18s → 20s → 18s) and the drop scene hands over to `live`
-automatically once its clock hits zero.
+"Play full show" walks all fifteen scenes in order. The drop scene plays the
+selected-map intro and then hands over to `live` automatically once its clock
+hits zero.
 
 ## The ten themes
 
@@ -99,6 +105,8 @@ Everything is plain CSS + vanilla JS — no build step, no dependencies.
 | `feed=<url>` | Your own gameplay image/still inside the feed window |
 | `map=<url>` | Your own tactical map plate |
 | `demo=0` | Ignore the built-in showcase roster even when no live data exists |
+| `reference=1` | Pin the editable BGIS Match 13/14 reference snapshot; live responses are ignored |
+| `preview=1` | Allow the current-match reference awards only as a labeled fallback when live awards are absent |
 
 ### Operator keys (stage tab)
 
@@ -127,12 +135,15 @@ the payload, and the stage renders every string through `textContent`.
 | Path | Purpose |
 |---|---|
 | `public/pmgc.html` | Gallery / rundown index |
-| `public/pmgc-stage.html` | The ten-scene stage markup |
+| `public/pmgc-stage.html` | The fifteen-scene stage markup |
 | `public/js/pmgc-stage.js` | Scene controller, countdowns, live data, theme engine |
 | `public/js/pmgc-gallery.js` | Gallery cards + rundown list (external: CSP has no inline scripts) |
 | `public/css/pmgc-themes.css` | Ten theme token blocks, motif layers, per-theme component dressing |
-| `public/css/pmgc-stage.css` | Stage layout, all scenes, shared broadcast components, animation |
+| `public/css/pmgc-stage.css` | Stage layout, shared broadcast components, animation |
+| `public/css/pmgc-bgis-reference.css` | Full-HD geometry, purple ambient motion and map rails for the five current-match references |
+| `public/js/pmgc-bgis-reference.js` | Editable BGIS Match 13/14 preview fixture; never a database source |
 | `public/assets/images/pmgc/` | Original key art, gameplay still and the three map plates |
+| `public/assets/images/bgis-2026/` | Reference-only player, team and central map imagery |
 | `public/js/overlays.js`, `public/admin-overlays.html` | Producer card on `/admin/overlays` |
 | `tests/pmgc-stage.spec.js` | Playwright suite (routing, themes, countdowns, tables, keys) |
 | `server.py` | `/pmgc` and `/pmgc/<scene>` routes |
@@ -222,33 +233,32 @@ The preview and normal producer-generated OBS URLs require no manual editing.
 Legacy explicit `start=` links retain their URL override; use the producer's
 normal URL if you want the server-saved duration to control that source.
 
-## MVP and top-five player scenes
+## Current-match MVP and Top 5 player scenes
 
-The rundown now has **13 scenes**. In the producer's Scene picker choose
-**11 · Match MVP** (`/pmgc/mvp`) or **12 · Top 5 players**
-(`/pmgc/top-players`). Both support all ten selected event themes.
+In the producer's Scene picker choose **11 · Match MVP** (`/pmgc/mvp`) or
+**12 · Top 5 players** (`/pmgc/top-players`). Their purple broadcast treatment
+is fixed to the supplied current-match references rather than recolored by the
+event-theme selector.
 
-`/api/live/state.playerAwards.matchMvp` is the current match scoring leader
-(finishes, then damage); `.topPlayers` is the tournament top five, including
-live results. The latter uses UID-based server aggregation without exposing
-UIDs publicly. This is **not** Krafton's proprietary MVP rating formula.
-Displayed metrics: MVP finishes/damage; top five finishes/damage/matches.
-Untracked knocks, survival, contribution and official MVP ratings are omitted.
-Missing MVP data produces a waiting slate; fewer than five players produce
-pending rows, never fake players. New scenes do not depend on the four-team
-minimum used by the old showcase adapter. Updates arrive through the existing
-public SSE/refetch flow plus 15-second polling fallback.
+`/api/live/state.playerAwards.matchMvp` and `.matchTopPlayers` come only from
+the current match, ranked by finishes, damage and then IGN. The separate
+`.topPlayers` list remains the tournament-wide aggregate used by other views;
+it never silently becomes the current-match Top 5. Server aggregation uses UIDs
+internally but never exposes them publicly. This is not Krafton's proprietary
+MVP rating formula.
 
-Design: hero spotlight with a stat panel for MVP; one featured leader and four
-chaser rows for top five. Team logo/name, player IGN and neutral jersey/
-monogram placeholder are supported. Player photo upload is not added here;
-current scoring has no player portrait field. Reference survey and limits are
-recorded in `docs/broadcast-references.md`.
+The current public schema tracks finishes and damage. Survival time, knocks,
+heals, headshots and official ratings remain `—` in live mode unless a real
+payload supplies them; reference values are never blended into live results.
+Missing MVP data produces a waiting slate and fewer than five leaders produce
+pending cards. Player photos and team logos render when URLs are supplied,
+with neutral placeholders otherwise. Updates use the existing SSE/refetch flow
+and 15-second polling fallback.
 
 ## Supplied-image Overall Top 5 MVP reference
 
-The rundown has **14 scenes**. Choose **13 · Overall Top 5 MVP (seeded
-reference)** in `/admin/overlays`, or open `/pmgc/overall-mvp?obs=1`.
+Choose **13 · Overall Top 5 MVP (seeded reference)** in `/admin/overlays`, or
+open `/pmgc/overall-mvp?obs=1`.
 
 This is a separate reference-preview scene, not a replacement for the live
 Match MVP or Top 5 Players scenes. It recreates the operator-supplied BGIS 2026
@@ -267,43 +277,38 @@ including in OBS mode. No user/tournament records, APIs or database scores are
 changed, and live SSE updates cannot replace these seed values. Seeded ratings,
 survival and knocks are copied reference values, not calculated official stats.
 
-## Approved reference theme applied to live Top 5 Players
+## Supplied BGIS current-match reference package
 
-`/pmgc/top-players` now uses the approved purple five-column card design with
-an enlarged yellow #1 card. Select **12 · Top 5 players** in the producer;
-existing OBS links continue to work. The background/palette stay fixed to the
-approved design regardless of the theme selector. The heading reads TOP 5
-PLAYERS / OVERALL · LIVE TOURNAMENT, without a misleading BGIS event badge.
+Five scenes reproduce the supplied 1920×1080 BGIS screens: current-match MVP,
+WWCD team stats, current-match Top 5, match-points standings, and map feed with
+sixteen teams. The first four use dark-purple fields with slowly floating color;
+`prefers-reduced-motion` stops that movement. Card coordinates, reference
+typography, gold tape/event mark, leader banner, two-table standings and side
+rails live in `public/css/pmgc-bgis-reference.css`.
 
-Names, team tags, finishes and damage come from the public player-awards
-payload, sorted by finishes and damage. SSE/refetch and fallback polling update
-rank order automatically. Missing slots show PENDING. Official MVP rating,
-average survival and knocks remain `—` because this app does not track them;
-no reference snapshot values are assigned to live participants. Player portrait
-URLs are rendered if supplied; otherwise use a team logo or player monogram
-with PLAYER PHOTO NOT SET. Current scoring still has no portrait-upload field.
+Open any of those scenes with `reference=1` for the pinned, editable snapshot,
+for example `/pmgc/mvp?reference=1&obs=1` or
+`/pmgc/map-feed?reference=1&obs=1`. This mode deliberately ignores live team
+replacement and displays the Match 13 awards/standings plus Match 14 map title
+from `public/js/pmgc-bgis-reference.js`. The producer's `preview=1` mode may use
+reference awards only when live awards are absent and always labels the result
+**NOT LIVE RESULTS**. Ordinary OBS links omit both parameters and remain
+API-driven.
 
-The separate `/pmgc/overall-mvp` seeded reference is retained unchanged and
-clearly labeled as a snapshot, not live results. Match MVP is unchanged.
+The map scene is different in normal OBS mode: its central 1084×1080 aperture
+stays transparent so an independent map/video source underneath can show
+through. Only the explicit reference preview displays the supplied central map
+still. The sixteen team cards remain live DOM in both modes.
 
-### Top-five reference correction
-
-Preserve the approved reference chrome on `/pmgc/top-players`: TOURNAMENT MVP /
-BGIS 2026 theme heading, source event mark, BREAKING BARRIERS tape, white photo
-surfaces, gray name bands, and the original five-card geometry. BGIS 2026 here
-identifies the requested reference theme, not the user's tournament identity.
-The previous alternate TOP 5 header/badge and dark photo placeholders are
-superseded. Missing scores never collapse the design into a generic waiting
-panel: live OBS keeps five PENDING cards until scores exist. The producer's
-`preview=1` iframe may show the reference seed only while no live leaders exist,
-always labeled NOT LIVE RESULTS. OBS copy links omit `preview=1`, so they never
-silently show seed players. As soon as leaders arrive, the preview uses them.
+The separate `/pmgc/overall-mvp` tournament-reference snapshot is retained and
+clearly labeled; its fixture and `playerAwards.topPlayers` contract are not
+shared with the current-match awards.
 
 ## Common PMGC Program source and producer controls
 
 Copy **Common OBS Program URL (copy once)** from the PMGC section in
 `/admin/overlays`. It is `/pmgc/program?obs=1` on the current server origin.
-Add that URL once as a 1920×1080 OBS Browser Source. Use the fourteen scene
+Add that URL once as a 1920×1080 OBS Browser Source. Use the fifteen scene
 buttons (or Scene picker) and Theme picker to switch what that source renders.
 Selecting the current scene again replays it. Changing names, taglines, theme,
 map, sponsor or audio does not replay the current scene.

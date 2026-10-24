@@ -1,8 +1,9 @@
 # Event-inspired broadcast package: references and provenance
 
-These are original implementations, not official or pixel-exact packages.
-The ten names identify visual references; they do not rename the user's
-actual tournament. Do not call them official graphics/files.
+The generic themes are original implementations, not official graphics/files.
+The separately labeled operator-supplied reference scenes are traced recreations,
+not official source packages. The ten theme names identify visual references;
+they do not rename the user's actual tournament.
 
 ## Research inspected during implementation
 
@@ -76,10 +77,11 @@ broadcast frame from every event was available or inspected.
 | BMIC 2026 | [Event preview](https://www.gamingamigos.com/post/bmic-2026-bgmi) | Preview/reference only as of cutoff. No final award graphic or winner claimed. |
 
 Implementation is original and event-inspired, not an official package.
-Player faces and historic event scores are not imported. Neutral monogram/
-jersey placeholders avoid misrepresenting another person's photo. The renderer
-accepts `avatarUrl` when supplied, but the current public scoring payload does
-not provide player portraits. No image-search thumbnails are shipped.
+Outside explicitly labeled operator-supplied reference fixtures, player faces
+and historic event scores are not imported. Neutral monogram/jersey placeholders
+avoid misrepresenting another person's photo. The renderer accepts `avatarUrl`
+when supplied, but the current public scoring payload does not provide player
+portraits. No image-search thumbnails are shipped.
 
 ### Operator-supplied BGIS 2026 top-five MVP frame
 
@@ -96,3 +98,20 @@ that the screenshot represents final tournament results; the app labels it a
 seeded reference snapshot, not live standings or a calculated official rating.
 This supplied MVP frame supersedes the earlier BGIS 2026 limitation for this
 specific composition only; it does not verify every 2026 broadcast package.
+
+### Operator-supplied BGIS 2026 current-match frames
+
+The operator separately supplied five native 1920×1080 screens for current-match
+MVP, WWCD team stats, current-match Top 5, match-points standings, and map feed
+with teams. Those screens were visually inspected and their geometry, player
+photos, team marks, event mark and central map crop are used only in the BGIS
+reference package under `public/assets/images/bgis-2026/`. The editable values
+are isolated in `public/js/pmgc-bgis-reference.js`.
+
+`reference=1` pins that snapshot; `preview=1` permits only its current-match
+award fallback when live awards are absent. Neither mode writes to the database.
+Normal live overlays do not load these teams or scores, and untracked live
+metrics remain placeholders. The map still is limited to the explicit reference
+preview; normal OBS keeps a transparent central aperture for its independent
+map/video source. These supplied frames do not establish that their depicted
+scores are official final results.

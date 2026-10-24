@@ -226,9 +226,19 @@ def main():
     report("player awards use public tournament leaders",
            awards.get("topPlayers") == live.get("leaders", [])[:5], str(awards)[:160])
     with server_conn() as conn:
-        expected_mvp = broadcast.match_mvp(conn, broadcast.live_match(conn))
+        current_match = broadcast.live_match(conn)
+        expected_mvp = broadcast.match_mvp(conn, current_match)
+        expected_match_leaders = broadcast.match_player_leaders(
+            conn, current_match, 5)
     report("MVP award is the match scoring leader",
            awards.get("matchMvp") == expected_mvp, str(awards)[:160])
+    report("current-match top five is separate from tournament leaders",
+           awards.get("matchTopPlayers") == expected_match_leaders
+           and awards.get("matchTopPlayers") is not awards.get("topPlayers"),
+           str(awards)[:200])
+    report("current-match player awards contain no UIDs or PII",
+           no_pii(json.dumps(awards.get("matchTopPlayers")))
+           and "uid" not in json.dumps(awards.get("matchTopPlayers")).lower())
     overall = live.get("overallPublished", [])
     report("published match feeds overall standings",
            st == 200 and len(overall) >= 4, "rows=%d" % len(overall))

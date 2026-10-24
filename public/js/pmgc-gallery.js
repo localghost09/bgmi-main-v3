@@ -12,6 +12,7 @@
     ['drop', 'Match drop', '30-second countdown'],
     ['map-intro', 'Map deployment', '8-second animated map intro · optional original audio'],
     ['live', 'Live + map', 'Staggered rectangular OBS frames'],
+    ['map-feed', 'Map feed + teams', 'Transparent map aperture · 16 team marks'],
     ['live-points', 'Live points', 'Feed + points table'],
     ['chicken-dinner', 'Winner winner', 'Full-screen celebration'],
     ['winner-stats', 'Chicken dinner stats', 'Squad player cards'],
@@ -19,7 +20,7 @@
     ['overall', 'Overall standings', 'Two tables · 01–16'],
     ['map-rotation', 'Map rotation', 'Erangel · Miramar · Rondo'],
     ['mvp', 'Match MVP', 'Hero spotlight · finishes and damage'],
-    ['top-players', 'Top 5 players', 'Tournament eliminators · includes live match'],
+    ['top-players', 'Top 5 players', 'Current-match eliminators · live scoring'],
     ['overall-mvp', 'Overall Top 5 MVP', 'BGIS reference · seeded stats and portraits']
   ];
   var themesHost = document.getElementById('themes');

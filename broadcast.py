@@ -1374,22 +1374,32 @@ def player_leaders(conn, limit=20, include_live=False):
     return rows
 
 
+def match_player_leaders(conn, match, limit=5):
+    """Current-match player ranking (finishes, damage, then IGN)."""
+    if not match:
+        return []
+    rows = conn.execute(
+        "SELECT player_name, team_id, kills, damage FROM player_stats "
+        "WHERE match_id = ? ORDER BY kills DESC, damage DESC, "
+        "player_name COLLATE NOCASE LIMIT ?", (match["id"], int(limit)))
+    leaders = []
+    for row in rows:
+        pub = team_public_row(conn, row["team_id"])
+        leaders.append({"player": row["player_name"],
+                        "kills": int(row["kills"] or 0),
+                        "damage": int(row["damage"] or 0),
+                        "teamName": pub["teamName"],
+                        "teamTag": pub["teamTag"], "logo": pub["logo"],
+                        "group": pub["group"]})
+    return leaders
+
+
 def match_mvp(conn, match):
     """Top fragger of a match (tie: damage)."""
-    if not match:
+    leaders = match_player_leaders(conn, match, 1)
+    if not leaders or leaders[0]["kills"] <= 0:
         return None
-    rows = [dict(r) for r in conn.execute(
-        "SELECT player_name, team_id, kills, damage FROM player_stats "
-        "WHERE match_id = ? ORDER BY kills DESC, damage DESC LIMIT 1",
-        (match["id"],))]
-    if not rows or int(rows[0]["kills"] or 0) <= 0:
-        return None
-    r = rows[0]
-    pub = team_public_row(conn, r["team_id"])
-    return {"player": r["player_name"], "kills": int(r["kills"]),
-            "damage": int(r["damage"]), "teamName": pub["teamName"],
-            "teamTag": pub["teamTag"], "logo": pub["logo"],
-            "group": pub["group"]}
+    return leaders[0]
 
 
 def recent_matches(conn, limit=6):
@@ -1445,7 +1455,7 @@ def pushed_card(conn):
 # Public state builders
 # ---------------------------------------------------------------------------
 
-PMGC_SCENES = ("opening", "casters", "drop", "map-intro", "live", "live-points",
+PMGC_SCENES = ("opening", "casters", "drop", "map-intro", "live", "map-feed", "live-points",
                "chicken-dinner", "winner-stats", "match-standings", "overall",
                "map-rotation", "mvp", "top-players", "overall-mvp")
 PMGC_THEMES = ("bmps-2024", "bgms-2024", "bgis-2025", "bgis-2026", "bmsd-2025",
@@ -1516,6 +1526,8 @@ def live_state(conn):
     overall = standings_rows(conn, None, include_live=True)
     published = standings_rows(conn, None, include_live=False)
     leaders = player_leaders(conn, 10, include_live=True)
+    match_leaders = match_player_leaders(conn, match, 5)
+    current_mvp = match_leaders[0] if match_leaders and match_leaders[0]["kills"] > 0 else None
     return {
         "ok": True,
         "match": current["match"] if current else None,
@@ -1526,7 +1538,8 @@ def live_state(conn):
         "overallPublished": published,
         "leaders": leaders,
         "pmgcProgram": pmgc_program(conn),
-        "playerAwards": {"matchMvp": match_mvp(conn, match),
+        "playerAwards": {"matchMvp": current_mvp,
+                         "matchTopPlayers": match_leaders,
                          "topPlayers": leaders[:5]},
         "recentMatches": recent_matches(conn, 6),
         "events": event_rows(conn, None, 25),

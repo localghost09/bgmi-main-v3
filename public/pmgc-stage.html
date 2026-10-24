@@ -13,7 +13,8 @@
     <link rel="stylesheet" href="/css/pmgc-themes.css?v=6" />
     <link rel="stylesheet" href="/css/pmgc-stage.css?v=6" />
     <link rel="stylesheet" href="/css/pmgc-obs.css?v=13" />
-  <link rel="stylesheet" href="/css/pmgc-layouts.css?v=13" />
+    <link rel="stylesheet" href="/css/pmgc-layouts.css?v=13" />
+    <link rel="stylesheet" href="/css/pmgc-bgis-reference.css?v=1" />
   </head>
   <body class="pg-body">
     <div class="pg-fit" id="pgFit">
@@ -319,6 +320,20 @@
           <div class="pg-live-sponsor" id="diagonalSponsor">PARTNER SLOT</div>
         </section>
 
+        <!-- ============ TACTICAL MAP FEED + SIXTEEN TEAM MARKS ============ -->
+        <section class="pg-scene pg-ref-mapfeed" data-scene="map-feed" aria-label="Tactical map feed with sixteen teams">
+          <div class="pg-ref-map-side left" aria-hidden="true"></div>
+          <div class="pg-ref-map-side right" aria-hidden="true"></div>
+          <div class="pg-ref-tape" aria-hidden="true"><span>BGIS 2026</span><b>BREAKBOUNDARIES</b></div>
+          <div class="pg-ref-map-title" id="mapFeedTitle">GRAND FINALS - M14</div>
+          <img class="pg-ref-event-mark" src="/assets/images/mvp-reference/bgis-mark.png" alt="BGMI India Series 2026" />
+          <div class="pg-ref-map-aperture">
+            <img class="pg-ref-map-image" id="mapFeedImage" src="/assets/images/bgis-2026/map-erangel.jpg" alt="Erangel tactical map feed" />
+          </div>
+          <div class="pg-ref-map-teams left" id="mapFeedLeft" aria-label="Teams on the left rail"></div>
+          <div class="pg-ref-map-teams right" id="mapFeedRight" aria-label="Teams on the right rail"></div>
+        </section>
+
         <!-- ============ 05 · LIVE FEED + LIVE POINTS STANDINGS ============= -->
         <section class="pg-scene pg-livepts" data-scene="live-points" aria-label="Live game feed with live points standings">
           <div class="pg-livepts-feed">
@@ -448,48 +463,34 @@
         </section>
 
         <!-- ================ 07 · WINNER MATCH STATS ======================== -->
-        <section class="pg-scene pg-wstats" data-scene="winner-stats" aria-label="Chicken dinner match stats">
-          <div class="pg-wstats-left pg-panel pg-reveal-x" style="--d:0.1s">
-            <div class="pg-wstats-head">
-              <span class="pg-kicker">CHICKEN DINNER · MATCH STATS</span>
-            </div>
-            <div class="pg-wstats-team">
-              <div class="pg-logo-lg" id="wsLogo">TM</div>
-              <div>
-                <small>WINNING SQUAD</small>
-                <h1 id="wsTeam">TEAM NAME</h1>
-                <p id="wsMeta">MATCH 04 · ERANGEL · GROUP A</p>
-              </div>
-            </div>
-            <div class="pg-wstats-totals">
-              <div><small>TEAM FINISHES</small><b id="wsFin">0</b></div>
-              <div><small>TOTAL DAMAGE</small><b id="wsDmg">0</b></div>
-              <div><small>MATCH POINTS</small><b id="wsPts">0</b></div>
-            </div>
-            <div class="pg-wstats-badge">
-              WWCD TOTAL <b id="wsWwcd">#03</b>
-            </div>
-          </div>
+        <section class="pg-scene pg-ref-scene pg-wstats" data-scene="winner-stats" aria-label="Chicken dinner match stats">
+          <div class="pg-ref-ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="pg-ref-tape" aria-hidden="true"><span>BGIS 2026</span><b>BREAKBOUNDARIES</b></div>
+          <header class="pg-ref-heading">
+            <h1>WWCD TEAM STATS</h1>
+            <p id="wsMeta">MATCH 13</p>
+          </header>
+          <img class="pg-ref-event-mark" src="/assets/images/mvp-reference/bgis-mark.png" alt="BGMI India Series 2026" />
           <div class="pg-wstats-players" id="wsPlayers"></div>
-          <div class="pg-ticker">
-            <span class="pg-ticker-label">PLAYER STATS</span>
-            <div class="pg-ticker-track"><div class="pg-ticker-run" data-ticker-run></div></div>
-            <span class="pg-ticker-right">VERIFIED · MATCH DATA</span>
-          </div>
+          <div class="pg-ref-wstats-brand"><h1 id="wsTeam">IQOO ORANGUTAN</h1></div>
+          <div class="pg-ref-wstats-logo" id="wsLogo">OG</div>
         </section>
 
-        <!-- Player spotlight and top-five: public scored data only. -->
-        <section class="pg-scene pg-awards pg-mvp" data-scene="mvp" aria-label="Match MVP">
-          <header class="pg-award-heading"><span>MATCH SPOTLIGHT</span><h1>MOST VALUABLE <em>PLAYER</em></h1></header>
-          <div class="pg-award-content pg-mvp-content" id="mvpContent"></div>
-          <footer class="pg-award-footer">MATCH MVP <span>FINISHES FIRST · DAMAGE TIEBREAK · LIVE SCORING DATA</span></footer>
+        <!-- Current-match player spotlight and top-five. -->
+        <section class="pg-scene pg-ref-scene pg-mvp" data-scene="mvp" aria-label="MVP of the current match">
+          <div class="pg-ref-ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="pg-ref-tape" aria-hidden="true"><span>BGIS 2026</span><b>BREAKBOUNDARIES</b></div>
+          <header class="pg-ref-heading pg-ref-mvp-heading"><h1>MVP OF THE MATCH</h1><p id="mvpMatch">MATCH 13</p></header>
+          <img class="pg-ref-event-mark" src="/assets/images/mvp-reference/bgis-mark.png" alt="BGMI India Series 2026" />
+          <div class="pg-ref-mvp-content" id="mvpContent"></div>
         </section>
-        <section class="pg-scene pg-overall-mvp pg-topplayers" data-scene="top-players" aria-label="Top five players — live tournament data">
-          <div class="pg-reference-tape" aria-hidden="true">BREAKING BARRIERS</div>
-          <header class="pg-reference-heading"><h1>TOURNAMENT MVP</h1><p>BGIS 2026</p></header>
-          <img class="pg-reference-event-mark" src="/assets/images/mvp-reference/bgis-mark.png" alt="BGIS 2026 reference theme mark">
+        <section class="pg-scene pg-ref-scene pg-topplayers" data-scene="top-players" aria-label="Top five players in the current match">
+          <div class="pg-ref-ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="pg-ref-tape" aria-hidden="true"><span>BGIS 2026</span><b>BREAKBOUNDARIES</b></div>
+          <header class="pg-ref-heading"><h1>TOP PLAYERS</h1><p id="topPlayersMatch">MATCH 13</p></header>
+          <img class="pg-ref-event-mark" src="/assets/images/mvp-reference/bgis-mark.png" alt="BGMI India Series 2026" />
           <div class="pg-reference-cards" id="topPlayersContent"></div>
-          <footer class="pg-reference-disclaimer" id="topPlayersMode">LIVE SCORING · FINISHES FIRST · DAMAGE TIEBREAK · — = NOT TRACKED</footer>
+          <footer class="pg-reference-disclaimer" id="topPlayersMode">LIVE SCORING · CURRENT MATCH · — = NOT TRACKED</footer>
         </section>
 
         <!-- Supplied BGIS image: seeded reference snapshot, never live data. -->
@@ -502,40 +503,31 @@
         </section>
 
         <!-- ================ 08 · MATCH POINTS STANDINGS ==================== -->
-        <section class="pg-scene pg-mstats" data-scene="match-standings" aria-label="Match points standings">
-          <header class="pg-board-head">
-            <div>
-              <span class="pg-kicker" id="msKicker">MATCH 04 · ERANGEL</span>
-              <h1 class="pg-title">POINTS <em>STANDINGS</em></h1>
+        <section class="pg-scene pg-ref-scene pg-mstats" data-scene="match-standings" aria-label="Current match points standings">
+          <div class="pg-ref-ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="pg-ref-tape" aria-hidden="true"><span>BGIS 2026</span><b>BREAKBOUNDARIES</b></div>
+          <header class="pg-ref-heading"><h1>POINTS STANDINGS</h1><p id="msMatch">MATCH 13</p></header>
+          <img class="pg-ref-event-mark" src="/assets/images/mvp-reference/bgis-mark.png" alt="BGMI India Series 2026" />
+          <div class="pg-ref-leader-banner">
+            <b class="pg-ref-leader-rank">01</b>
+            <div class="pg-ref-leader-logo" id="msLeaderLogo">OG</div>
+            <img class="pg-ref-leader-lineup hidden" id="msLeaderLineup" alt="Winning squad lineup" />
+            <div class="pg-ref-leader-stats">
+              <div><small>DAMAGE</small><b id="msLeaderDamage">—</b></div>
+              <div><small>HEALS</small><b id="msLeaderHeals">—</b></div>
+              <div><small>KNOCKS</small><b id="msLeaderKnocks">—</b></div>
+              <div><small>HEADSHOTS</small><b id="msLeaderHeadshots">—</b></div>
             </div>
-            <div class="pg-board-meta">
-              <div><small>WINNER</small><b id="msWinner">—</b></div>
-              <div><small>SQUADS</small><b id="msTeams">16</b></div>
-              <div><small>STATUS</small><b id="msStatus">FINAL</b></div>
-            </div>
-          </header>
-          <div class="pg-match-grid" id="msRows">
-            <div class="pg-match-panel pg-panel" aria-label="Match ranks 1 to 8">
-              <div class="pg-board-th">
-                <span>#</span><span>TEAM</span><span>WWCD</span><span>FINISHES</span><span>PLACE PTS</span><span>TOTAL</span>
-              </div>
+          </div>
+          <div class="pg-match-grid pg-ref-standing-grid" id="msRows">
+            <div class="pg-match-panel" aria-label="Match ranks 1 to 8">
+              <div class="pg-board-th"><span>#</span><span>TEAM NAME</span><span>POS. PTS.</span><span>FIN. PTS.</span><span>TOT. PTS.</span></div>
               <div class="pg-match-rows" id="msLeft"></div>
             </div>
-            <div class="pg-match-panel pg-panel" aria-label="Match ranks 9 to 16">
-              <div class="pg-board-th">
-                <span>#</span><span>TEAM</span><span>WWCD</span><span>FINISHES</span><span>PLACE PTS</span><span>TOTAL</span>
-              </div>
+            <div class="pg-match-panel" aria-label="Match ranks 9 to 16">
+              <div class="pg-board-th"><span>#</span><span>TEAM NAME</span><span>POS. PTS.</span><span>FIN. PTS.</span><span>TOT. PTS.</span></div>
               <div class="pg-match-rows" id="msRight"></div>
             </div>
-          </div>
-          <div class="pg-match-foot pg-board-foot">
-            <span>MATCH RESULT · VERIFIED BY TOURNAMENT OPERATIONS</span>
-            <b id="msFoot">TOP 8 ADVANCE</b>
-          </div>
-          <div class="pg-ticker">
-            <span class="pg-ticker-label">MATCH RESULT</span>
-            <div class="pg-ticker-track"><div class="pg-ticker-run" data-ticker-run></div></div>
-            <span class="pg-ticker-right" id="msTickerMatch">MATCH 04</span>
           </div>
         </section>
 
@@ -693,8 +685,9 @@
       <div class="pg-ui-progress"><i id="pgUiProgress"></i></div>
     </div>
 
-  <script src="/js/broadcast-themes.js?v=6"></script>
+    <script src="/js/broadcast-themes.js?v=6"></script>
     <script src="/js/pmgc-mvp-reference.js?v=1"></script>
-    <script src="/js/pmgc-stage.js?v=19" defer></script>
+    <script src="/js/pmgc-bgis-reference.js?v=1"></script>
+    <script src="/js/pmgc-stage.js?v=20" defer></script>
   </body>
 </html>
