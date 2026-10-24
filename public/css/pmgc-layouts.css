@@ -254,3 +254,49 @@
 .pmgc[data-theme="pmgc-2025"] .pg-award-heading em,.pmgc[data-theme="pmgc-2025"] .pg-award-heading>span,
 .pmgc[data-theme="pmgc-2025"] .pg-award-kicker,.pmgc[data-theme="pmgc-2025"] .pg-award-rank,
 .pmgc[data-theme="pmgc-2025"] .pg-award-row-rank {color:#303c99;}
+
+/* Operator-supplied BGIS reference snapshot: five portrait/stat columns.
+   This scene deliberately preserves the reference palette across themes. */
+.pmgc[data-scene="overall-mvp"] .pg-bug {display:none;}
+.pg-overall-mvp {background:linear-gradient(112deg,#200656 0%,#110728 55%,#090817 100%);color:#fff;overflow:hidden;}
+.pg-overall-mvp::before {content:"";position:absolute;left:0;right:0;bottom:0;height:55%;background:repeating-linear-gradient(0deg,transparent 0 90px,#bea7ff12 90px 92px),repeating-linear-gradient(90deg,transparent 0 180px,#bea7ff0b 180px 182px);mask-image:linear-gradient(90deg,#000,transparent 70%);pointer-events:none;}
+.pg-reference-heading {position:absolute;top:36px;left:420px;right:420px;text-align:center;}
+.pg-reference-heading h1 {margin:0;font:800 76px/1.1 var(--p-body);letter-spacing:.025em;white-space:nowrap;}
+.pg-reference-heading p {margin:10px 0 0;font:700 34px var(--p-body);color:#b8b2c5;letter-spacing:.04em;}
+.pg-reference-event-mark {position:absolute;right:50px;top:15px;width:152px;height:170px;object-fit:contain;}
+.pg-reference-tape {position:absolute;top:-9px;left:-70px;width:510px;transform:rotate(-21deg);background:linear-gradient(#e6c42f,#e6c42f) center/330px 100% no-repeat,repeating-linear-gradient(90deg,#e6c42f 0 27px,#171522 27px 40px);padding:7px 45px;text-align:center;color:#171522;font:900 27px var(--p-body);letter-spacing:.02em;border-top:11px solid #e6c42f;border-bottom:11px solid #e6c42f;}
+.pg-reference-cards {position:absolute;top:220px;bottom:72px;left:56px;right:56px;display:grid;grid-template-columns:1.45fr repeat(4,minmax(0,1fr));gap:24px;align-items:stretch;}
+.pg-reference-card {min-width:0;margin-top:72px;display:grid;grid-template-rows:284px 56px minmax(0,1fr);background:#120a29;clip-path:polygon(25px 0,100% 0,100% 100%,0 100%,0 25px);box-shadow:inset 0 0 0 2px #a6a1b7;}
+.pg-reference-card.is-leader {margin-top:0;grid-template-rows:356px 56px minmax(0,1fr);background:#edc40d;color:#100e0c;box-shadow:none;}
+.pg-reference-portrait {background:#f7f7f7;overflow:hidden;min-height:0;}
+.pg-reference-portrait img {display:block;width:100%;height:100%;object-fit:cover;object-position:center top;}
+.pg-reference-name {margin:0;padding:0 8px;background:#d9d9dc;color:#101013;font:900 30px/56px var(--p-display);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pg-reference-card.is-leader .pg-reference-name {font-size:40px;}
+.pg-reference-stats {margin:0;padding:8px 19px;display:grid;grid-template-rows:repeat(5,minmax(0,1fr));}
+.pg-reference-stat {display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0;border-bottom:2px solid #9890aa80;}
+.pg-reference-stat:last-child {border-bottom:0;}
+.pg-reference-stat dt {font:700 23px var(--p-body);white-space:nowrap;}
+.pg-reference-stat dd {margin:0;font:800 43px/1 var(--p-display);font-variant-numeric:tabular-nums;white-space:nowrap;}
+.pg-reference-card.is-leader .pg-reference-stat {border-color:#6a5b3180;}
+.pg-reference-card.is-leader dt {font-size:28px;}
+.pg-reference-card.is-leader dd {font-size:53px;}
+.pg-reference-disclaimer {position:absolute;bottom:24px;left:56px;right:56px;text-align:center;font:700 17px var(--p-body);letter-spacing:.13em;color:#b8b2c5;}
+
+/* Use the approved reference theme for the real Top 5 scene as well. */
+.pmgc[data-scene="top-players"] .pg-bug {display:none;}
+.pg-reference-live-placeholder {position:relative;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:24px;background:linear-gradient(150deg,#281459,#100b25);color:#fff;}
+.pg-reference-monogram {width:125px;height:125px;border:3px solid #edc40d;border-radius:50%;display:grid;place-items:center;font:800 58px var(--p-display);}
+.pg-reference-photo-note {font:700 16px var(--p-body);letter-spacing:.08em;color:#c9c1db;}
+.pg-reference-team-tag {position:absolute;top:22px;left:26px;right:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:800 22px var(--p-body);color:#fff;text-shadow:0 1px 4px #000;background:#100b25c9;padding:4px 8px;}
+.pg-reference-portrait {position:relative;}
+.pg-reference-portrait img.pg-reference-team-logo {width:140px;height:140px;object-fit:contain;}
+.pg-reference-live-mark {position:absolute;right:56px;top:32px;text-align:center;color:#edc40d;font:800 24px var(--p-body);border:2px solid #edc40d;padding:10px 24px;}
+.pg-reference-live-mark b {display:block;font:900 60px/1 var(--p-display);}
+.pg-reference-live-mark small {font-size:16px;}
+.pg-topplayers .pg-award-empty {color:#c9c1db;background:#120a29;border-color:#edc40d;}
+
+/* Keep reference white portrait surfaces, even when photos are not supplied. */
+.pg-reference-live-placeholder {background:#f7f7f7;color:#251944;}
+.pg-reference-monogram {border-color:#c9c5d2;color:#514764;border-radius:0;}
+.pg-reference-photo-note {color:#70677f;}
+.pg-reference-team-tag {background:transparent;color:#251944;text-shadow:none;font-size:18px;top:16px;left:16px;}

@@ -19,7 +19,8 @@
     ['overall', 'Overall standings', 'Two tables · 01–16'],
     ['map-rotation', 'Map rotation', 'Erangel · Miramar · Rondo'],
     ['mvp', 'Match MVP', 'Hero spotlight · finishes and damage'],
-    ['top-players', 'Top 5 players', 'Tournament eliminators · includes live match']
+    ['top-players', 'Top 5 players', 'Tournament eliminators · includes live match'],
+    ['overall-mvp', 'Overall Top 5 MVP', 'BGIS reference · seeded stats and portraits']
   ];
   var themesHost = document.getElementById('themes');
   THEMES.forEach(function (t) {

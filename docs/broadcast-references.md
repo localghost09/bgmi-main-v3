@@ -80,3 +80,19 @@ Player faces and historic event scores are not imported. Neutral monogram/
 jersey placeholders avoid misrepresenting another person's photo. The renderer
 accepts `avatarUrl` when supplied, but the current public scoring payload does
 not provide player portraits. No image-search thumbnails are shipped.
+
+### Operator-supplied BGIS 2026 top-five MVP frame
+
+After the research survey, the operator directly uploaded
+`21f3d7ddba76476184c04431a89dbbbb_w1378_h720.png_q1.webp`. This exact frame was
+visually inspected and used for the new `/pmgc/overall-mvp` seeded reference
+scene: five vertical cards, #1 taller/yellow, four dark-purple stat panels,
+clipped upper-left photo corners, gray name bands, purple grid backdrop,
+centered TOURNAMENT MVP / BGIS 2026 heading and yellow corner tape.
+
+The visible rows are transcribed into an isolated client-side fixture and the
+portraits/event mark are cropped from the supplied image. This does not verify
+that the screenshot represents final tournament results; the app labels it a
+seeded reference snapshot, not live standings or a calculated official rating.
+This supplied MVP frame supersedes the earlier BGIS 2026 limitation for this
+specific composition only; it does not verify every 2026 broadcast package.
