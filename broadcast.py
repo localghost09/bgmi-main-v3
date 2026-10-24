@@ -60,6 +60,8 @@ DEFAULT_OVERLAY_SETTINGS = {
     "intro_team": "",            # team_id pinned on the team-intro overlay
     "pushed_card": "",           # JSON card pushed from the caster desk
     "disabled": "",              # JSON list of hidden overlay names
+    "stream_start_seconds": "1200",
+    "stream_start_revision": "",
     "broadcast_scene": "live",   # Program output scene (one-URL switcher on the overlays page)
 }
 
@@ -1472,10 +1474,14 @@ def live_state(conn):
         "overall": overall,
         "overallPublished": published,
         "leaders": leaders,
+        "playerAwards": {"matchMvp": match_mvp(conn, match),
+                         "topPlayers": leaders[:5]},
         "recentMatches": recent_matches(conn, 6),
         "events": event_rows(conn, None, 25),
         "rules": load_rules(conn),
         "sponsor": get_bsetting(conn, "sponsor_text", ""),
+        "streamStartSeconds": int(get_bsetting(conn, "stream_start_seconds", "1200")),
+        "streamStartRevision": get_bsetting(conn, "stream_start_revision", ""),
         "updatedAt": now_iso(),
     }
 
@@ -1608,6 +1614,8 @@ def legacy_state(conn):
 
     return {
         "tournamentName": brand["eventName"] or "BGMI CUP",
+        "streamStartSeconds": int(get_bsetting(conn, "stream_start_seconds", "1200")),
+        "streamStartRevision": get_bsetting(conn, "stream_start_revision", ""),
         "themeColor": get_bsetting(conn, "theme_color", "#b6ff3e"),
         "organizer": brand["organizer"],
         "format": brand["formatLabel"],

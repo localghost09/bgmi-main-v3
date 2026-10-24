@@ -15,7 +15,7 @@ const ROOT = path.resolve(__dirname, '..');
 
 const SCENES = ['opening', 'casters', 'drop', 'map-intro', 'live', 'live-points',
   'chicken-dinner', 'winner-stats', 'match-standings', 'overall',
-  'map-rotation'];
+  'map-rotation', 'mvp', 'top-players'];
 
 const THEMES = ['bmps-2024', 'bgms-2024', 'bgis-2025', 'bgis-2026',
   'bmsd-2025', 'bmsd-2026', 'bmic-2025', 'pmgc-2025',
@@ -73,10 +73,10 @@ test.afterAll(() => {
   if (tmp) rmSync(tmp, { recursive: true, force: true });
 });
 
-test('gallery lists ten event themes and eleven scenes', async ({ page }) => {
+test('gallery lists ten event themes and thirteen scenes', async ({ page }) => {
   await page.goto(base + '/pmgc');
   await expect(page.locator('.theme-card')).toHaveCount(10);
-  await expect(page.locator('.step')).toHaveCount(11);
+  await expect(page.locator('.step')).toHaveCount(13);
   await expect(page.locator('.theme-card').first())
     .toHaveAttribute('href', /\/pmgc\/casters\?theme=bmps-2024/);
 });
@@ -449,4 +449,42 @@ test('match points uses two equal centered grids, ranks 1–8 and 9–16, withou
   await page.goto(`${base}/pmgc/live-points?obs=1`);
   await expect(page.locator('.pg-livepts-board')).toBeVisible();
   await expect(page.locator('.pg-match-grid')).toBeHidden();
+});
+
+test('MVP and top-five use real player awards, escape names, and fit all themes', async ({page}) => {
+  await page.setViewportSize({width:1920, height:1080});
+  const player = (name, kills, damage) => ({player:name, kills, damage, teamName:'A Long Registered Team Name', teamTag:'GODL', matches:6});
+  const awards = {matchMvp:player('MATCH ACE', 9, 1825), topPlayers:[
+    player('FIFTH', 11, 1500), player('THIRD', 16, 2500), player('FIRST <img>', 25, 3900),
+    player('SECOND', 20, 3000), player('FOURTH', 11, 1600)]};
+  await page.route('**/api/live/state', route => route.fulfill({json:{ok:true, teams:[], playerAwards:awards}}));
+  await page.goto(`${base}/pmgc/mvp?obs=1`);
+  await expect(page.locator('#mvpContent h2').first()).toHaveText('MATCH ACE');
+  await expect(page.locator('#mvpContent .pg-award-metric b').first()).toHaveText('9');
+  await page.goto(`${base}/pmgc/top-players?obs=1`);
+  await expect(page.locator('#topPlayersContent .pg-award-profile h2')).toHaveText('FIRST <img>');
+  await expect(page.locator('.pg-award-player-row h3')).toHaveText(['SECOND', 'THIRD', 'FOURTH', 'FIFTH']);
+  await expect(page.locator('#topPlayersContent img')).toHaveCount(0);
+  for (const theme of THEMES) {
+    await page.evaluate(t => {
+      window.__pmgc.setTheme(t);
+      document.getAnimations().forEach(a => {try {a.finish();} catch {a.pause();}});
+    }, theme);
+    const bounds = await page.evaluate(() => [...document.querySelectorAll('#topPlayersContent article, #topPlayersContent .pg-award-feature-metrics')].map(e => {
+      const b=e.getBoundingClientRect();return {bottom:b.bottom,left:b.left,right:b.right,overflow:e.scrollWidth>e.clientWidth+1};
+    }));
+    for (const box of bounds) {
+      expect(box.bottom,theme).toBeLessThanOrEqual(971);
+      expect(box.left).toBeGreaterThanOrEqual(80);
+      expect(box.right).toBeLessThanOrEqual(1841);
+      expect(box.overflow, theme).toBe(false);
+    }
+  }
+});
+
+test('player awards show waiting states rather than fictional showcase winners', async ({page}) => {
+  await page.goto(`${base}/pmgc/mvp?obs=1`);
+  await expect(page.locator('#mvpContent')).toHaveText('MVP AWAITING MATCH DATA');
+  await page.goto(`${base}/pmgc/top-players?obs=1`);
+  await expect(page.locator('#topPlayersContent')).toHaveText('TOP 5 AWAITING PLAYER DATA');
 });

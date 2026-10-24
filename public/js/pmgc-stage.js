@@ -51,7 +51,9 @@
     { id: 'winner-stats', label: '07 Winner Stats', ms: 16000, word: 'MATCH STATS' },
     { id: 'match-standings', label: '08 Match Points', ms: 18000, word: 'MATCH POINTS' },
     { id: 'overall', label: '09 Overall', ms: 20000, word: 'OVERALL' },
-    { id: 'map-rotation', label: '10 Map Rotation', ms: 18000, word: 'MAP POOL' }
+    { id: 'map-rotation', label: '10 Map Rotation', ms: 18000, word: 'MAP POOL' },
+    { id: 'mvp', label: '11 MVP', ms: 16000, word: 'MOST VALUABLE PLAYER' },
+    { id: 'top-players', label: '12 Top 5 Players', ms: 18000, word: 'TOP 5 PLAYERS' }
   ];
   var SCENE_IDS = SCENES.map(function (s) { return s.id; });
   var SCENE_WORDS = {};
@@ -378,7 +380,9 @@
   /* ------------------------------------------------------------ countdowns */
   function startOpeningClock() {
     clearInterval(state.ticks.opening);
-    var total = Math.max(30, Number(params.get('start')) || 1200);
+    var total = params.has('start')
+      ? Math.max(1, Number(params.get('start')) || 1200)
+      : (state.streamStartSeconds || 1200);
     state.openingTotal = total;
     state.openingEnds = Date.now() + total * 1000;
     tickOpening();
@@ -782,6 +786,84 @@
   }
 
   /* winner match stats */
+  /* Player awards use only the public scoring payload, never showcase teams.
+     No invented MVP rating, survival or knock statistics. */
+  function awardMetric(label, value) {
+    var box = el('div', 'pg-award-metric');
+    box.appendChild(el('small', null, label));
+    box.appendChild(el('b', null, value));
+    return box;
+  }
+  function awardProfile(player, rank) {
+    var card = el('article', 'pg-award-profile');
+    card.appendChild(el('span', 'pg-award-rank', '#' + pad(rank)));
+    var portrait = el('div', 'pg-award-portrait');
+    if (player.avatarUrl) {
+      var img = el('img'); img.src = player.avatarUrl; img.alt = player.player;
+      portrait.appendChild(img);
+    } else {
+      portrait.appendChild(el('span', 'pg-award-initials', initials(player.player)));
+      portrait.appendChild(el('span', 'pg-award-jersey', player.teamTag || initials(player.teamName)));
+    }
+    card.appendChild(portrait);
+    var name = el('div', 'pg-award-identity');
+    var logo = el('div', 'pg-award-logo');
+    setLogo(logo, player.logo, player.teamName, player.teamTag);
+    name.appendChild(logo);
+    var copy = el('div');
+    copy.appendChild(el('small', null, player.teamName || 'TEAM'));
+    copy.appendChild(el('h2', null, player.player || 'PLAYER'));
+    name.appendChild(copy); card.appendChild(name);
+    return card;
+  }
+  function renderPlayerAwards() {
+    var awards = state.playerAwards || {};
+    var mvp = awards.matchMvp;
+    var leaders = (awards.topPlayers || []).slice().sort(function (a, b) {
+      return b.kills - a.kills || b.damage - a.damage || String(a.player).localeCompare(String(b.player));
+    }).slice(0, 5);
+    var host = $('mvpContent'); var top = $('topPlayersContent');
+    if (!host || !top) return;
+    host.replaceChildren(); top.replaceChildren();
+    if (mvp && mvp.kills > 0) {
+      host.appendChild(awardProfile(mvp, 1));
+      var stats = el('div', 'pg-mvp-stats');
+      stats.appendChild(el('span', 'pg-award-kicker', 'MATCH MVP · PERFORMANCE REPORT'));
+      stats.appendChild(el('h2', null, 'THE DIFFERENCE MAKER'));
+      stats.appendChild(awardMetric('FINISHES', money(mvp.kills)));
+      stats.appendChild(awardMetric('DAMAGE DEALT', money(mvp.damage)));
+      stats.appendChild(el('p', 'pg-award-method', 'Ranked by finishes · damage breaks ties'));
+      host.appendChild(stats);
+    } else {
+      host.appendChild(el('div', 'pg-award-empty', 'MVP AWAITING MATCH DATA'));
+    }
+    if (leaders.length) {
+      var featured = awardProfile(leaders[0], 1);
+      var metrics = el('div', 'pg-award-feature-metrics');
+      metrics.appendChild(awardMetric('FINISHES', money(leaders[0].kills)));
+      metrics.appendChild(awardMetric('DAMAGE', money(leaders[0].damage)));
+      metrics.appendChild(awardMetric('MATCHES', money(leaders[0].matches)));
+      featured.appendChild(metrics); top.appendChild(featured);
+      var list = el('div', 'pg-award-chasers');
+      for (var i = 1; i < 5; i += 1) {
+        var player = leaders[i];
+        var row = el('article', 'pg-award-player-row');
+        row.appendChild(el('span', 'pg-award-row-rank', '#' + pad(i + 1)));
+        if (player) {
+          var identity = el('div', 'pg-award-row-name');
+          identity.appendChild(el('small', null, player.teamTag || player.teamName));
+          identity.appendChild(el('h3', null, player.player));
+          row.appendChild(identity);
+          row.appendChild(awardMetric('FIN', money(player.kills)));
+          row.appendChild(awardMetric('DAMAGE', money(player.damage)));
+          row.appendChild(awardMetric('MP', money(player.matches)));
+        } else { row.appendChild(el('p', 'pg-award-pending', 'AWAITING PLAYER DATA')); }
+        list.appendChild(row);
+      }
+      top.appendChild(list);
+    } else { top.appendChild(el('div', 'pg-award-empty', 'TOP 5 AWAITING PLAYER DATA')); }
+  }
+
   function renderWinnerStats() {
     var w = state.data.winner;
     var p = state.data;
@@ -1097,6 +1179,7 @@
     renderOverall();
     renderChickenDinner();
     renderWinnerStats();
+    renderPlayerAwards();
     renderMaps();
     renderKillFeed(true);
   }
@@ -1116,6 +1199,17 @@
     fetch('/api/live/state', { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (payload) {
+        if (payload && payload.playerAwards) {
+          state.playerAwards = payload.playerAwards;
+          renderPlayerAwards();
+        }
+        if (payload && Number.isInteger(payload.streamStartSeconds) && payload.streamStartSeconds > 0) {
+          var changed = state.streamStartSeconds !== payload.streamStartSeconds ||
+            state.streamStartRevision !== payload.streamStartRevision;
+          state.streamStartSeconds = payload.streamStartSeconds;
+          state.streamStartRevision = payload.streamStartRevision;
+          if (changed && state.scene === 'opening' && !params.has('start')) startOpeningClock();
+        }
         if (payload && payload.teams && payload.teams.length >= 4) applyLiveState(payload);
       })
       .catch(function () { /* showcase data stays on screen */ });
@@ -1125,18 +1219,14 @@
      change signal, so every event triggers a fresh /api/live/state read. A
      slow poll covers browsers where EventSource is unavailable. */
   function connectStream() {
-    if (!window.EventSource) {
-      setInterval(pullLiveState, 15000);
-      return;
-    }
+    setInterval(pullLiveState, 15000);
+    if (!window.EventSource) return;
     try {
       var source = new EventSource('/api/live/stream');
       source.onmessage = function () { pullLiveState(); };
       source.addEventListener('hb', function () {});
       source.onerror = function () { /* the browser reconnects on its own */ };
-    } catch (e) {
-      setInterval(pullLiveState, 15000);
-    }
+    } catch (e) { /* polling above remains active */ }
   }
 
   /* -------------------------------------------------------------- controls */

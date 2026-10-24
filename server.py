@@ -1815,6 +1815,7 @@ class Handler(BaseHTTPRequestHandler):
                 "theme": pairs.get("theme", "krafton-pm"),
                 "logoPath": pairs.get("logo_path", ""),
                 "sponsorText": pairs.get("sponsor_text", ""),
+                "streamStartSeconds": int(pairs.get("stream_start_seconds", "1200")),
                 "casterName": pairs.get("caster_name", ""),
                 "casterName2": pairs.get("caster2_name", ""),
                 "casterTagline": pairs.get("caster_tagline", ""),
@@ -2759,6 +2760,15 @@ class Handler(BaseHTTPRequestHandler):
                 conn = db()
                 try:
                     conn.execute("BEGIN IMMEDIATE")
+                    if "streamStartDuration" in data:
+                        duration = str(data.get("streamStartDuration") or "").strip()
+                        parsed = re.fullmatch(r"(\d{1,3}):([0-5]\d)", duration)
+                        seconds = int(parsed[1]) * 60 + int(parsed[2]) if parsed else 0
+                        if not parsed or seconds < 1:
+                            return self.send_json({"ok": False, "error":
+                                "Enter minutes:seconds, for example 5:30 (minimum 0:01, maximum 999:59)."}, 400)
+                        broadcast.set_bsetting(conn, "stream_start_seconds", str(seconds))
+                        broadcast.set_bsetting(conn, "stream_start_revision", secrets.token_urlsafe(12))
                     if "themeColor" in data:
                         color = str(data.get("themeColor") or "").strip()
                         if not re.match(r"^#[0-9a-fA-F]{6}$", color):

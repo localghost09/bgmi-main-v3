@@ -208,3 +208,39 @@ the status cell, vertically aligned to each row.
 Match Points (`/pmgc/match-standings`) now uses two equal centered tables,
 ranks 01–08 / 09–16, with repeated column headers and larger 76px rows.
 The compact Live Points overlay and Overall layouts are unchanged.
+
+## Producer Stream Starting timer
+
+In `/admin/overlays`, use **Stream Starting timer (minutes:seconds)** and
+**Apply / restart timer**. `5:30` means five minutes and thirty seconds.
+Accepts `0:01` through `999:59`; seconds must be two digits from `00` to `59`.
+The duration is persisted on the server, not just in the admin browser.
+Applying it emits a live update and restarts open opening scenes; if SSE is
+interrupted, the 15-second polling fallback catches the change. Other scenes
+are not interrupted and use the saved duration next time opening is entered.
+The preview and normal producer-generated OBS URLs require no manual editing.
+Legacy explicit `start=` links retain their URL override; use the producer's
+normal URL if you want the server-saved duration to control that source.
+
+## MVP and top-five player scenes
+
+The rundown now has **13 scenes**. In the producer's Scene picker choose
+**11 · Match MVP** (`/pmgc/mvp`) or **12 · Top 5 players**
+(`/pmgc/top-players`). Both support all ten selected event themes.
+
+`/api/live/state.playerAwards.matchMvp` is the current match scoring leader
+(finishes, then damage); `.topPlayers` is the tournament top five, including
+live results. The latter uses UID-based server aggregation without exposing
+UIDs publicly. This is **not** Krafton's proprietary MVP rating formula.
+Displayed metrics: MVP finishes/damage; top five finishes/damage/matches.
+Untracked knocks, survival, contribution and official MVP ratings are omitted.
+Missing MVP data produces a waiting slate; fewer than five players produce
+pending rows, never fake players. New scenes do not depend on the four-team
+minimum used by the old showcase adapter. Updates arrive through the existing
+public SSE/refetch flow plus 15-second polling fallback.
+
+Design: hero spotlight with a stat panel for MVP; one featured leader and four
+chaser rows for top five. Team logo/name, player IGN and neutral jersey/
+monogram placeholder are supported. Player photo upload is not added here;
+current scoring has no player portrait field. Reference survey and limits are
+recorded in `docs/broadcast-references.md`.

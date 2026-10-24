@@ -232,7 +232,9 @@
     ['winner-stats', '07 · Winner stats'],
     ['match-standings', '08 · Match points'],
     ['overall', '09 · Overall standings'],
-    ['map-rotation', '10 · Map rotation']
+    ['map-rotation', '10 · Map rotation'],
+    ['mvp', '11 · Match MVP'],
+    ['top-players', '12 · Top 5 players']
   ];
 
   function pmgcUrl() {
@@ -279,6 +281,38 @@
     sceneSel.innerHTML = PMGC_SCENES.map(function (row) {
       return '<option value="' + row[0] + '">' + row[1] + '</option>';
     }).join('');
+    var timerField = document.getElementById('pmgcStartDuration');
+    var timerButton = document.getElementById('pmgcApplyTimer');
+    var timerStatus = document.getElementById('pmgcTimerStatus');
+    BC.api('/api/admin/overlay-settings').then(function (x) {
+      if (x.s !== 200 || !x.d.ok) throw new Error('Could not load timer settings.');
+      var total = Number(x.d.streamStartSeconds) || 1200;
+      timerField.value = Math.floor(total / 60) + ':' + String(total % 60).padStart(2, '0');
+      timerButton.disabled = false;
+    }).catch(function () { timerStatus.textContent = 'Could not load timer settings. Reload to retry.'; });
+    function applyTimer() {
+      if (timerButton.disabled) return;
+      var match = /^(\d{1,3}):([0-5]\d)$/.exec(timerField.value.trim());
+      if (!match || Number(match[1]) * 60 + Number(match[2]) < 1) {
+        timerField.setAttribute('aria-invalid', 'true');
+        timerStatus.textContent = 'Use minutes:seconds, e.g. 5:30. Seconds must be 00–59; minimum 0:01, maximum 999:59.';
+        timerField.focus();
+        return;
+      }
+      timerField.removeAttribute('aria-invalid');
+      timerButton.disabled = true;
+      timerStatus.textContent = 'Saving timer…';
+      BC.post('/api/admin/overlay-settings', {streamStartDuration: timerField.value.trim()}).then(function (x) {
+        if (x.s !== 200 || !x.d.ok) throw new Error(x.d.error || 'Could not save timer.');
+        timerField.value = Number(match[1]) + ':' + match[2];
+        timerStatus.textContent = 'Saved ' + timerField.value + '. Stream Starting overlays will restart automatically.';
+      }).catch(function (e) { timerStatus.textContent = e.message || 'Could not save timer. Try again.'; })
+        .finally(function () { timerButton.disabled = false; });
+    }
+    timerButton.addEventListener('click', applyTimer);
+    timerField.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter') { event.preventDefault(); applyTimer(); }
+    });
     ['pmgcMap', 'pmgcSponsor', 'pmgcAudio'].forEach(function (id) { document.getElementById(id).addEventListener('change', function () { syncPmgc(true); }); });
     themeSel.addEventListener('change', function () { syncPmgc(true); });
     sceneSel.addEventListener('change', function () { syncPmgc(true); });

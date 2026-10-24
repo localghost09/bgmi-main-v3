@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="/css/pmgc-themes.css?v=6" />
     <link rel="stylesheet" href="/css/pmgc-stage.css?v=6" />
     <link rel="stylesheet" href="/css/pmgc-obs.css?v=13" />
-  <link rel="stylesheet" href="/css/pmgc-layouts.css?v=7" />
+  <link rel="stylesheet" href="/css/pmgc-layouts.css?v=8" />
   </head>
   <body class="pg-body">
     <div class="pg-fit" id="pgFit">
@@ -462,6 +462,18 @@
           </div>
         </section>
 
+        <!-- Player spotlight and top-five: public scored data only. -->
+        <section class="pg-scene pg-awards pg-mvp" data-scene="mvp" aria-label="Match MVP">
+          <header class="pg-award-heading"><span>MATCH SPOTLIGHT</span><h1>MOST VALUABLE <em>PLAYER</em></h1></header>
+          <div class="pg-award-content pg-mvp-content" id="mvpContent"></div>
+          <footer class="pg-award-footer">MATCH MVP <span>FINISHES FIRST · DAMAGE TIEBREAK · LIVE SCORING DATA</span></footer>
+        </section>
+        <section class="pg-scene pg-awards pg-topplayers" data-scene="top-players" aria-label="Top five players">
+          <header class="pg-award-heading"><span>TOURNAMENT LEADERBOARD · INCLUDES LIVE MATCH</span><h1>TOP <em>5</em> PLAYERS</h1></header>
+          <div class="pg-award-content pg-topplayers-content" id="topPlayersContent"></div>
+          <footer class="pg-award-footer">THE ELIMINATORS <span>RANKED BY FINISHES · DAMAGE BREAKS TIES · MP = MATCHES PLAYED</span></footer>
+        </section>
+
         <!-- ================ 08 · MATCH POINTS STANDINGS ==================== -->
         <section class="pg-scene pg-mstats" data-scene="match-standings" aria-label="Match points standings">
           <header class="pg-board-head">
@@ -655,6 +667,6 @@
     </div>
 
   <script src="/js/broadcast-themes.js?v=6"></script>
-    <script src="/js/pmgc-stage.js?v=13" defer></script>
+    <script src="/js/pmgc-stage.js?v=15" defer></script>
   </body>
 </html>
