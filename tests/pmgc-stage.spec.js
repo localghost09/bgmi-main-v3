@@ -52,6 +52,7 @@ test.beforeAll(async () => {
         BGMI_DB: path.join(tmp, 'test.db'),
         BGMI_UPLOADS: path.join(tmp, 'uploads'),
         BGMI_NOTIFY_POLL: '3600',
+        BGMI_ADMIN_LOGIN_BYPASS: '1',
       },
       cwd: ROOT,
       stdio: 'ignore',
@@ -567,4 +568,74 @@ test('admin top-five preview retains the exact reference chrome and explicitly l
   await page.goto(`${base}/pmgc/top-players?obs=1`);
   await expect(page.locator('#topPlayersContent .is-leader h2')).toHaveText('PENDING');
   await expect(page.locator('#topPlayersContent img[src*="mvp-reference"]')).toHaveCount(0);
+});
+
+
+test('common Program URL follows producer scene, theme and caster edits without reloading OBS', async ({page, context}) => {
+  await page.goto(`${base}/pmgc/program?obs=1`);
+  const originalUrl = page.url();
+  const admin = await context.newPage();
+  await admin.goto(`${base}/admin/overlays`);
+  await expect(admin.locator('#pmgcProgramStatus')).toContainText('Connected');
+  await expect(admin.getByRole('heading', {name: 'Browser sources', exact: true})).toHaveCount(0);
+  await expect(admin.locator('#overlayGrid')).toHaveCount(0);
+  await expect(admin.locator('#pmgcUrl')).toHaveValue(`${base}/pmgc/program?obs=1`);
+  await expect(admin.locator('#pmgcSceneButtons button')).toHaveCount(14);
+  const preview = admin.frameLocator('#pmgcPreviewFrame');
+  await admin.locator('#pmgcSceneButtons button[data-scene="casters"]').click();
+  await expect(page.locator('#pmgc')).toHaveAttribute('data-scene','casters');
+  await expect(preview.locator('#pmgc')).toHaveAttribute('data-scene','casters');
+  await expect(admin.locator('#pmgcProgramStatus')).toContainText('Saved');
+  await admin.locator('#pmgcTheme').selectOption('bgis-2026');
+  await expect(page.locator('#pmgc')).toHaveAttribute('data-theme','bgis-2026');
+  await expect(admin.locator('#pmgcProgramStatus')).toContainText('Saved');
+  await admin.locator('#pmgcCaster1').fill('HOST <img>');
+  await admin.locator('#pmgcCaster2').fill('ANALYST');
+  await admin.locator('#pmgcTagline1').fill('Every rotation, every fight');
+  await admin.locator('#pmgcTagline2').fill('Breaking down the endgame');
+  await admin.locator('#pmgcSaveCasters').click();
+  await expect(page.locator('#casterName1')).toHaveText('HOST <img>');
+  await expect(page.locator('#casterLine1')).toHaveText('Every rotation, every fight');
+  await expect(page.locator('#casterLine1')).toBeVisible();
+  await expect(page.locator('#casterName1 img')).toHaveCount(0);
+  expect(page.url()).toBe(originalUrl);
+  await page.reload();
+  await expect(page.locator('#pmgc')).toHaveAttribute('data-scene','casters');
+  await expect(page.locator('#casterName2')).toHaveText('ANALYST');
+  await admin.reload();
+  await expect(admin.locator('#pmgcCaster1')).toHaveValue('HOST <img>');
+  await expect(admin.locator('#pmgcTheme')).toHaveValue('bgis-2026');
+  const pinned = await context.newPage();
+  await pinned.goto(`${base}/pmgc/live?theme=bmps-2024&obs=1`);
+  await admin.locator('#pmgcSceneButtons button[data-scene="overall"]').click();
+  await expect(page.locator('#pmgc')).toHaveAttribute('data-scene','overall');
+  await expect(pinned.locator('#pmgc')).toHaveAttribute('data-scene','live');
+  await expect(pinned.locator('#pmgc')).toHaveAttribute('data-theme','bmps-2024');
+  await expect(admin.locator('#pmgcUrl')).toHaveValue(`${base}/pmgc/program?obs=1`);
+  await admin.close(); await pinned.close();
+});
+
+test('Program copy handles clipboard permission denial and exposes manual selection when blocked', async ({page}) => {
+  await page.goto(`${base}/admin/overlays`);
+  await expect(page.locator('#pmgcProgramStatus')).toContainText('Connected');
+  await page.evaluate(() => {
+    window.__copyToasts = [];
+    window.BC.toast = message => window.__copyToasts.push(message);
+    Object.defineProperty(navigator, 'clipboard', {configurable:true, value:{writeText: () => Promise.reject(new Error('Permission denied'))}});
+    document.execCommand = command => {
+      window.__copiedText = document.querySelector('#pmgcUrl').value;
+      return command === 'copy';
+    };
+  });
+  await page.locator('#pmgcCopyBtn').click();
+  await expect.poll(() => page.evaluate(() => window.__copyToasts.at(-1))).toContain('Copied common');
+  expect(await page.evaluate(() => window.__copiedText)).toBe(`${base}/pmgc/program?obs=1`);
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, 'clipboard', {configurable:true, value:undefined});
+    document.execCommand = () => false;
+  });
+  await page.locator('#pmgcCopyBtn').click();
+  await expect.poll(() => page.evaluate(() => window.__copyToasts.at(-1))).toContain('URL selected');
+  const selected = await page.locator('#pmgcUrl').evaluate(el => el.value.slice(el.selectionStart,el.selectionEnd));
+  expect(selected).toBe(`${base}/pmgc/program?obs=1`);
 });

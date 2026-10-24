@@ -24,6 +24,9 @@
   if (!root) return;
 
   var params = new URLSearchParams(location.search);
+  var programMode = /\/pmgc\/program\/?$/.test(location.pathname);
+  var programRevision = null;
+  if (programMode) root.style.opacity = '0';
   var flag = function (name, fallback) {
     var v = params.get(name);
     if (v === null) return fallback;
@@ -310,7 +313,7 @@
       try { localStorage.setItem('pmgc.theme', id); } catch (e) { /* private mode */ }
     }
     var url = new URL(location.href);
-    if (url.searchParams.get('theme') !== id) {
+    if (!programMode && url.searchParams.get('theme') !== id) {
       url.searchParams.set('theme', id);
       history.replaceState(null, '', url.toString());
     }
@@ -348,7 +351,7 @@
       }
       if (opts.wipe !== false) playWipe(SCENE_WORDS[id]);
       var url = new URL(location.href);
-      if (url.searchParams.get('scene') !== id) {
+      if (!programMode && url.searchParams.get('scene') !== id) {
         url.searchParams.set('scene', id);
         history.replaceState(null, '', url.toString());
       }
@@ -1035,8 +1038,13 @@
     }
     set('bugEvent', d.event);
     set('diagonalSponsor', (params.get('sponsor') || d.sponsor || 'PARTNER SLOT').slice(0, 60));
-    set('dropCaster1', params.get('caster1') || 'CASTER 01 · LIVE');
-    set('dropCaster2', params.get('caster2') || 'CASTER 02 · LIVE');
+    var program = state.program || {};
+    set('casterName1', program.caster1 == null ? (params.get('caster1') || 'NOVA') : program.caster1);
+    set('casterName2', program.caster2 == null ? (params.get('caster2') || 'ARC') : program.caster2);
+    set('casterLine1', program.tagline1 == null ? 'Calls every rotation, every fight, every clutch.' : program.tagline1);
+    set('casterLine2', program.tagline2 == null ? 'Reads the zone, breaks down the endgame maths.' : program.tagline2);
+    set('dropCaster1', program.caster1 == null ? (params.get('caster1') || 'CASTER 01 · LIVE') : program.caster1);
+    set('dropCaster2', program.caster2 == null ? (params.get('caster2') || 'CASTER 02 · LIVE') : program.caster2);
     set('bugStage', d.stage);
     set('bugMatch', pad(d.match));
     set('bugMap', String(d.map).toUpperCase());
@@ -1250,6 +1258,24 @@
     fetch('/api/live/state', { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (payload) {
+        if (programMode && payload && payload.pmgcProgram) {
+          var program = payload.pmgcProgram;
+          var changed = programRevision !== program.revision;
+          state.program = program;
+          if (state.theme !== program.theme) setTheme(program.theme, {persist: false});
+          if (program.map) params.set('battleground', program.map); else params.delete('battleground');
+          if (program.sponsor) params.set('sponsor', program.sponsor); else params.delete('sponsor');
+          params.set('audio', program.audio ? '1' : '0');
+          if (!program.audio) introMusic.pause();
+          renderHud();
+          if (changed) {
+            state.auto = false;
+            clearTimeout(state.sceneTimer);
+            setScene(program.scene, {wipe: programRevision !== null});
+            programRevision = program.revision;
+          }
+          root.style.opacity = '1';
+        }
         if (payload && payload.playerAwards) {
           state.playerAwards = payload.playerAwards;
           renderPlayerAwards();
@@ -1270,7 +1296,7 @@
      change signal, so every event triggers a fresh /api/live/state read. A
      slow poll covers browsers where EventSource is unavailable. */
   function connectStream() {
-    setInterval(pullLiveState, 15000);
+    setInterval(pullLiveState, programMode ? 2000 : 15000);
     if (!window.EventSource) return;
     try {
       var source = new EventSource('/api/live/stream');

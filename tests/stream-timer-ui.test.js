@@ -8,7 +8,7 @@ test('minutes:seconds control loads saved duration, validates and applies withou
   const nodes = {};
   function node(id) {
     return nodes[id] ||= {value: '', disabled: false, style: {}, clientWidth: 960,
-      listeners: {}, attrs: {}, addEventListener(event, fn) {this.listeners[event] = fn;},
+      listeners: {}, attrs: {}, dataset: {}, classList: {toggle() {}}, appendChild() {}, getAttribute(k) {return this.attrs[k];}, addEventListener(event, fn) {this.listeners[event] = fn;},
       setAttribute(k,v) {this.attrs[k] = v;}, removeAttribute(k) {delete this.attrs[k];}, focus() {}};
   }
   node('pmgcApplyTimer').disabled = true;
@@ -16,7 +16,7 @@ test('minutes:seconds control loads saved duration, validates and applies withou
   const script = fs.readFileSync('public/js/overlays.js', 'utf8');
   const producer = script.slice(script.lastIndexOf('(function () {', script.indexOf('var PMGC_THEMES')));
   const context = vm.createContext({
-    document: {readyState: 'complete', getElementById: node},
+    document: {readyState: 'complete', getElementById: node, querySelectorAll: () => [], createElement: () => node('button' + Math.random())},
     window: {BROADCAST_THEMES: [{id: 'bmps-2024', name: 'BMPS 2024'}], addEventListener() {}},
     location: {origin: 'https://broadcast.example'}, navigator: {},
     BC: {api: async () => ({s: 200, d: {ok: true, streamStartSeconds: 330}}),

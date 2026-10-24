@@ -57,6 +57,31 @@ class StreamTimerTest(unittest.TestCase):
         except urllib.error.HTTPError as response:
             return response.code, json.load(response)
 
+    def test_program_settings_validation_and_public_sync(self):
+        path = '/api/admin/overlay-settings'
+        patch = {'scene': 'casters', 'theme': 'bgis-2026',
+                 'caster1': '<img src=x> HOST', 'caster2': 'COHOST',
+                 'tagline1': 'Play by play', 'tagline2': 'Analysis',
+                 'audio': False, 'map': 'rondo', 'sponsor': 'Partner'}
+        self.assertEqual(self.call(path, {'pmgcProgram': patch})[0], 200)
+        saved = self.call(path)[1]['pmgcProgram']
+        public = self.call('/api/live/state')[1]['pmgcProgram']
+        self.assertEqual(saved, public)
+        for key, value in patch.items():
+            self.assertEqual(saved[key], value)
+        self.assertTrue(saved['revision'])
+        self.call(path, {'pmgcProgram': {'caster1': 'UPDATED'}})
+        current = self.call(path)[1]['pmgcProgram']
+        self.assertEqual(current['revision'], saved['revision'])
+        self.assertEqual(current['scene'], 'casters')
+        for bad in [{'scene': 'bad'}, {'theme': 'bad'}, {'audio': 'yes'},
+                    {'caster1': 'x' * 61}, {'tagline1': 'x' * 121},
+                    {'revision': 'fake'}, {'map': 'localhost'}, [], None]:
+            self.assertEqual(self.call(path, {'pmgcProgram': bad})[0], 400, bad)
+            self.assertEqual(self.call(path)[1]['pmgcProgram'], current)
+        self.call(path, {'pmgcProgram': {'scene': 'casters'}})
+        self.assertNotEqual(self.call(path)[1]['pmgcProgram']['revision'], current['revision'])
+
     def test_timer_duration_persists_and_restarts_without_a_url_parameter(self):
         self.assertEqual(self.call('/api/admin/overlay-settings')[1]['streamStartSeconds'], 1200)
         self.assertEqual(self.call('/api/admin/overlay-settings', {'streamStartDuration': '5:30'})[0], 200)
