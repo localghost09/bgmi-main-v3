@@ -17,7 +17,9 @@
     ['winner-stats', 'Chicken dinner stats', 'Squad player cards'],
     ['match-standings', 'Match points', '16-row result table'],
     ['overall', 'Overall standings', 'Two tables · 01–16'],
-    ['map-rotation', 'Map rotation', 'Erangel · Miramar · Rondo']
+    ['map-rotation', 'Map rotation', 'Erangel · Miramar · Rondo'],
+    ['mvp', 'Match MVP', 'Hero spotlight · finishes and damage'],
+    ['top-players', 'Top 5 players', 'Tournament eliminators · includes live match']
   ];
   var themesHost = document.getElementById('themes');
   THEMES.forEach(function (t) {

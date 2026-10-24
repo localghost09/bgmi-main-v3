@@ -56,3 +56,27 @@ See `/broadcast-setup.html`. Camera and gameplay apertures are true alpha,
 not black/chroma-key placeholders. Two downloadable masks separate OBS's
 independent captures along the diagonal. Browser CSS cannot mask other OBS
 sources, and the documentation explicitly says so.
+
+## Player awards research — cutoff 24 October 2026
+
+Scope: the Krafton **India/BGMI** circuit, not every Krafton-owned game or
+PUBG PC tournament worldwide. Surveyed accessible 2025–2026 BGIS, BMPS,
+BMSD and BMIC coverage. This does **not** establish that every official
+broadcast frame from every event was available or inspected.
+
+| Event | Reference / verification | Use / limitation |
+| --- | --- | --- |
+| BGIS 2025 | [Finals awards coverage, Krafton-credited images](https://gamingonphone.com/esports/battlegrounds-mobile-india-series-bgis-2025-grand-finals/) | MVP vs finals-MVP naming; existing blue/yellow identity. No pixel-exact player-frame claim. |
+| BMPS 2025 | [Finals and MVP coverage, Krafton-credited images](https://gamingonphone.com/esports/battlegrounds-mobile-pro-series-bmps-2025-grand-finals/) | Separate individual spotlight from winning-squad statistics. Article inspected; awards images not individually inspected. |
+| BMSD 2025 | [Tournament MVP graphic](https://sportsdunia.com/gaming/bgmi-bmsd-2025-grand-finals-day-2-points-table) | **Visually inspected**: ivory/navy/cyan header, large #1 portrait/vertical stats on left, four horizontal chaser rows on right. Main composition reference. |
+| BMIC 2025 | [Player stats/awards](https://www.esportsverse.in/tournaments/bgmi/battlegrounds-mobile-india-international-cup-2025/schedule) | Data/category reference only, not verification of an exact broadcast layout. |
+| BGIS 2026 | [Finals coverage](https://sportskeeda.com/bgmi/news-battlegrounds-mobile-india-series-bgis-2026-winners-mvp-fmvp-prize-pool-distribution-summary) | Inspected image was a team/studio celebration, not an MVP frame. Retains existing yellow/ink adaptation. |
+| BMPS 2026 | [Player stats/awards](https://www.esportsverse.in/tournaments/bgmi/battlegrounds-mobile-india-pro-series-2026/stats) | Survey reference only. Search results conflicted about results; no winning player/result copied into the app. |
+| BMSD 2026 | [Coverage and player leaderboard](https://www.talkesport.com/mobile-gaming/bgmi/bmsd-2026-top-fraggers-list-check-bmsd-top-players/) | Player leaderboard reference; uses the existing navy/lime chamfered theme. No exact MVP-frame verification. |
+| BMIC 2026 | [Event preview](https://www.gamingamigos.com/post/bmic-2026-bgmi) | Preview/reference only as of cutoff. No final award graphic or winner claimed. |
+
+Implementation is original and event-inspired, not an official package.
+Player faces and historic event scores are not imported. Neutral monogram/
+jersey placeholders avoid misrepresenting another person's photo. The renderer
+accepts `avatarUrl` when supplied, but the current public scoring payload does
+not provide player portraits. No image-search thumbnails are shipped.

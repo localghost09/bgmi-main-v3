@@ -222,6 +222,13 @@ def main():
     # ---------- published demo standings (source of truth) ----------
     print("\n[published demo standings]")
     st, live = j("GET", "/api/live/state")
+    awards = live.get("playerAwards", {})
+    report("player awards use public tournament leaders",
+           awards.get("topPlayers") == live.get("leaders", [])[:5], str(awards)[:160])
+    with server_conn() as conn:
+        expected_mvp = broadcast.match_mvp(conn, broadcast.live_match(conn))
+    report("MVP award is the match scoring leader",
+           awards.get("matchMvp") == expected_mvp, str(awards)[:160])
     overall = live.get("overallPublished", [])
     report("published match feeds overall standings",
            st == 200 and len(overall) >= 4, "rows=%d" % len(overall))
