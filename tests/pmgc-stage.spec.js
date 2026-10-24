@@ -240,12 +240,15 @@ test('keyboard drives the rundown and the auto-show arms itself', async ({ page 
   expect(armed).toBeTruthy();
 });
 
-test('all ten event themes have different studio geometry and transparent camera apertures', async ({ page }) => {
+test('all ten themes keep caster cards vertically centered with transparent camera apertures', async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
   await page.goto(`${base}/pmgc/casters?obs=1`);
   const signatures = [];
   for (const theme of THEMES) {
-    await page.evaluate((t) => window.__pmgc.setTheme(t), theme);
+    await page.evaluate((t) => {
+      window.__pmgc.setTheme(t);
+      document.getAnimations().forEach(a => {try {a.finish();} catch {a.pause();}});
+    }, theme);
     const geometry = await page.evaluate(() => {
       const grid = document.querySelector('.pg-caster-grid');
       return {
@@ -273,9 +276,15 @@ test('all ten event themes have different studio geometry and transparent camera
     expect(geometry.back).toBe('none');
     expect(geometry.card).toBe('rgba(0, 0, 0, 0)');
     expect(geometry.cardImage).toBe('none');
+    const centered = await page.locator('.pg-casters .pg-caster-card').evaluateAll(cards => cards.map(card => {
+      const r = card.getBoundingClientRect();return r.top + r.height / 2;
+    }));
+    for (const center of centered) expect(center,theme).toBeCloseTo(540, 0);
+    await expect(page.locator('.pg-casters .pg-aperture-hole')).toHaveCount(2);
+
     signatures.push(JSON.stringify([geometry.columns, geometry.gridY, geometry.cams]));
   }
-  expect(new Set(signatures).size).toBe(10);
+  expect(new Set(signatures).size).toBe(1);
 });
 
 test('drop cameras stay transparent and countdown leads through the correct map intro to gameplay', async ({ page }) => {
@@ -397,6 +406,7 @@ test('compact standings sit bottom-right across every theme with larger centered
   await page.setViewportSize({width: 1920, height: 1080});
   await page.goto(`${base}/pmgc/live-points?obs=1`);
   for (const theme of THEMES) {
+    await expect(page.locator('.pg-livepts-rows .name').first()).toHaveCSS('gap', '12px');
     await page.evaluate(t => {
       window.__pmgc.setTheme(t);
       document.getAnimations().forEach(a => { try {a.finish();} catch {a.pause();} });

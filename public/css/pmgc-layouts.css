@@ -308,3 +308,17 @@
 .pmgc[data-theme="pmgc-2025"] .pg-caster-copy {writing-mode:horizontal-tb;padding:20px 12px;}
 .pg-caster-copy {gap:4px;}
 .pg-caster-copy h3 {margin-top:4px;}
+
+/* Opaque studio shell with true-alpha cutouts: the stage root stays transparent
+   so only the SVG's masked rectangular video holes reveal OBS sources below. */
+.pg-aperture-backdrop {position:absolute;inset:0;width:1920px;height:1080px;pointer-events:none;z-index:0;}
+.pmgc[data-scene="casters"] .pg-casters .pg-section-head {left:100px;right:100px;top:135px;width:auto;}
+.pmgc[data-scene="casters"] .pg-casters .pg-section-head .pg-title {font-size:64px;transform:none;color:#fff;}
+.pmgc[data-scene="casters"] .pg-casters .pg-section-head .pg-sub {font-size:18px;color:#c7d5e8;}
+.pmgc[data-scene="casters"] .pg-caster-grid {left:100px;right:100px;top:249.375px;height:581.25px;width:auto;grid-template-columns:repeat(2,minmax(0,1fr));gap:80px;}
+.pmgc[data-scene="casters"] .pg-caster-card {margin:0!important;grid-template-columns:1fr!important;grid-template-rows:461.25px 120px!important;border:0;border-radius:0;clip-path:none;animation:none!important;transform:none!important;opacity:1!important;}
+.pmgc[data-scene="casters"] .pg-cam {width:820px;height:461.25px;border:2px solid var(--p-accent);box-sizing:border-box;}
+.pmgc[data-scene="casters"] .pg-caster-copy {writing-mode:horizontal-tb;padding:8px 26px;}
+.pmgc[data-scene="casters"] .pg-caster-copy p {max-width:none;}
+.pg-livepts-rows .name {gap:12px;}
+.pg-livepts-rows .logo {flex:0 0 28px;}
