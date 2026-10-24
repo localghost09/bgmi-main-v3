@@ -12,10 +12,7 @@
 .pg-ref-scene {
   overflow: hidden;
   color: #fff;
-  background:
-    radial-gradient(ellipse 62% 72% at 2% 22%, rgba(83, 19, 164, .30), transparent 70%),
-    radial-gradient(ellipse 58% 56% at 88% 100%, rgba(60, 14, 141, .25), transparent 72%),
-    linear-gradient(112deg, #100421 0%, #090313 46%, #07030f 100%);
+  background: var(--pg-winner-scene-bg);
 }
 .pg-ref-scene::before {
   content: "";

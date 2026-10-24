@@ -128,6 +128,43 @@ test('all ten themes apply their own accent tokens', async ({ page }) => {
   }
 });
 
+test('scene changes use the WWCD purple wipe and trophy instead of theme green', async ({ page }) => {
+  await page.goto(`${base}/pmgc/mvp?theme=bmps-2024&ui=0`);
+  await expect(page.locator('#pmgc')).toHaveAttribute('data-theme', 'bmps-2024');
+  const transition = await page.evaluate(() => {
+    /** @type {any} */ (window).__pmgc.setScene('winner-stats');
+    const wipe = /** @type {HTMLElement} */ (document.querySelector('#pgWipe'));
+    const trophy = /** @type {HTMLElement} */ (document.querySelector('.pg-wipe-trophy'));
+    const animation = trophy.getAnimations()[0];
+    if (animation) {
+      animation.pause();
+      animation.currentTime = 500;
+    }
+    const w1 = getComputedStyle(/** @type {Element} */ (document.querySelector('#pgWipe .w1')));
+    const w2 = getComputedStyle(/** @type {Element} */ (document.querySelector('#pgWipe .w2')));
+    const reference = getComputedStyle(/** @type {Element} */ (document.querySelector('.pg-wstats')));
+    const trophyStyle = getComputedStyle(trophy);
+    return {
+      active: wipe.classList.contains('is-on'),
+      firstBackground: w1.backgroundImage,
+      secondBackground: w2.backgroundImage,
+      referenceBackground: reference.backgroundImage,
+      trophyAnimation: trophyStyle.animationName,
+      trophyOpacity: Number(trophyStyle.opacity),
+      trophyColor: trophyStyle.color,
+    };
+  });
+  expect(transition.active).toBe(true);
+  expect(transition.firstBackground).toBe(transition.referenceBackground);
+  expect(transition.secondBackground).toBe(transition.referenceBackground);
+  expect(transition.firstBackground).not.toContain('rgb(20, 219, 135)');
+  expect(transition.trophyAnimation).toBe('pgWipeTrophy');
+  expect(transition.trophyOpacity).toBeGreaterThan(0.9);
+  expect(transition.trophyColor).toBe('rgb(229, 189, 67)');
+  await expect(page.locator('#pgWipe')).not.toHaveClass(/is-on/);
+  await expect(page.locator('#pmgc')).toHaveAttribute('data-scene', 'winner-stats');
+});
+
 test('the runtime theme picker repaints the stage', async ({ page }) => {
   await page.goto(`${base}/pmgc/overall?theme=bmps-2024&ui=1`);
   await page.selectOption('#pgUiTheme', 'bmsd-2025');
