@@ -19,7 +19,7 @@ test('minutes:seconds control loads saved duration, validates and applies withou
     document: {readyState: 'complete', getElementById: node, querySelectorAll: () => [], createElement: () => node('button' + Math.random())},
     window: {BROADCAST_THEMES: [{id: 'bmps-2024', name: 'BMPS 2024'}], addEventListener() {}},
     location: {origin: 'https://broadcast.example'}, navigator: {},
-    BC: {api: async () => ({s: 200, d: {ok: true, streamStartSeconds: 330}}),
+    BC: {boot: ready => ready(), api: async () => ({s: 200, d: {ok: true, streamStartSeconds: 330}}),
       post: async (url, body) => {calls.push({url, ...body}); return {s: 200, d: {ok: true}};}, toast() {}}
   });
   vm.runInContext(producer, context);

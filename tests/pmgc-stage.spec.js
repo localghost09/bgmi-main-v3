@@ -579,6 +579,9 @@ test('common Program URL follows producer scene, theme and caster edits without 
   await expect(admin.locator('#pmgcProgramStatus')).toContainText('Connected');
   await expect(admin.getByRole('heading', {name: 'Browser sources', exact: true})).toHaveCount(0);
   await expect(admin.locator('#overlayGrid')).toHaveCount(0);
+  await expect(admin.getByRole('heading', {name: 'Access & branding', exact: true})).toHaveCount(0);
+  await expect(admin.getByRole('heading', {name: 'Preview', exact: true})).toHaveCount(0);
+  await expect(admin.locator('#programUrl, #programSceneBtns, #tokenField, #previewFrame')).toHaveCount(0);
   await expect(admin.locator('#pmgcUrl')).toHaveValue(`${base}/pmgc/program?obs=1`);
   await expect(admin.locator('#pmgcSceneButtons button')).toHaveCount(14);
   const preview = admin.frameLocator('#pmgcPreviewFrame');
