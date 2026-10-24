@@ -1,0 +1,46 @@
+BGMI CUP / PMGC 2026 — PREVIEW ACCESS
+=====================================
+
+ADMIN LOGIN
+  URL      : /admin            (opens the login screen when signed out)
+  Username : arena
+  Password : arena12345
+
+  Rotate or replace it any time with:
+     python scripts/create_admin.py            (prompts for user + password)
+     BGMI_ADMIN_USER=you BGMI_ADMIN_PASSWORD=your-password python scripts/create_admin.py
+
+WHAT IS LOADED RIGHT NOW
+  Demo seed is ON: 32 squads in Group A + Group B, one scheduled match per
+  group, 32 generated logo tiles, DEMO DATA badge visible in the admin.
+  Remove it again from the Control Room (Purge) or reseed with:
+     python scripts/seed_demo.py
+
+WHERE TO CHECK EACH REQUIREMENT
+  /pmgc                              gallery: the 10 themes, the 10 scenes
+  /pmgc/opening                      stream-start countdown (ring + clock)
+  /pmgc/casters                      two caster cards + hype line
+  /pmgc/drop                         30s match-start clock + caster hype
+  /pmgc/live                         live feed + DIAGONAL map feed + live points rail
+  /pmgc/live-points                  live feed + live points standings
+  /pmgc/chicken-dinner               winner winner chicken dinner celebration
+  /pmgc/winner-stats                 chicken dinner squad stats
+  /pmgc/match-standings              match points table
+  /pmgc/overall                      overall standings (with MATCHES column)
+  /pmgc/map-rotation                 Erangel / Miramar / Rondo map plates
+  /admin/overlays                    producer: theme + scene picker, preview, copy URL
+  /admin/control                     drive a live match (scores flow to the stage)
+  /admin/matches                     schedule, maps, scoring rules, publish results
+
+  Add ?ui=0 to a stage URL for the clean OBS view, ?obs=1 for transparent.
+  Any scene accepts &theme=<id> - see the gallery for the 10 ids.
+
+IF SIGN-IN "DOES NOTHING"
+  Open the app in its own browser tab instead of the embedded preview frame.
+  The preview renders pages inside a cross-site iframe, and the browser drops
+  the session cookie there unless it is SameSite=None; Secure; Partitioned.
+  The server now detects preview hosts (*.e2b.app) and issues exactly that
+  cookie, so the frame works too - but a normal tab is the least surprising
+  path. A password that is accepted but not remembered now says so on the
+  form instead of looping back silently. Add a host to BGMI_PREVIEW_HOSTS
+  (comma separated) if you run the preview somewhere else.

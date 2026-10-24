@@ -182,7 +182,8 @@ B's login/register pages, dev bypass, `data/*.json` store.
 - Parameterized SQL everywhere (project-wide rule).
 - CSP (`default-src 'self'`, Google Fonts allowed, `connect-src 'self'`, no
   `unsafe-inline` scripts — the duplicated navbar IIFE is factored into `js/nav.js`),
-  plus existing nosniff + Referrer-Policy; `X-Frame-Options: DENY` on admin pages.
+  plus existing nosniff + Referrer-Policy; `X-Frame-Options: DENY` on admin pages
+  (relaxed only for sandbox preview hosts — see `docs/security.md`).
 - `POST /api/admin/purge` extended to also clear matches, match results, player
   stats, event log and overlay settings (typed `PURGE` confirm unchanged).
 

@@ -73,6 +73,7 @@ without `--overwrite`. Both scripts print row counts only — no PII.
 | Path | Purpose |
 |---|---|
 | `server.py` | Static file server + JSON API + SQLite storage + notification worker |
+| `public/pmgc.html` · `public/pmgc-stage.html` | PMGC 2026 broadcast stage — ten themes × ten scenes (see [pmgc-stage.md](pmgc-stage.md)) |
 | `public/bgmi-team-registration.html` | Registration page (hero, countdown, form, review step, confirmation with Reg ID) |
 | `public/status.html` | Public "Check your status" page (Reg ID + captain phone/email, last-updated + next steps) |
 | `public/teams.html` | Public approved-teams grid with search + group filter (off unless enabled in Settings) |

@@ -129,6 +129,43 @@
       <div id="programSceneBtns" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;"></div>
     </section>
 
+    <!-- PMGC broadcast stage: ten themes x ten scenes -->
+    <section class="bc-card" style="margin-top:18px;" id="pmgcCard">
+      <h2 class="bc-h2">PMGC stage <span class="bc-dim">&mdash; 10 themes &middot; 10 scenes</span></h2>
+      <p class="bc-p">
+        The championship rundown: stream-start countdown, caster intro, 30-second match drop,
+        the diagonal live game feed with its tactical map, live points, winner-winner-chicken-dinner,
+        winner stats, match points, overall standings and the Erangel &middot; Miramar &middot; Rondo
+        map rotation. Pick a theme, then copy the scene URL into OBS (1920&times;1080 browser source).
+        <a href="/pmgc" target="_blank" rel="noopener" style="color:var(--acid);">Open the theme gallery &rarr;</a>
+      </p>
+      <div class="bc-form-row">
+        <div style="min-width:240px;">
+          <label class="bc-label" for="pmgcTheme">Theme</label>
+          <select class="bc-select" id="pmgcTheme" style="width:100%;"></select>
+        </div>
+        <div style="min-width:240px;">
+          <label class="bc-label" for="pmgcScene">Scene</label>
+          <select class="bc-select" id="pmgcScene" style="width:100%;"></select>
+        </div>
+        <div style="flex:1; min-width:260px;">
+          <label class="bc-label" for="pmgcUrl">OBS URL</label>
+          <input class="bc-input" id="pmgcUrl" readonly>
+        </div>
+        <button class="bc-btn" id="pmgcCopyBtn" type="button">Copy URL</button>
+        <a class="bc-btn bc-btn--go" id="pmgcOpenBtn" href="/pmgc" target="_blank" rel="noopener">Open</a>
+      </div>
+      <div class="bc-form-row" style="margin-top:4px;">
+        <span class="bc-p" style="margin:0;">
+          Round keys in the stage tab: <b>&larr;/&rarr;</b> scenes, <b>1&ndash;9/0</b> jump,
+          <b>space</b> auto-show, <b>R</b> replay, <b>F</b> fullscreen, <b>H</b> hide UI.
+        </span>
+      </div>
+      <div class="bc-preview" id="pmgcPreviewBox" style="margin-top:12px;">
+        <iframe id="pmgcPreviewFrame" title="PMGC stage preview" scrolling="no"></iframe>
+      </div>
+    </section>
+
     <!-- overlay cards -->
     <section style="margin-top:18px;">
       <h2 class="bc-h2">Browser sources</h2>
@@ -179,7 +216,7 @@
   <script src="/js/nav.js?v=1"></script>
   <script src="/js/site-config.js?v=2"></script>
   <script src="/js/admin-shell.js?v=1"></script>
-  <script src="/js/overlays.js?v=3"></script>
+  <script src="/js/overlays.js?v=4"></script>
   <script src="/js/admin-flow.js?v=2"></script>
 </body>
 </html>
