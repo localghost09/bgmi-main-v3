@@ -331,3 +331,33 @@ Top 5 purple/yellow reference styling remains fixed by design even when a
 program theme changes. Timer duration continues to use the existing MM:SS
 producer field. Automatic scene transitions (drop → map intro → live) retain
 their existing behavior; a new producer scene click explicitly takes control.
+
+## Centered caster studio and opaque video surrounds
+
+Latest operator correction: **Casters** and **Live + Map** are no longer
+transparent everywhere outside their UI. Each now has an opaque dark studio
+backdrop with theme-accent lighting, subtle grid/angular dressing and original
+BG broadcast branding. Inline SVG luminance masks punch true-alpha rectangular
+holes in the surround, allowing OBS captures below the browser to show only
+inside the designated windows. Nameplates, surrounding space and branding stay
+opaque. Live Points and Match Drop retain their previous transparency behavior.
+
+Caster cards share one vertically centered layout across all ten themes:
+- Card 1: x100 / y249.375, 820×581.25 including its 120px nameplate.
+- Card 2: x1000 / y249.375, same size; both card centers are y540.
+- Camera frames are 820×461.25 (16:9), with a 2px border; their interiors are
+  transparent. Frame geometry is fixed so the backdrop cutouts always align.
+- Caster-card sliding/offset animations and per-theme asymmetric placements are
+  superseded to prevent video holes drifting away from their masks.
+
+Live + Map retains gameplay `(40,428,1088,612)` and map
+`(1240,80,640,440)`. The empty upper-left area now carries original BG /
+BATTLEGROUND LIVE COVERAGE branding. Live Points logo-to-team text spacing is
+12px, with logos prevented from shrinking; the compact panel's placement,
+columns and status indicators are unchanged.
+
+Verification: 29 browser tests passed. Additionally sampled screenshot PNG
+alpha at ten points per theme across both scenes: 100 checks confirmed alpha
+0 in video interiors and alpha 255 in surrounding regions. Reposition existing
+caster OBS captures to the new source-guide coordinates after refreshing the
+browser source; Live + Map capture positions do not change.
