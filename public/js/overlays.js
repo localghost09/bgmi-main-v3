@@ -6,30 +6,6 @@
 
   var cfg = null;            // overlay-settings payload
 
-  var OVERLAY_BLURB = {
-    'pre-show': 'Standby slate before the stream opens.',
-    'stream-start': 'Stream starting soon screen with the event logo.',
-    'countdown': 'Full-screen drop-in countdown clock.',
-    'caster': 'Caster name card with photo and tagline.',
-    'format': 'Tournament format and schedule panel.',
-    'lineup': 'Teams dropping in, squad by squad.',
-    'live': 'Live squad status board — rank, FIN, PTS, alive bars.',
-    'chicken-dinner': 'Winner panel for the latest result.',
-    'frag-leaders': 'Top five frag leaders with damage.',
-    'results': 'Match results table with the winner panel.',
-    'overall': 'Overall tournament standings.',
-    'mvp': 'Player spotlight (match MVP or overall top fragger).',
-    'map-feed': 'Tactical map feed frame.',
-    'intermission': 'Match break slate.',
-    'technical-difficulties': 'Technical difficulties slate.',
-    'hidden': 'Blank slate — no graphics (standby).'
-  };
-
-  function urlFor(name) {
-    return location.origin + '/overlay/' + name + '?token=' +
-      encodeURIComponent(cfg.token);
-  }
-
   function programUrl() {
     return location.origin + '/overlay/program?token=' +
       encodeURIComponent(cfg.token);
@@ -60,42 +36,6 @@
             });
         });
       });
-  }
-
-  /* ---- cards -------------------------------------------------------------- */
-
-  function render() {
-    $('overlayGrid').innerHTML = cfg.overlays.map(function (name) {
-      return '<article class="bc-overlay">' +
-        '<div class="bc-overlay-name">' + esc(name) + '</div>' +
-        '<p class="bc-p" style="margin:0;">' + esc(OVERLAY_BLURB[name] || '') + '</p>' +
-        '<div class="bc-overlay-url" id="url-' + esc(name) + '">' +
-        esc(urlFor(name)) + '</div>' +
-        '<div class="bc-overlay-acts">' +
-        '<button class="bc-btn" data-copy="' + esc(name) + '">Copy URL</button>' +
-        '<button class="bc-btn" data-preview="' + esc(name) + '">Preview</button>' +
-        '</div></article>';
-    }).join('');
-
-    $('overlayGrid').querySelectorAll('[data-copy]').forEach(function (b) {
-      b.addEventListener('click', function () {
-        var name = b.dataset.copy;
-        var url = urlFor(name);
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(url).then(function () {
-            BC.toast('Copied ' + name + ' URL');
-          }, function () { fallbackCopy(url); });
-        } else {
-          fallbackCopy(url);
-        }
-      });
-    });
-    $('overlayGrid').querySelectorAll('[data-preview]').forEach(function (b) {
-      b.addEventListener('click', function () {
-        $('previewPick').value = b.dataset.preview;
-        loadPreview();
-      });
-    });
   }
 
   function fallbackCopy(url) {
@@ -174,7 +114,6 @@
           return '<option value="' + esc(t) + '">' + esc(t) + '</option>';
         }).join('');
       }
-      render();
       renderProgram();
       loadPreview();
     });
@@ -239,24 +178,46 @@
   ];
 
   function pmgcUrl() {
-    var theme = document.getElementById('pmgcTheme').value || 'bmps-2024';
-    var scene = document.getElementById('pmgcScene').value || 'opening';
-    return location.origin + '/pmgc/' + scene +
-      '?theme=' + encodeURIComponent(theme) + '&obs=1' +
-      (document.getElementById('pmgcMap').value ? '&battleground=' + document.getElementById('pmgcMap').value : '') +
-      '&sponsor=' + encodeURIComponent(document.getElementById('pmgcSponsor').value) +
-      (document.getElementById('pmgcAudio').checked ? '&audio=1' : '&audio=0');
+    return location.origin + '/pmgc/program?obs=1';
   }
 
+  var programReady = false;
+  var programBusy = false;
+  function programControls(disabled) {
+    ['pmgcTheme','pmgcScene','pmgcMap','pmgcSponsor','pmgcAudio','pmgcSaveCasters'].forEach(function (id) {
+      document.getElementById(id).disabled = disabled;
+    });
+    document.querySelectorAll('#pmgcSceneButtons button').forEach(function (b) {b.disabled = disabled;});
+  }
+  function markProgram(scene) {
+    document.querySelectorAll('#pmgcSceneButtons button').forEach(function (b) {
+      var active = b.dataset.scene === scene;
+      b.classList.toggle('bc-btn--go', active);
+      b.setAttribute('aria-pressed', String(active));
+    });
+  }
+  function saveProgram(patch) {
+    if (!programReady || programBusy) return;
+    programBusy = true;
+    programControls(true);
+    var status = document.getElementById('pmgcProgramStatus');
+    status.textContent = 'Sending to OBS…';
+    BC.post('/api/admin/overlay-settings', {pmgcProgram: patch}).then(function (x) {
+      if (x.s !== 200 || !x.d.ok) throw new Error(x.d.error || 'Could not update program.');
+      markProgram(document.getElementById('pmgcScene').value);
+      status.textContent = 'Saved — OBS Program follows these controls automatically.';
+    }).catch(function (e) { status.textContent = 'Not applied: ' + e.message + ' Try again.'; })
+      .finally(function () {programBusy = false; programControls(false);});
+  }
   function syncPmgc(changed) {
     var url = pmgcUrl();
     document.getElementById('pmgcUrl').value = url;
-    document.getElementById('pmgcOpenBtn').href = url.replace('&obs=1', '&ui=1');
-    document.getElementById('pmgcGuides').href = url.replace('&obs=1', '&ui=1&guides=1');
-    if (changed) {
-      var frame = document.getElementById('pmgcPreviewFrame');
-      if (frame) frame.src = url + '&preview=1';
-    }
+    document.getElementById('pmgcOpenBtn').href = url;
+    var theme = document.getElementById('pmgcTheme').value || 'bmps-2024';
+    var scene = document.getElementById('pmgcScene').value || 'opening';
+    document.getElementById('pmgcGuides').href = location.origin + '/pmgc/' + scene + '?theme=' + encodeURIComponent(theme) + '&ui=1&guides=1';
+    var frame = document.getElementById('pmgcPreviewFrame');
+    if (changed && frame && !frame.getAttribute('src')) frame.src = url + '&preview=1';
   }
 
   function scalePmgc() {
@@ -282,6 +243,20 @@
     sceneSel.innerHTML = PMGC_SCENES.map(function (row) {
       return '<option value="' + row[0] + '">' + row[1] + '</option>';
     }).join('');
+    programControls(true);
+    var sceneButtons = document.getElementById('pmgcSceneButtons');
+    PMGC_SCENES.forEach(function (row) {
+      var button = document.createElement('button');
+      button.type = 'button'; button.disabled = true; button.className = 'bc-btn'; button.textContent = row[1]; button.dataset.scene = row[0];
+      button.addEventListener('click', function () {sceneSel.value = row[0]; syncPmgc(false); saveProgram({scene: row[0]});});
+      sceneButtons.appendChild(button);
+    });
+    document.getElementById('pmgcSaveCasters').addEventListener('click', function () {
+      saveProgram({caster1: document.getElementById('pmgcCaster1').value,
+        caster2: document.getElementById('pmgcCaster2').value,
+        tagline1: document.getElementById('pmgcTagline1').value,
+        tagline2: document.getElementById('pmgcTagline2').value});
+    });
     var timerField = document.getElementById('pmgcStartDuration');
     var timerButton = document.getElementById('pmgcApplyTimer');
     var timerStatus = document.getElementById('pmgcTimerStatus');
@@ -290,7 +265,18 @@
       var total = Number(x.d.streamStartSeconds) || 1200;
       timerField.value = Math.floor(total / 60) + ':' + String(total % 60).padStart(2, '0');
       timerButton.disabled = false;
-    }).catch(function () { timerStatus.textContent = 'Could not load timer settings. Reload to retry.'; });
+      var program = x.d.pmgcProgram || {};
+      themeSel.value = program.theme || 'bmps-2024'; sceneSel.value = program.scene || 'opening';
+      document.getElementById('pmgcCaster1').value = program.caster1 == null ? 'NOVA' : program.caster1;
+      document.getElementById('pmgcCaster2').value = program.caster2 == null ? 'ARC' : program.caster2;
+      document.getElementById('pmgcTagline1').value = program.tagline1 || '';
+      document.getElementById('pmgcTagline2').value = program.tagline2 || '';
+      document.getElementById('pmgcMap').value = program.map || '';
+      document.getElementById('pmgcSponsor').value = program.sponsor || '';
+      document.getElementById('pmgcAudio').checked = program.audio !== false;
+      programReady = true; programControls(false); markProgram(sceneSel.value); syncPmgc(true);
+      document.getElementById('pmgcProgramStatus').textContent = 'Connected — copy the Program URL once, then click a scene below.';
+    }).catch(function () { timerStatus.textContent = 'Could not load timer settings. Reload to retry.'; document.getElementById('pmgcProgramStatus').textContent = 'Could not load Program settings. Reload to retry.'; });
     function applyTimer() {
       if (timerButton.disabled) return;
       var match = /^(\d{1,3}):([0-5]\d)$/.exec(timerField.value.trim());
@@ -314,18 +300,34 @@
     timerField.addEventListener('keydown', function (event) {
       if (event.key === 'Enter') { event.preventDefault(); applyTimer(); }
     });
-    ['pmgcMap', 'pmgcSponsor', 'pmgcAudio'].forEach(function (id) { document.getElementById(id).addEventListener('change', function () { syncPmgc(true); }); });
-    themeSel.addEventListener('change', function () { syncPmgc(true); });
-    sceneSel.addEventListener('change', function () { syncPmgc(true); });
+    [['pmgcMap','map'],['pmgcSponsor','sponsor'],['pmgcAudio','audio']].forEach(function (pair) {
+      document.getElementById(pair[0]).addEventListener('change', function () {
+        var patch = {}; patch[pair[1]] = pair[1] === 'audio' ? this.checked : this.value;
+        saveProgram(patch);
+      });
+    });
+    themeSel.addEventListener('change', function () {syncPmgc(false); saveProgram({theme: this.value});});
+    sceneSel.addEventListener('change', function () {syncPmgc(false); saveProgram({scene: this.value});});
     document.getElementById('pmgcCopyBtn').addEventListener('click', function () {
       var url = pmgcUrl();
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(url).then(function () {
-          BC.toast('Copied PMGC scene URL');
-        }, function () { BC.toast('Copy failed — select the URL manually', true); });
-      } else {
-        BC.toast('Copy failed — select the URL manually', true);
+      var field = document.getElementById('pmgcUrl');
+      field.value = url;
+      function fallback() {
+        field.focus();
+        field.select();
+        field.setSelectionRange(0, url.length);
+        var copied = false;
+        try { copied = document.execCommand('copy'); } catch (e) { /* manual copy below */ }
+        if (copied) BC.toast('Copied common PMGC Program URL');
+        else BC.toast('Automatic copy is blocked. URL selected — press Ctrl+C or Cmd+C, or long-press to copy.', true);
       }
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          Promise.resolve(navigator.clipboard.writeText(url)).then(function () {
+            BC.toast('Copied common PMGC Program URL');
+          }, fallback);
+        } else { fallback(); }
+      } catch (e) { fallback(); }
     });
     window.addEventListener('resize', scalePmgc);
     syncPmgc(true);

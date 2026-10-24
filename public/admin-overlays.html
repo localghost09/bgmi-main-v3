@@ -136,7 +136,7 @@
         The championship rundown: stream-start countdown, caster intro, 30-second match drop, animated map intro with original CC0 music,
         the staggered rectangular gameplay and tactical-map frames, live points, winner-winner-chicken-dinner,
         winner stats, match MVP, top five players, match points, overall standings and the Erangel &middot; Miramar &middot; Rondo
-        map rotation. Pick a theme, then copy the scene URL into OBS (1920&times;1080 browser source).
+        map rotation. Copy the common Program URL once into OBS (1920&times;1080), then switch scenes and themes here.
         <a href="/pmgc" target="_blank" rel="noopener" style="color:var(--acid);">Open the theme gallery &rarr;</a>
       </p>
       <div class="bc-form-row">
@@ -149,11 +149,23 @@
           <select class="bc-select" id="pmgcScene" style="width:100%;"></select>
         </div>
         <div style="flex:1; min-width:260px;">
-          <label class="bc-label" for="pmgcUrl">OBS URL</label>
+          <label class="bc-label" for="pmgcUrl">Common OBS Program URL (copy once)</label>
           <input class="bc-input" id="pmgcUrl" readonly>
         </div>
         <button class="bc-btn" id="pmgcCopyBtn" type="button">Copy URL</button>
         <a class="bc-btn bc-btn--go" id="pmgcOpenBtn" href="/pmgc" target="_blank" rel="noopener">Open</a>
+      </div>
+      <p class="bc-p" id="pmgcProgramStatus" role="status" aria-live="polite">Loading saved program…</p>
+      <div id="pmgcSceneButtons" class="bc-form-row" style="gap:8px; flex-wrap:wrap;" aria-label="PMGC scene switcher"></div>
+      <h3 class="bc-h2" style="margin-top:20px;">Caster names &amp; taglines</h3>
+      <div class="bc-form-row" style="gap:12px; align-items:end;">
+        <label class="bc-label">Caster 1 name <input class="bc-input" id="pmgcCaster1" maxlength="60"></label>
+        <label class="bc-label" style="flex:1;">Caster 1 tagline <input class="bc-input" id="pmgcTagline1" maxlength="120" style="width:100%;"></label>
+      </div>
+      <div class="bc-form-row" style="gap:12px; align-items:end; margin-top:10px;">
+        <label class="bc-label">Caster 2 name <input class="bc-input" id="pmgcCaster2" maxlength="60"></label>
+        <label class="bc-label" style="flex:1;">Caster 2 tagline <input class="bc-input" id="pmgcTagline2" maxlength="120" style="width:100%;"></label>
+        <button class="bc-btn bc-btn--go" id="pmgcSaveCasters" type="button" disabled>Save caster details</button>
       </div>
       <div class="bc-form-row" style="margin-top:16px; align-items:end; gap:12px;">
         <div>
@@ -185,12 +197,6 @@
       </div>
     </section>
 
-    <!-- overlay cards -->
-    <section style="margin-top:18px;">
-      <h2 class="bc-h2">Browser sources</h2>
-      <p class="bc-p">Add each URL as a Browser source in OBS: 1920&times;1080, custom CSS empty, "Shutdown source when not visible" off.</p>
-      <div class="bc-overlay-grid" id="overlayGrid"></div>
-    </section>
   </main>
 
   <footer class="footer" style="position:relative;">
@@ -236,7 +242,7 @@
   <script src="/js/site-config.js?v=2"></script>
   <script src="/js/admin-shell.js?v=1"></script>
   <script src="/js/broadcast-themes.js?v=6"></script>
-  <script src="/js/overlays.js?v=9"></script>
+  <script src="/js/overlays.js?v=12"></script>
   <script src="/js/admin-flow.js?v=2"></script>
 </body>
 </html>

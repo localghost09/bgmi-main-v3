@@ -300,3 +300,11 @@
 .pg-reference-monogram {border-color:#c9c5d2;color:#514764;border-radius:0;}
 .pg-reference-photo-note {color:#70677f;}
 .pg-reference-team-tag {background:transparent;color:#251944;text-shadow:none;font-size:18px;top:16px;left:16px;}
+
+/* Caster edits remain visible inside the existing opaque nameplates. */
+.pg-caster-copy p {display:block;font-size:18px;line-height:1.15;margin:4px 0 0;max-height:42px;overflow:hidden;}
+.pg-caster-copy h3 {overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;}
+
+.pmgc[data-theme="pmgc-2025"] .pg-caster-copy {writing-mode:horizontal-tb;padding:20px 12px;}
+.pg-caster-copy {gap:4px;}
+.pg-caster-copy h3 {margin-top:4px;}

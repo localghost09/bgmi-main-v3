@@ -1445,6 +1445,57 @@ def pushed_card(conn):
 # Public state builders
 # ---------------------------------------------------------------------------
 
+PMGC_SCENES = ("opening", "casters", "drop", "map-intro", "live", "live-points",
+               "chicken-dinner", "winner-stats", "match-standings", "overall",
+               "map-rotation", "mvp", "top-players", "overall-mvp")
+PMGC_THEMES = ("bmps-2024", "bgms-2024", "bgis-2025", "bgis-2026", "bmsd-2025",
+               "bmsd-2026", "bmic-2025", "pmgc-2025", "ewc-2025", "ewc-2026")
+PMGC_PROGRAM_DEFAULT = {
+    "scene": "opening", "theme": "bmps-2024", "revision": "",
+    "caster1": "NOVA", "caster2": "ARC",
+    "tagline1": "Calls every rotation, every fight, every clutch.",
+    "tagline2": "Reads the zone, breaks down the endgame maths.",
+    "map": "", "sponsor": "", "audio": True,
+}
+
+
+def parse_pmgc_program(raw):
+    try:
+        value = json.loads(raw or "{}")
+    except (TypeError, ValueError):
+        value = {}
+    return {**PMGC_PROGRAM_DEFAULT, **(value if isinstance(value, dict) else {})}
+
+
+def pmgc_program(conn):
+    return parse_pmgc_program(get_bsetting(conn, "pmgc_program", ""))
+
+
+def save_pmgc_program(conn, patch):
+    if not isinstance(patch, dict) or set(patch) - (set(PMGC_PROGRAM_DEFAULT) - {"revision"}):
+        raise ValueError("Invalid PMGC program fields.")
+    value = pmgc_program(conn)
+    for key, item in patch.items():
+        if key == "audio":
+            if not isinstance(item, bool):
+                raise ValueError("PMGC audio must be true or false.")
+        elif not isinstance(item, str):
+            raise ValueError("PMGC text fields must be strings.")
+        elif key == "scene" and item not in PMGC_SCENES:
+            raise ValueError("Unknown PMGC scene.")
+        elif key == "theme" and item not in PMGC_THEMES:
+            raise ValueError("Unknown PMGC theme.")
+        elif key == "map" and item not in ("", "erangel", "miramar", "rondo"):
+            raise ValueError("Unknown PMGC map.")
+        elif len(item) > (120 if key.startswith("tagline") else 60):
+            raise ValueError("PMGC text is too long.")
+        value[key] = item
+    if "scene" in patch:
+        value["revision"] = str(time.time_ns())
+    set_bsetting(conn, "pmgc_program", json.dumps(value))
+    return value
+
+
 def live_state(conn):
     """Sanitized live payload for /live, /results and overlays.
     Contains team names/tags/logos/groups and player IGNs only — never
@@ -1474,6 +1525,7 @@ def live_state(conn):
         "overall": overall,
         "overallPublished": published,
         "leaders": leaders,
+        "pmgcProgram": pmgc_program(conn),
         "playerAwards": {"matchMvp": match_mvp(conn, match),
                          "topPlayers": leaders[:5]},
         "recentMatches": recent_matches(conn, 6),

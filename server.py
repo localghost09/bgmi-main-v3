@@ -1816,6 +1816,7 @@ class Handler(BaseHTTPRequestHandler):
                 "logoPath": pairs.get("logo_path", ""),
                 "sponsorText": pairs.get("sponsor_text", ""),
                 "streamStartSeconds": int(pairs.get("stream_start_seconds", "1200")),
+                "pmgcProgram": broadcast.parse_pmgc_program(pairs.get("pmgc_program")),
                 "casterName": pairs.get("caster_name", ""),
                 "casterName2": pairs.get("caster2_name", ""),
                 "casterTagline": pairs.get("caster_tagline", ""),
@@ -2760,6 +2761,11 @@ class Handler(BaseHTTPRequestHandler):
                 conn = db()
                 try:
                     conn.execute("BEGIN IMMEDIATE")
+                    if "pmgcProgram" in data:
+                        try:
+                            broadcast.save_pmgc_program(conn, data["pmgcProgram"])
+                        except ValueError as exc:
+                            return self.send_json({"ok": False, "error": str(exc)}, 400)
                     if "streamStartDuration" in data:
                         duration = str(data.get("streamStartDuration") or "").strip()
                         parsed = re.fullmatch(r"(\d{1,3}):([0-5]\d)", duration)

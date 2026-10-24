@@ -298,3 +298,36 @@ panel: live OBS keeps five PENDING cards until scores exist. The producer's
 `preview=1` iframe may show the reference seed only while no live leaders exist,
 always labeled NOT LIVE RESULTS. OBS copy links omit `preview=1`, so they never
 silently show seed players. As soon as leaders arrive, the preview uses them.
+
+## Common PMGC Program source and producer controls
+
+Copy **Common OBS Program URL (copy once)** from the PMGC section in
+`/admin/overlays`. It is `/pmgc/program?obs=1` on the current server origin.
+Add that URL once as a 1920×1080 OBS Browser Source. Use the fourteen scene
+buttons (or Scene picker) and Theme picker to switch what that source renders.
+Selecting the current scene again replays it. Changing names, taglines, theme,
+map, sponsor or audio does not replay the current scene.
+
+The PMGC panel now includes separate **Caster 1/2 name** and **Caster 1/2
+tagline** inputs. Click **Save caster details**; both caster cards and drop
+caster labels update without reloading OBS. Taglines remain visible in the
+opaque nameplates; camera windows remain transparent. Fields accept plain text
+only (60 characters for names, 120 for taglines), and are rendered with
+`textContent`, not HTML.
+
+Program settings are persisted in the existing SQLite `overlay_settings`
+table under a separate `pmgc_program` key. Authenticated, CSRF-protected
+`POST /api/admin/overlay-settings` accepts a validated partial `pmgcProgram`
+object. The read-only public `/api/live/state.pmgcProgram` payload lets OBS
+follow it without an admin session or credentials in the URL. Changes use the
+existing live SSE channel, with a two-second polling fallback for Program.
+Other scenes retain their 15-second fallback. The Program URL never changes as
+scenes/themes change, and the producer iframe stays loaded rather than being
+replaced on every edit. Reloading either OBS or the panel restores saved state.
+
+Existing `/pmgc/<scene>?theme=...` links stay pinned and independent. Legacy
+`/overlay/program` controls and layout settings are not altered. Approved
+Top 5 purple/yellow reference styling remains fixed by design even when a
+program theme changes. Timer duration continues to use the existing MM:SS
+producer field. Automatic scene transitions (drop → map intro → live) retain
+their existing behavior; a new producer scene click explicitly takes control.
