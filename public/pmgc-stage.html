@@ -12,9 +12,9 @@
     <link rel="stylesheet" href="/assets/fonts/overlay-fonts.css" />
     <link rel="stylesheet" href="/css/pmgc-themes.css?v=6" />
     <link rel="stylesheet" href="/css/pmgc-stage.css?v=6" />
-    <link rel="stylesheet" href="/css/pmgc-obs.css?v=18" />
+    <link rel="stylesheet" href="/css/pmgc-obs.css?v=19" />
     <link rel="stylesheet" href="/css/pmgc-layouts.css?v=13" />
-    <link rel="stylesheet" href="/css/pmgc-bgis-reference.css?v=1" />
+    <link rel="stylesheet" href="/css/pmgc-bgis-reference.css?v=6" />
   </head>
   <body class="pg-body">
     <div class="pg-fit" id="pgFit">
@@ -268,6 +268,12 @@
           <img id="introMapImg" alt="Official PUBG map artwork" />
           <div class="pg-intro-copy"><span class="pg-kicker">BATTLEGROUND DEPLOYMENT</span><h1 id="introMapName">ERANGEL</h1><p>MATCH STARTING · PREPARE FOR DROP</p><button id="introAudioBtn" type="button">Enable intro music</button></div>
         </section>
+        <section class="pg-scene pg-bgis-lower-third-scene" data-scene="bgis-lower-third" aria-label="BGIS match lower third overlay">
+          <div class="pg-bgis-lower-third" id="bgisLowerThird">
+            <div class="pg-bgis-lower-brand"><img src="/assets/images/mvp-reference/bgis-mark.png" alt="BGMI India Series 2026"><span>BGMI INDIA SERIES 2026</span></div>
+            <div class="pg-bgis-lower-copy"><div class="pg-bgis-lower-kicker"><span id="bgisLowerStage">GRAND FINALS</span><i></i><span id="bgisLowerMatch">M14</span></div><strong id="bgisLowerMap">ERANGEL</strong></div>
+          </div>
+        </section>
         <!-- ================ 04 · LIVE FEED + DIAGONAL MAP =================== -->
         <section class="pg-scene pg-live" data-scene="live" aria-label="OBS rectangular gameplay bottom-left and tactical map top-right">
           <svg class="pg-aperture-backdrop" viewBox="0 0 1920 1080" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -376,11 +382,11 @@
 
           <aside class="pg-livepts-board pg-panel" id="livePointsBoard" aria-label="Live points standings">
             <div class="pg-table-head">
-              <span>#</span><span>TEAM</span><span title="Matches played">MP</span><span>FIN</span><span>TOTAL</span><span>STATUS</span>
+              <span>#</span><span>TEAM</span><span title="Matches played">MP</span><span>FIN</span><span>TOT. PTS.</span><span>STATUS</span>
             </div>
             <div class="pg-livepts-rows" id="livePtsRows"></div>
             <footer>
-              <span class="pg-status-legend"><span class="pg-status-key"><i class="alive"></i><b>ALIVE</b></span><span class="pg-status-key"><i class="knocked"></i><b>KNOCKED</b></span><span class="pg-status-key"><i class="out"></i><b>ELIMINATED</b></span></span>
+              <span class="pg-status-legend"><span class="pg-status-key"><i class="alive"></i><b>ALIVE</b></span><span class="pg-status-key"><i class="knocked"></i><b>KNOCKED</b></span><span class="pg-status-key"><i class="out"></i><b>ELIM.</b></span></span>
             </footer>
           </aside>
         </section>
@@ -687,6 +693,6 @@
     <script src="/js/broadcast-themes.js?v=6"></script>
     <script src="/js/pmgc-mvp-reference.js?v=1"></script>
     <script src="/js/pmgc-bgis-reference.js?v=1"></script>
-    <script src="/js/pmgc-stage.js?v=28" defer></script>
+    <script src="/js/pmgc-stage.js?v=31" defer></script>
   </body>
 </html>
