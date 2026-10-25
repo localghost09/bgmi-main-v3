@@ -1692,6 +1692,7 @@ class Handler(BaseHTTPRequestHandler):
                     "matches": "admin-matches.html",
                     "control": "admin-control.html",
                     "overlays": "admin-overlays.html",
+                    "overlay-layout": "admin-overlay-layout.html",
                     "caster": "admin-caster.html"}.get(sub)
             if page:
                 if self.admin_session():
@@ -1812,6 +1813,8 @@ class Handler(BaseHTTPRequestHandler):
                 "ok": True,
                 "token": pairs.get("token", ""),
                 "themeColor": pairs.get("theme_color", "#b6ff3e"),
+                "layout": json.loads(pairs.get("overlay_layout", "{}") or "{}"),
+                "content": json.loads(pairs.get("overlay_content", "{}") or "{}"),
                 "theme": pairs.get("theme", "krafton-pm"),
                 "logoPath": pairs.get("logo_path", ""),
                 "sponsorText": pairs.get("sponsor_text", ""),
@@ -2775,6 +2778,31 @@ class Handler(BaseHTTPRequestHandler):
                                 "Enter minutes:seconds, for example 5:30 (minimum 0:01, maximum 999:59)."}, 400)
                         broadcast.set_bsetting(conn, "stream_start_seconds", str(seconds))
                         broadcast.set_bsetting(conn, "stream_start_revision", secrets.token_urlsafe(12))
+                    if "content" in data:
+                        content = data.get("content")
+                        allowed_content = {"streamStartEventName", "streamStartFormat", "streamStartOrganizer", "streamStartMatchLabel"}
+                        if not isinstance(content, dict) or set(content) - allowed_content:
+                            return self.send_json({"ok": False, "error": "Invalid overlay text configuration."}, 400)
+                        clean_content = {key: broadcast._clamp_str(value, 120) for key, value in content.items()}
+                        broadcast.set_bsetting(conn, "overlay_content", json.dumps(clean_content))
+                    if "layout" in data:
+                        layout = data.get("layout")
+                        if not isinstance(layout, dict) or len(layout) > 60:
+                            return self.send_json({"ok": False, "error": "Invalid overlay layout."}, 400)
+                        # Restrict layout structure and numeric geometry before persistence.
+                        clean = {}
+                        for key, item in layout.items():
+                            if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_-]{0,40}", str(key)) or not isinstance(item, dict):
+                                return self.send_json({"ok": False, "error": "Invalid layout item."}, 400)
+                            vals = {}
+                            for field in ("x", "y", "w", "h"):
+                                try: value = int(item.get(field, 0))
+                                except (TypeError, ValueError): value = -1
+                                if value < 0 or value > 4000: return self.send_json({"ok": False, "error": "Layout values must be between 0 and 4000."}, 400)
+                                vals[field] = value
+                            vals["enabled"] = item.get("enabled") is not False
+                            clean[str(key)] = vals
+                        broadcast.set_bsetting(conn, "overlay_layout", json.dumps(clean))
                     if "themeColor" in data:
                         color = str(data.get("themeColor") or "").strip()
                         if not re.match(r"^#[0-9a-fA-F]{6}$", color):

@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="/assets/fonts/overlay-fonts.css" />
     <link rel="stylesheet" href="/css/pmgc-themes.css?v=6" />
     <link rel="stylesheet" href="/css/pmgc-stage.css?v=6" />
-    <link rel="stylesheet" href="/css/pmgc-obs.css?v=13" />
+    <link rel="stylesheet" href="/css/pmgc-obs.css?v=18" />
     <link rel="stylesheet" href="/css/pmgc-layouts.css?v=13" />
     <link rel="stylesheet" href="/css/pmgc-bgis-reference.css?v=1" />
   </head>
@@ -121,7 +121,7 @@
         <!-- ========================= 02 · CASTERS ========================== -->
         <section class="pg-scene pg-casters" data-scene="casters" aria-label="Caster intro">
           <svg class="pg-aperture-backdrop" viewBox="0 0 1920 1080" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-            <defs><mask id="pg-casters-cutouts" maskUnits="userSpaceOnUse" x="0" y="0" width="1920" height="1080"><rect width="1920" height="1080" fill="white"/><rect class="pg-aperture-hole" x="100" y="249.375" width="820" height="461.25" fill="black"/><rect class="pg-aperture-hole" x="1000" y="249.375" width="820" height="461.25" fill="black"/></mask>
+            <defs><mask id="pg-casters-cutouts" maskUnits="userSpaceOnUse" x="0" y="0" width="1920" height="1080"><rect width="1920" height="1080" fill="white"/><rect id="casterCutout1" class="pg-aperture-hole" x="100" y="249.375" width="820" height="461.25" fill="black"/><rect id="casterCutout2" class="pg-aperture-hole" x="1000" y="249.375" width="820" height="461.25" fill="black"/></mask>
               <linearGradient id="pg-casters-cutouts-glow" x2="1" y2="1"><stop stop-color="var(--p-accent)" stop-opacity=".22"/><stop offset="1" stop-color="var(--p-accent)" stop-opacity="0"/></linearGradient>
               <pattern id="pg-casters-cutouts-grid" width="80" height="80" patternUnits="userSpaceOnUse"><path d="M80 0H0v80" fill="none" stroke="white" stroke-opacity=".045"/></pattern></defs>
             <g mask="url(#pg-casters-cutouts)"><rect width="1920" height="1080" fill="#081426"/><rect width="1920" height="1080" fill="url(#pg-casters-cutouts-glow)"/><rect width="1920" height="1080" fill="url(#pg-casters-cutouts-grid)"/>
@@ -136,7 +136,7 @@
             </p>
           </div>
 
-          <div class="pg-caster-grid">
+          <div class="pg-caster-grid" id="casterGrid">
             <article class="pg-caster-card pg-reveal-x" style="--d:0.3s">
               <div class="pg-cam" id="camWrap1">
                 <div class="pg-cam-demo" aria-hidden="true" style="--crop:14% 20%"></div>
@@ -271,7 +271,7 @@
         <!-- ================ 04 · LIVE FEED + DIAGONAL MAP =================== -->
         <section class="pg-scene pg-live" data-scene="live" aria-label="OBS rectangular gameplay bottom-left and tactical map top-right">
           <svg class="pg-aperture-backdrop" viewBox="0 0 1920 1080" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-            <defs><mask id="pg-live-cutouts" maskUnits="userSpaceOnUse" x="0" y="0" width="1920" height="1080"><rect width="1920" height="1080" fill="white"/><rect class="pg-aperture-hole" x="40" y="428" width="1088" height="612" fill="black"/><rect class="pg-aperture-hole" x="1240" y="80" width="640" height="440" fill="black"/></mask>
+            <defs><mask id="pg-live-cutouts" maskUnits="userSpaceOnUse" x="0" y="0" width="1920" height="1080"><rect width="1920" height="1080" fill="white"/><rect id="liveFeedCutout" class="pg-aperture-hole" x="40" y="428" width="1088" height="612" fill="black"/><rect id="liveMapCutout" class="pg-aperture-hole" x="1240" y="80" width="640" height="440" fill="black"/></mask>
               <linearGradient id="pg-live-cutouts-glow" x2="1" y2="1"><stop stop-color="var(--p-accent)" stop-opacity=".22"/><stop offset="1" stop-color="var(--p-accent)" stop-opacity="0"/></linearGradient>
               <pattern id="pg-live-cutouts-grid" width="80" height="80" patternUnits="userSpaceOnUse"><path d="M80 0H0v80" fill="none" stroke="white" stroke-opacity=".045"/></pattern></defs>
             <g mask="url(#pg-live-cutouts)"><rect width="1920" height="1080" fill="#081426"/><rect width="1920" height="1080" fill="url(#pg-live-cutouts-glow)"/><rect width="1920" height="1080" fill="url(#pg-live-cutouts-grid)"/>
@@ -290,7 +290,7 @@
             <div class="pg-kills" id="killFeed" aria-label="Elimination feed"></div>
           </div>
 
-          <div class="pg-mapwin">
+          <div class="pg-mapwin" id="liveMapWindow">
             <img class="pg-map-img" id="mapImg" src="/assets/images/pmgc/map-erangel.jpg" alt="" />
             <div class="pg-map-hud" aria-hidden="true">
               <span class="map-grid"></span>
@@ -336,7 +336,7 @@
 
         <!-- ============ 05 · LIVE FEED + LIVE POINTS STANDINGS ============= -->
         <section class="pg-scene pg-livepts" data-scene="live-points" aria-label="Live game feed with live points standings">
-          <div class="pg-livepts-feed">
+          <div class="pg-livepts-feed" id="livePointsFeed">
             <div class="pg-feed-demo" aria-hidden="true"></div>
             <img class="pg-feed-img" id="feedImg2" alt="" />
             <div class="pg-feed-corners" aria-hidden="true"></div>
@@ -344,7 +344,7 @@
             <div class="pg-kills" id="killFeed2" aria-label="Elimination feed"></div>
           </div>
 
-          <div class="pg-livepts-map">
+          <div class="pg-livepts-map" id="livePointsMap">
             <img class="pg-map-img" id="mapImg2" src="/assets/images/pmgc/map-erangel.jpg" alt="" />
             <div class="pg-map-hud" aria-hidden="true">
               <span class="map-grid"></span>
@@ -374,14 +374,13 @@
             </div>
           </div>
 
-          <aside class="pg-livepts-board pg-panel" aria-label="Live points standings">
+          <aside class="pg-livepts-board pg-panel" id="livePointsBoard" aria-label="Live points standings">
             <div class="pg-table-head">
               <span>#</span><span>TEAM</span><span title="Matches played">MP</span><span>FIN</span><span>TOTAL</span><span>STATUS</span>
             </div>
             <div class="pg-livepts-rows" id="livePtsRows"></div>
             <footer>
-              <span class="pg-status-legend"><i class="alive"></i> ALIVE <i class="knocked"></i> KNOCKED <i class="out"></i> ELIM</span>
-              <b id="livePtsFoot">16 SQUADS</b>
+              <span class="pg-status-legend"><span class="pg-status-key"><i class="alive"></i><b>ALIVE</b></span><span class="pg-status-key"><i class="knocked"></i><b>KNOCKED</b></span><span class="pg-status-key"><i class="out"></i><b>ELIMINATED</b></span></span>
             </footer>
           </aside>
         </section>
@@ -688,6 +687,6 @@
     <script src="/js/broadcast-themes.js?v=6"></script>
     <script src="/js/pmgc-mvp-reference.js?v=1"></script>
     <script src="/js/pmgc-bgis-reference.js?v=1"></script>
-    <script src="/js/pmgc-stage.js?v=20" defer></script>
+    <script src="/js/pmgc-stage.js?v=28" defer></script>
   </body>
 </html>

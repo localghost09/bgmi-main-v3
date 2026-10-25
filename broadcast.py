@@ -1538,6 +1538,7 @@ def live_state(conn):
         "overallPublished": published,
         "leaders": leaders,
         "pmgcProgram": pmgc_program(conn),
+        "overlayLayout": json.loads(get_bsetting(conn, "overlay_layout", "{}") or "{}"),
         "playerAwards": {"matchMvp": current_mvp,
                          "matchTopPlayers": match_leaders,
                          "topPlayers": leaders[:5]},
@@ -1682,6 +1683,8 @@ def legacy_state(conn):
         "streamStartSeconds": int(get_bsetting(conn, "stream_start_seconds", "1200")),
         "streamStartRevision": get_bsetting(conn, "stream_start_revision", ""),
         "themeColor": get_bsetting(conn, "theme_color", "#b6ff3e"),
+        "layout": json.loads(get_bsetting(conn, "overlay_layout", "{}") or "{}"),
+        "content": json.loads(get_bsetting(conn, "overlay_content", "{}") or "{}"),
         "organizer": brand["organizer"],
         "format": brand["formatLabel"],
         "eventDateLabel": brand["dateLabel"],
@@ -1742,6 +1745,7 @@ def overlay_state(conn, name):
     state = legacy_state(conn)
     return {"ok": True, "name": name,
             "themeColor": get_bsetting(conn, "theme_color", "#b6ff3e"),
+            "layout": json.loads(get_bsetting(conn, "overlay_layout", "{}") or "{}"),
             "disabled": name in disabled_overlays(conn),
             "updatedAt": state["updatedAt"], "state": state}
 
