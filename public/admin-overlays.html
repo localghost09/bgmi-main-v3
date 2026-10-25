@@ -79,6 +79,15 @@
         <button class="bc-btn" id="pmgcCopyBtn" type="button">Copy URL</button>
         <a class="bc-btn bc-btn--go" id="pmgcOpenBtn" href="/pmgc" target="_blank" rel="noopener">Open</a>
       </div>
+      <div class="bc-form-row" style="margin-top:10px; gap:10px; align-items:end;">
+        <div style="flex:1; min-width:260px;">
+          <label class="bc-label" for="pmgcSceneObsUrl">Unique URL for selected scene (OBS source)</label>
+          <input class="bc-input" id="pmgcSceneObsUrl" readonly>
+        </div>
+        <button class="bc-btn bc-btn--go" id="pmgcSceneCopyBtn" type="button">Copy scene URL</button>
+        <a class="bc-btn" id="pmgcSceneOpenBtn" href="/pmgc/opening?theme=bgis-2026&amp;obs=1" target="_blank" rel="noopener">Open scene URL</a>
+      </div>
+      <p class="bc-p" id="pmgcSceneUrlStatus" role="status" aria-live="polite"></p>
       <p class="bc-p" id="pmgcProgramStatus" role="status" aria-live="polite">Loading saved program…</p>
       <div id="pmgcSceneButtons" class="bc-form-row" style="gap:8px; flex-wrap:wrap;" aria-label="PMGC scene switcher"></div>
       <h3 class="bc-h2" style="margin-top:20px;">Caster names &amp; taglines</h3>
@@ -166,7 +175,7 @@
   <script src="/js/site-config.js?v=2"></script>
   <script src="/js/admin-shell.js?v=1"></script>
   <script src="/js/broadcast-themes.js?v=6"></script>
-  <script src="/js/overlays.js?v=14"></script>
+  <script src="/js/overlays.js?v=15"></script>
   <script src="/js/admin-flow.js?v=2"></script>
 </body>
 </html>
