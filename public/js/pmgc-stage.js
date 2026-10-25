@@ -1,6 +1,6 @@
 /* ============================================================================
    PMGC 2026 — BROADCAST STAGE CONTROLLER
-   Fifteen-scene rundown, ten themes, live demo simulation and optional live data.
+   Sixteen-scene rundown, ten themes, live demo simulation and optional live data.
 
    URL options (every one is optional):
      ?scene=live            pin a scene (opening … map-rotation)
@@ -50,6 +50,7 @@
     { id: 'casters', label: '02 Casters', ms: 15000, word: 'CASTERS' },
     { id: 'drop', label: '03 Match Drop', ms: 30000, word: 'DROP IN' },
     { id: 'map-intro', label: 'Map intro', ms: 8000, word: 'DEPLOYMENT' },
+    { id: 'bgis-lower-third', label: 'BGIS lower third', ms: 20000, word: 'GRAND FINALS' },
     { id: 'live', label: '04 Live + Map', ms: 24000, word: 'MATCH LIVE' },
     { id: 'map-feed', label: 'Map Feed + Teams', ms: 24000, word: 'TACTICAL MAP' },
     { id: 'live-points', label: '05 Live Points', ms: 20000, word: 'POINTS' },
@@ -622,6 +623,15 @@
     }
   }
 
+  function teamFullyEliminated(team) {
+    var players = Array.isArray(team.players) ? team.players : [];
+    if (players.length) return players.every(function (player) {
+      var status = String(player.status || '').toLowerCase();
+      return status === 'out' || status === 'eliminated' || status === 'dead';
+    });
+    return Number(team.alive) === 0;
+  }
+
   function renderLivePoints() {
     var host = $('livePtsRows');
     if (!host) return;
@@ -634,6 +644,7 @@
       row.style.setProperty('--i', i);
       row.setAttribute('data-id', team.id);
       row.classList.toggle('is-first', i === 0);
+      row.classList.toggle('is-eliminated', teamFullyEliminated(team));
       if (i < 8) row.classList.add('is-top');
       row.appendChild(el('span', 'rank', pad(i + 1)));
       var tag = team.broadcastTag || team.tag || team.name;
@@ -677,6 +688,7 @@
       if (fin) fin.textContent = team.matchKills;
       if (pts) pts.textContent = team.matchTotal;
       row.classList.toggle('is-first', i === 0);
+      row.classList.toggle('is-eliminated', teamFullyEliminated(team));
       fillPlayerStatus(row.querySelector('.pg-alive'), team);
       row.style.order = String(i);
     });
@@ -1153,6 +1165,9 @@
     set('bugStage', d.stage);
     set('bugMatch', pad(d.match));
     set('bugMap', String(d.map).toUpperCase());
+    set('bgisLowerStage', (params.get('lowerstage') || 'GRAND FINALS').slice(0, 40).toUpperCase());
+    set('bgisLowerMatch', 'M' + pad(d.match));
+    set('bgisLowerMap', String(d.map).toUpperCase());
     set('bugGroup', d.group);
     set('bugAlive', d.squads);
     set('bugAlive', state.aliveTeams);

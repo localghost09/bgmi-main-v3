@@ -2,7 +2,7 @@
 'use strict';
 const items=[
   ['openStage','Stream starting scene content'],['casterGrid','Caster panel grid'],
-  ['dropMatch','Match drop information'],['introMapImg','Map intro image'],
+  ['dropMatch','Match drop information'],['introMapImg','Map intro image'],['bgisLowerThird','BGIS lower-third overlay'],
   ['pgFeed','Live gameplay feed box'],['liveMapWindow','Live tactical map box'],['mapFeedImage','Map-feed scene image'],
   ['livePointsFeed','Live-points gameplay feed'],['livePointsMap','Live-points map panel'],['livePointsBoard','Live points standings table'],['cdTeam','Winner team box'],
   ['wsPlayers','Winner stats box'],['msRows','Match standings table'],
@@ -10,17 +10,28 @@ const items=[
   ['mvpContent','MVP player box'],['topPlayersContent','Top players table'],
   ['overallMvpCards','Overall MVP table']
 ];
+const sceneElements={
+  opening:['openStage'],casters:['casterGrid'],drop:['dropMatch'],
+  'map-intro':['introMapImg'],'bgis-lower-third':['bgisLowerThird'],
+  live:['pgFeed','liveMapWindow'],'map-feed':['mapFeedImage'],
+  'live-points':['livePointsBoard'],'chicken-dinner':['cdTeam'],
+  'winner-stats':['wsPlayers'],'match-standings':['msRows'],
+  overall:['ovTeams'],'map-rotation':['mapsFootMeta'],mvp:['mvpContent'],
+  'top-players':['topPlayersContent'],'overall-mvp':['overallMvpCards']
+};
 let layout={},content={},zoom=0;
 const root=document.getElementById('items');
 const frame=document.getElementById('actualPreview');
-function defaults(id){const presets={casterGrid:{x:100,y:249,w:1720,h:581,enabled:true},pgFeed:{x:40,y:428,w:1088,h:612,enabled:true},liveMapWindow:{x:1240,y:80,w:640,h:440,enabled:true},livePointsFeed:{x:0,y:96,w:1160,h:520,enabled:true},livePointsMap:{x:0,y:616,w:1160,h:464,enabled:true}};return presets[id]||{x:0,y:0,w:900,h:420,enabled:true}}function initialFor(id,node,doc){try{const canvas=doc.getElementById('pmgc'),a=node.getBoundingClientRect(),b=canvas.getBoundingClientRect(),scale=b.width/1920;if(scale>0&&a.width>0&&a.height>0)return{x:Math.max(0,Math.round((a.left-b.left)/scale)),y:Math.max(0,Math.round((a.top-b.top)/scale)),w:Math.round(a.width/scale),h:Math.round(a.height/scale),enabled:true}}catch(e){}return defaults(id)}
+function defaults(id){const presets={casterGrid:{x:100,y:249,w:1720,h:581,enabled:true},pgFeed:{x:40,y:428,w:1088,h:612,enabled:true},liveMapWindow:{x:1240,y:80,w:640,h:440,enabled:true},livePointsFeed:{x:0,y:96,w:1160,h:520,enabled:true},livePointsMap:{x:0,y:616,w:1160,h:464,enabled:true},livePointsBoard:{x:1557,y:372,w:357,h:706,enabled:true},bgisLowerThird:{x:0,y:898,w:430,h:148,enabled:true}};return presets[id]||{x:0,y:0,w:900,h:420,enabled:true}}function initialFor(id,node,doc){try{const canvas=doc.getElementById('pmgc'),a=node.getBoundingClientRect(),b=canvas.getBoundingClientRect(),scale=b.width/1920;if(scale>0&&a.width>0&&a.height>0)return{x:Math.max(0,Math.round((a.left-b.left)/scale)),y:Math.max(0,Math.round((a.top-b.top)/scale)),w:Math.round(a.width/scale),h:Math.round(a.height/scale),enabled:true}}catch(e){}return defaults(id)}
 function syncRow(id){const v=layout[id]||defaults(id);root.querySelectorAll('[data-id="'+id+'"]').forEach(el=>{el.value=el.dataset.key==='enabled'?null:v[el.dataset.key];if(el.dataset.key==='enabled')el.checked=v.enabled!==false})}
+function showSceneItems(scene){const visible=new Set(sceneElements[scene]||[]);root.querySelectorAll('.layout-row[data-layout-id]').forEach(row=>{row.style.display=visible.has(row.dataset.layoutId)?'contents':'none'})}
 function draw(){
   root.querySelectorAll('.layout-row').forEach(el=>el.remove());
-  items.forEach(([id,label])=>{let v=layout[id];if(!v){try{const doc=frame.contentDocument,node=doc&&doc.getElementById(id);v=node?initialFor(id,node,doc):defaults(id)}catch(e){v=defaults(id)}}root.insertAdjacentHTML('beforeend',`<div class="layout-row"><strong>${label}</strong>${['x','y','w','h'].map(k=>`<input type="number" min="0" max="4000" aria-label="${label} ${k}" data-id="${id}" data-key="${k}" value="${v[k]}">`).join('')}<input type="checkbox" aria-label="Show ${label}" data-id="${id}" data-key="enabled" ${v.enabled===false?'':'checked'}><button type="button" class="bc-btn" data-reset="${id}" aria-label="Restore default for ${label}">Default</button></div>`)});
+  items.forEach(([id,label])=>{let v=layout[id];if(!v){try{const doc=frame.contentDocument,node=doc&&doc.getElementById(id);v=node?initialFor(id,node,doc):defaults(id)}catch(e){v=defaults(id)}}root.insertAdjacentHTML('beforeend',`<div class="layout-row" data-layout-id="${id}"><strong>${label}</strong>${['x','y','w','h'].map(k=>`<input type="number" min="0" max="4000" aria-label="${label} ${k}" data-id="${id}" data-key="${k}" value="${v[k]}">`).join('')}<input type="checkbox" aria-label="Show ${label}" data-id="${id}" data-key="enabled" ${v.enabled===false?'':'checked'}><button type="button" class="bc-btn" data-reset="${id}" aria-label="Restore default for ${label}">Default</button></div>`)});
   root.querySelectorAll('[data-id]').forEach(el=>el.addEventListener('input',()=>{const id=el.dataset.id,k=el.dataset.key;layout[id]=layout[id]||initialFor(id,frame.contentDocument.getElementById(id),frame.contentDocument);layout[id][k]=k==='enabled'?el.checked:Number(el.value);updatePreview()}));
   root.querySelectorAll('[data-reset]').forEach(button=>button.addEventListener('click',()=>resetItem(button.dataset.reset)));
   updatePreview();
+  showSceneItems(document.getElementById('previewScene').value);
 }
 function applyZoom(){const viewport=document.getElementById('previewViewport'),w=Math.max(320,Number(document.getElementById('canvasW').value)||1920),h=Math.max(240,Number(document.getElementById('canvasH').value)||1080),scale=zoom||Math.min(viewport.clientWidth/w,1);frame.style.width=w+'px';frame.style.height=h+'px';frame.style.transform=`scale(${scale})`;viewport.style.height=Math.ceil(h*scale)+'px';document.getElementById('zoomLabel').textContent=Math.round(scale*100)+'%'}
 function updateInputs(id){const v=layout[id];if(!v)return;root.querySelectorAll('[data-id="'+id+'"]').forEach(el=>{if(el.dataset.key==='enabled')el.checked=v.enabled!==false;else el.value=v[el.dataset.key]})}
@@ -39,7 +50,7 @@ BC.boot(function(){load().then(r=>{layout=(r.d&&r.d.layout)||{};content=(r.d&&r.
 document.getElementById('save').onclick=()=>{const status=document.getElementById('status');status.textContent='Saving…';BC.post('/api/admin/overlay-settings',{layout,content}).then(r=>{if(r.s!==200||!r.d.ok)throw Error(r.d.error||'Save failed');status.textContent='Saved. The live PMGC overlay will use these positions and visibility choices.'}).catch(e=>status.textContent=e.message)};
 document.getElementById('resetLayout').onclick=()=>{if(!window.confirm('Restore the original PMGC overlay layout? Your saved custom positions and visibility choices will be removed.'))return;const status=document.getElementById('status');status.textContent='Restoring defaults…';BC.post('/api/admin/overlay-settings',{layout:{},content:{}}).then(r=>{if(r.s!==200||!r.d.ok)throw Error(r.d.error||'Could not restore defaults');layout={};content={};const src=frame.src;frame.src='about:blank';setTimeout(()=>{frame.src=src;draw()},0);status.textContent='Default PMGC layout restored and saved.'}).catch(e=>status.textContent=e.message)};
 frame.addEventListener('load',()=>{updatePreview();refreshVisibleDefaults()});
-document.getElementById('previewScene').addEventListener('change',e=>{frame.src='/pmgc/'+encodeURIComponent(e.target.value)+'?theme=bmps-2024&ui=0'});
+document.getElementById('previewScene').addEventListener('change',e=>{showSceneItems(e.target.value);frame.src='/pmgc/'+encodeURIComponent(e.target.value)+'?theme=bgis-2026&ui=0'});
 document.getElementById('canvasW').addEventListener('input',updatePreview);document.getElementById('canvasH').addEventListener('input',updatePreview);
 document.getElementById('zoomOut').onclick=()=>{zoom=Math.max(.25,(zoom||Math.min(document.getElementById('previewViewport').clientWidth/1920,1))-.1);applyZoom()};document.getElementById('zoomIn').onclick=()=>{zoom=Math.min(1,(zoom||Math.min(document.getElementById('previewViewport').clientWidth/1920,1))+.1);applyZoom()};document.getElementById('zoomFit').onclick=()=>{zoom=0;applyZoom()};window.addEventListener('resize',()=>{if(!zoom)applyZoom()});
 })();

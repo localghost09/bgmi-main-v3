@@ -599,3 +599,262 @@
   .pg-mstats .pg-match-rows .pg-row,
   .pg-ref-map-team { animation: none !important; opacity: 1; transform: none; }
 }
+
+/* BGIS 2026 live-match points panel, matched to the supplied in-game reference. */
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-board {
+  top: 372px;
+  right: auto;
+  bottom: auto;
+  left: 1557px;
+  width: 357px;
+  height: 706px !important;
+  padding: 0;
+  overflow: hidden;
+  border: 2px solid #c6c2d0;
+  border-radius: 1px;
+  background: #180746 !important;
+  box-shadow: 0 8px 30px #08001499;
+  clip-path: none;
+}
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-board .pg-table-head,
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-rows .pg-row {
+  grid-template-columns: 13% 36% 14% 18% 19%;
+  gap: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-board .pg-table-head {
+  height: 34px;
+  flex: 0 0 34px;
+  color: #fff;
+  background: #20104f;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: .015em;
+}
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-board .pg-table-head span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+  border-right: 1px solid #7b6d9a;
+}
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-board .pg-table-head span:nth-child(3),
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-rows .num.matches { display: none; }
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-rows .pg-row {
+  min-height: 40px;
+  border: 0;
+  border-bottom: 1px solid #b3adbf;
+  background: #f5f4f7;
+  color: #111;
+  font-size: 18px;
+}
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-rows .rank {
+  display: flex;
+  border-right: 1px solid #524672;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #fff;
+  background: #32117d;
+  font: 700 20px/1 var(--p-display);
+}
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-rows .name {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  gap: 7px;
+  padding: 0 6px;
+  color: #fff;
+  background: #32117d;
+  border-right: 1px solid #524672;
+}
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-rows .logo {
+  width: 25px;
+  height: 25px;
+  flex: 0 0 25px;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-size: 11px;
+}
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-rows .team {
+  min-width: 0;
+  color: #fff;
+  font: 900 20px/1 var(--p-display);
+  letter-spacing: .035em;
+}
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-rows .num.fin,
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-rows .num.pts,
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-rows .pg-alive {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  margin: 0;
+  color: #111;
+  background: #f5f4f7;
+  border-right: 1px solid #d1cfda;
+  font-size: 19px;
+  font-weight: 700;
+  text-align: center;
+}
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-rows .num.pts { font-size: 20px; font-weight: 900; }
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-rows .pg-row:nth-child(1) .rank,
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-rows .pg-row:nth-child(1) .name,
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-rows .pg-row:nth-child(3) .rank,
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-rows .pg-row:nth-child(3) .name {
+  background: #075fdf;
+}
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-rows .pg-row.is-eliminated .rank,
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-rows .pg-row.is-eliminated .name {
+  color: #bdbac4;
+  background: #514d59;
+}
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-rows .pg-row.is-eliminated .logo { opacity: .55; }
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-rows .pg-row.is-eliminated .num.fin,
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-rows .pg-row.is-eliminated .num.pts,
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-rows .pg-row.is-eliminated .pg-alive {
+  color: #49474d;
+  background: #aaa7ae;
+}
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-rows .pg-row.is-eliminated .pg-alive i { opacity: .55; }
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-board .pg-alive {
+  gap: 3px;
+}
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-board .pg-alive i,
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-status-legend i { width: 6px; height: 27px; flex: 0 0 6px; }
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-board i.alive,
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-status-legend i.alive { background: #6700ff; }
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-board i.knocked,
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-status-legend i.knocked { background: #f3d536; }
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-board i.out,
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-status-legend i.out { background: #d71935; }
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-board footer {
+  min-height: 38px;
+  padding: 4px 3px;
+  background: #100429;
+}
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-board .pg-status-legend {
+  justify-content: space-evenly;
+  gap: 4px;
+  font-size: 13px;
+}
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-board .pg-status-key {
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 900;
+}
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-board .pg-status-legend i {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+}
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-board .pg-alive i {
+  width: 8px;
+  height: 20px;
+  flex: 0 0 8px;
+}
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-board footer {
+  min-height: 34px;
+  padding: 5px 4px;
+  background: #100429;
+}
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-board .pg-status-legend {
+  gap: 10px;
+  font-size: 11px;
+}
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-board .pg-status-key {
+  gap: 4px;
+  font-size: 11px;
+}
+.pmgc[data-theme="bgis-2026"][data-scene="live-points"] .pg-livepts-board .pg-status-legend i {
+  width: 8px;
+  height: 16px;
+  flex-basis: 8px;
+}
+
+/* Separate transparent BGIS match/map lower-third scene. */
+.pmgc[data-scene="bgis-lower-third"] .pg-bg,
+.pmgc[data-scene="bgis-lower-third"] .pg-bug,
+.pmgc[data-scene="bgis-lower-third"] .pg-sparks,
+.pmgc[data-scene="bgis-lower-third"] .pg-flag,
+.pmgc[data-scene="bgis-lower-third"] .pg-ticker {
+  display: none !important;
+}
+.pmgc[data-scene="bgis-lower-third"] {
+  background: transparent !important;
+}
+.pmgc[data-scene="bgis-lower-third"] .pg-bgis-lower-third-scene {
+  background: transparent !important;
+}
+.pg-bgis-lower-third {
+  position: absolute;
+  left: 0;
+  bottom: 34px;
+  width: 430px;
+  height: 148px;
+  display: flex;
+  align-items: stretch;
+  color: #21143d;
+  filter: drop-shadow(0 8px 18px #06001180);
+}
+.pg-bgis-lower-brand {
+  width: 118px;
+  flex: 0 0 118px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 9px;
+  color: #fff;
+  text-align: center;
+  background: linear-gradient(150deg, #5222a4, #27105e);
+}
+.pg-bgis-lower-brand img {
+  width: 56px;
+  height: 76px;
+  object-fit: contain;
+}
+.pg-bgis-lower-brand span {
+  font: 800 8px/1.1 var(--p-body);
+  letter-spacing: .07em;
+}
+.pg-bgis-lower-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 13px 18px 12px;
+  background: linear-gradient(180deg, #fff 0 45%, #f2edff 45% 100%);
+}
+.pg-bgis-lower-kicker {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #574c62;
+  font: 800 14px/1 var(--p-body);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.pg-bgis-lower-kicker i {
+  width: 1px;
+  height: 15px;
+  background: #aaa1b5;
+}
+.pg-bgis-lower-copy > strong {
+  display: block;
+  margin-top: 9px;
+  color: #472090;
+  font: 900 40px/.95 var(--p-display);
+  letter-spacing: .015em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

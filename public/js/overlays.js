@@ -1,5 +1,5 @@
 /* ---- PMGC broadcast stage -------------------------------------------------
-   Ten themes x fifteen scenes live on /pmgc/<scene>?theme=<id>. The lists mirror
+   Ten themes x sixteen scenes live on /pmgc/<scene>?theme=<id>. The lists mirror
    public/css/pmgc-themes.css and the SCENES table in public/js/pmgc-stage.js;
    keep them in step when a theme or scene is added. */
 (function () {
@@ -12,6 +12,7 @@
     ['casters', '02 · Casters'],
     ['drop', '03 · Match drop (30s)'],
     ['map-intro', 'Map deployment intro'],
+    ['bgis-lower-third', 'BGIS match lower-third'],
     ['live', '04 · Live + map feed'],
     ['map-feed', 'Map feed + 16 teams'],
     ['live-points', '05 · Live points'],

@@ -1455,7 +1455,7 @@ def pushed_card(conn):
 # Public state builders
 # ---------------------------------------------------------------------------
 
-PMGC_SCENES = ("opening", "casters", "drop", "map-intro", "live", "map-feed", "live-points",
+PMGC_SCENES = ("opening", "casters", "drop", "map-intro", "bgis-lower-third", "live", "map-feed", "live-points",
                "chicken-dinner", "winner-stats", "match-standings", "overall",
                "map-rotation", "mvp", "top-players", "overall-mvp")
 PMGC_THEMES = ("bmps-2024", "bgms-2024", "bgis-2025", "bgis-2026", "bmsd-2025",

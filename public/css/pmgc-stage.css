@@ -1,6 +1,6 @@
 /* ============================================================================
    PMGC 2026 — BROADCAST STAGE
-   A 1920x1080 broadcast canvas for the fifteen-scene tournament show.
+   A 1920x1080 broadcast canvas for the sixteen-scene tournament show.
 
    Every scene is an absolutely positioned layer inside .pmgc. The canvas is
    scaled to the viewport by JS (--pg-fit), so OBS at 1920x1080 gets a 1:1
