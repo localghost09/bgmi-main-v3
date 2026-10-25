@@ -12,6 +12,9 @@ const PREVIEW_SCENE=(()=>{try{const v=new URLSearchParams(location.search).get('
 const THEMES=['krafton-pm','neon-drop','red-zone','miramar-dust','sanhok-jungle','vikendi-ice','livid-pink','blackout','chrome-royal','victory-gold'];
 const PINNED_THEME=(()=>{try{const v=(new URLSearchParams(location.search).get('theme')||'').toLowerCase();return THEMES.includes(v)?v:''}catch{return ''}})();
 let activeTheme = PINNED_THEME || '';
+// Establish the pinned scene immediately, including in the admin preview when
+// no live socket update has arrived yet. The full data render will follow.
+if(PREVIEW_SCENE){document.addEventListener('DOMContentLoaded',()=>{const root=$('broadcast');if(root)root.className=`broadcast state-${PREVIEW_SCENE}`;});}
 function applyTheme(theme){
   if(!theme || theme===activeTheme)return;
   const root=$('broadcast');
@@ -73,7 +76,12 @@ function playCinematicTransition(stateName){
 function initials(value=''){return String(value).trim().split(/\s+/).slice(0,2).map(s=>s[0]||'').join('').toUpperCase()||'?';}
 function setImage(imgId, fallbackId, url, fallbackText){const img=$(imgId),fallback=$(fallbackId);img.onerror=()=>{img.classList.add('hidden');fallback.classList.remove('hidden')};if(url){img.src=url;img.classList.remove('hidden');fallback.classList.add('hidden')}else{img.removeAttribute('src');img.classList.add('hidden');fallback.textContent=fallbackText||'?';fallback.classList.remove('hidden')}}
 function setTeamLogo(img,url,teamName){img.replaceChildren();if(url){const image=document.createElement('img');image.src=url;image.alt=`${teamName} logo`;image.onerror=()=>{img.textContent=initials(teamName)};img.append(image)}else img.textContent=initials(teamName)}
-socket.on('tournament:update', data => { lastState = data; render(data); });
+function applyAdminLayout(data){
+  const layout=data&&data.layout;if(!layout||typeof layout!=='object')return;
+  Object.keys(layout).forEach(id=>{const spec=layout[id],el=$(id);if(!spec||!el)return;el.style.display=spec.enabled===false?'none':'';if(spec.enabled===false)return;el.style.position='absolute';el.style.left=`${Math.max(0,Number(spec.x)||0)}px`;el.style.top=`${Math.max(0,Number(spec.y)||0)}px`;el.style.width=`${Math.max(0,Number(spec.w)||0)}px`;el.style.height=`${Math.max(0,Number(spec.h)||0)}px`;});
+  const content=data&&data.content;if(content)Object.keys(content).forEach(id=>{const el=$(id);if(el&&content[id])el.textContent=content[id]});
+}
+socket.on('tournament:update', data => { lastState = data; render(data); applyAdminLayout(data); });
 socket.on('connect_error',()=>{});
 function scoreOverallTeams(data){
   const history=Array.isArray(data.matchHistory)?data.matchHistory:[];

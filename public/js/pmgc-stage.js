@@ -637,10 +637,9 @@
       if (i < 8) row.classList.add('is-top');
       row.appendChild(el('span', 'rank', pad(i + 1)));
       var tag = team.broadcastTag || team.tag || team.name;
-      // Registered tags take priority; never overwrite the full team name.
       var compact = Object.assign({}, team, {name: Array.from(String(tag).toUpperCase()).slice(0, 6).join('')});
       var label = teamCell(compact, '');
-      label.title = team.name;
+      label.title = team.name || tag;
       row.appendChild(label);
       row.appendChild(el('span', 'num matches', team.matches || 0));
       row.appendChild(el('span', 'num fin', team.matchKills));
@@ -1362,6 +1361,36 @@
     if (state.scene === 'live-points') renderLivePoints();
   }
 
+  function applyAdminOverlayLayout(payload) {
+    var layout = payload && payload.overlayLayout;
+    if (!layout) return;
+    Object.keys(layout).forEach(function (id) {
+      var item = layout[id], node = document.getElementById(id);
+      if (!node || !item) return;
+      node.style.display = item.enabled === false ? 'none' : '';
+      if (item.enabled === false) return;
+      node.style.position = 'absolute';
+      node.style.left = Math.max(0, Number(item.x) || 0) + 'px';
+      node.style.top = Math.max(0, Number(item.y) || 0) + 'px';
+      node.style.width = Math.max(0, Number(item.w) || 0) + 'px';
+      if (id === 'livePointsBoard') node.style.setProperty('height', Math.max(0, Number(item.h) || 0) + 'px', 'important');
+      else node.style.height = Math.max(0, Number(item.h) || 0) + 'px';
+      if (id === 'pgFeed' || id === 'liveMapWindow') {
+        var aperture = document.getElementById(id === 'pgFeed' ? 'liveFeedCutout' : 'liveMapCutout');
+        if (aperture) { aperture.setAttribute('x', item.x); aperture.setAttribute('y', item.y); aperture.setAttribute('width', item.w); aperture.setAttribute('height', item.h); }
+      }
+      if (id === 'casterGrid') {
+        node.style.right = 'auto'; node.style.gridTemplateColumns = 'repeat(2, minmax(0, 1fr))';
+        var gap = 80, col = Math.max(0, (Number(item.w) - gap) / 2);
+        var cutoutHeight = Math.max(0, Number(item.h) * (461.25 / 581.25));
+        [['casterCutout1', Number(item.x)], ['casterCutout2', Number(item.x) + col + gap]].forEach(function (pair) {
+          var hole = document.getElementById(pair[0]);
+          if (hole) { hole.setAttribute('x', pair[1]); hole.setAttribute('y', item.y); hole.setAttribute('width', col); hole.setAttribute('height', cutoutHeight); }
+        });
+      }
+    });
+  }
+
   function pullLiveState() {
     if (!window.fetch) return;
     fetch('/api/live/state', { cache: 'no-store' })
@@ -1397,6 +1426,7 @@
           if (changed && state.scene === 'opening' && !params.has('start')) startOpeningClock();
         }
         if (payload && payload.teams && payload.teams.length >= 4) applyLiveState(payload);
+        applyAdminOverlayLayout(payload);
       })
       .catch(function () { /* showcase data stays on screen */ });
   }

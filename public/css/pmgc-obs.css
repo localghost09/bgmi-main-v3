@@ -112,14 +112,23 @@ html:has(body.pg-capture), body.pg-capture { background: transparent !important;
 .pg-livepts-board .pg-table-head { font-size: 15px; height: 36px; flex: 0 0 36px; }
 .pg-livepts-board .pg-alive i { width: 11px; height: 16px; }
 .pg-livepts-board footer { font-size: 12px; padding: 12px; gap: 8px; }
+/* When admins resize the standings panel, let rows share the available
+   height and fill the full panel width instead of leaving a short fixed list. */
+.pmgc[data-scene="live-points"] .pg-livepts-rows { flex: 1 1 auto; min-height: 0; width: 100%; }
+.pmgc[data-scene="live-points"] .pg-livepts-rows .pg-row { flex: 1 1 0; height: auto; min-height: 40px; width: 100%; box-sizing: border-box; }
+.pmgc[data-scene="live-points"] .pg-livepts-board .pg-table-head { width: 100%; box-sizing: border-box; }
 /* Bottom-right compact score strip, consistent across all ten theme skins. */
 .pmgc[data-scene="live-points"] .pg-scene.pg-livepts .pg-livepts-board {
-  top: auto; left: auto; right: 24px; bottom: 24px; width: 460px;
+  top: auto; left: auto; right: 24px; bottom: 24px; width: 520px;
 }
 .pg-livepts-board .pg-table-head, .pg-livepts-rows .pg-row {
-  grid-template-columns: 26px minmax(110px, 1fr) 40px 38px 48px 96px;
-  gap: 5px; padding: 0 10px;
+  grid-template-columns: 26px minmax(170px, 1fr) 40px 38px 48px 96px;
+  gap: 7px; padding: 0 12px;
 }
+.pg-livepts-rows .name { display:flex; align-items:center; gap:14px; min-width:0; width:100%; }
+.pg-livepts-rows .logo { width:40px; height:40px; flex:0 0 40px; }
+.pg-livepts-rows .copy { flex:1 1 auto; min-width:0; }
+.pg-livepts-rows .team { display:block; width:100%; font-size:28px; letter-spacing:.02em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .pg-livepts-rows .team { font-size: 30px; }
 .pg-livepts-rows .num.matches { font-size: 26px; text-align: center; }
 .pg-livepts-board .pg-alive {
@@ -130,5 +139,8 @@ html:has(body.pg-capture), body.pg-capture { background: transparent !important;
 .pg-livepts-board .pg-table-head span:nth-child(n+3) { text-align: center; }
 .pg-livepts-rows .rank { width: 26px; }
 /* Larger, clearly spaced status-key icons below the standings. */
-.pg-livepts-board .pg-status-legend { gap: 8px; font-size: 13px; }
-.pg-livepts-board .pg-status-legend i { width: 14px; height: 22px; flex: 0 0 14px; }
+.pg-livepts-board footer { justify-content:center; }
+.pg-livepts-board .pg-status-legend { display:flex; align-items:center; justify-content:center; gap:16px; width:100%; height:100%; font-size:17px; line-height:1; }
+.pg-livepts-board .pg-status-key { display:inline-flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap; font-size:17px; font-weight:900; line-height:1; }
+.pg-livepts-board .pg-status-legend i { width:14px; height:22px; flex:0 0 14px; margin:0; vertical-align:middle; }
+.pg-livepts-board .pg-alive { align-items:center; justify-content:center; }
