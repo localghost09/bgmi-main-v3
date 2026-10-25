@@ -65,6 +65,9 @@
     var theme = document.getElementById('pmgcTheme').value || 'bmps-2024';
     var scene = document.getElementById('pmgcScene').value || 'opening';
     document.getElementById('pmgcGuides').href = location.origin + '/pmgc/' + scene + '?theme=' + encodeURIComponent(theme) + '&ui=1&guides=1';
+    var sceneUrl = location.origin + '/pmgc/' + encodeURIComponent(scene) + '?theme=' + encodeURIComponent(theme) + '&obs=1';
+    document.getElementById('pmgcSceneObsUrl').value = sceneUrl;
+    document.getElementById('pmgcSceneOpenBtn').href = sceneUrl;
     var frame = document.getElementById('pmgcPreviewFrame');
     if (changed && frame && !frame.getAttribute('src')) frame.src = url + '&preview=1';
   }
@@ -177,6 +180,19 @@
           }, fallback);
         } else { fallback(); }
       } catch (e) { fallback(); }
+    });
+    document.getElementById('pmgcSceneCopyBtn').addEventListener('click', function () {
+      var field = document.getElementById('pmgcSceneObsUrl');
+      var status = document.getElementById('pmgcSceneUrlStatus');
+      var fallback = function () {
+        field.focus(); field.select(); field.setSelectionRange(0, field.value.length);
+        var copied = false;
+        try { copied = document.execCommand('copy'); } catch (e) { /* manual copy below */ }
+        status.textContent = copied ? 'Scene URL copied for OBS.' : 'URL selected — press Ctrl+C or Cmd+C to copy.';
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(field.value).then(function () { status.textContent = 'Scene URL copied for OBS.'; }, fallback);
+      } else { fallback(); }
     });
     window.addEventListener('resize', scalePmgc);
     syncPmgc(true);
